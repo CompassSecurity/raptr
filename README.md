@@ -31,6 +31,6 @@ A sandbox playground is available at [https://sandbox.raptr.app/](https://sandbo
 - `backend/`: Python FastAPI application.
 - `frontend/`: Vue 3 + Vite application.
 - `docs/`: Documentation which is used to generate the static documentation website at [https://raptr.app](https://raptr.app).
-- `example templates/`: Example templates for RAPTR
+- `templates/`: Example templates for RAPTR
 - `Dockerfile`: Configuration for building the RAPTR single-container deployment
 - `docker-compose.yml`: Example compose file for local deployment
