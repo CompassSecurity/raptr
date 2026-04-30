@@ -44,7 +44,7 @@ jobs:
 
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: backend/site
+          path: docs/site
 
       - uses: actions/deploy-pages@v4
         id: deployment
