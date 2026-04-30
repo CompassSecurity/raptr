@@ -1,4 +1,7 @@
 # RAPTR
+<img width="1880" height="480" alt="RAPTR" src="https://github.com/user-attachments/assets/29ed1479-62dd-46ce-b63b-a4571d485bc9#gh-dark-mode-only" />
+<img width="1880" height="480" alt="RAPTR" src="https://github.com/user-attachments/assets/eaa33524-a2a8-4834-99ec-e496c09b8f72#gh-light-mode-only" />
+
 RAPTR is an open-source, API-enabled collaboration platform for Red and Purple Team engagements. It bridges the gap between offensive and defensive teams by allowing you to plan campaigns, log attacks and detections side-by-side, evaluate the results, and generate high-quality reports.
 
 ## Documentation
@@ -20,7 +23,7 @@ docker run -d \
   ghcr.io/CompassSecurity/raptr:latest
 ```
 
-## Sandobx
+## Sandbox
 A sandbox playground is available at [https://sandbox.raptr.app/](https://sandbox.raptr.app/).
 
 ## Project Structure
