@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+
+jobs:
+  backend-checks:
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.14
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.14"
+
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+    - name: Install dependencies
+      run: uv sync --frozen
+
+    - name: Lint with Ruff
+      run: uv run ruff check .
+
+    - name: Format check with Ruff
+      run: uv run ruff format --check .
+
+    - name: Run tests
+      run: uv run pytest
+
+  frontend-checks:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Bun
+      uses: oven-sh/setup-bun@v2
+
+    - name: Install dependencies
+      run: bun install --frozen-lockfile
+
+    - name: Lint and format check
+      run: bun run lint
+
+    - name: Type check and build
+      run: bun run build
+
+#   security-scan:
+#     name: Security Scan (zizmor)
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       security-events: write
+#       actions: read
+#     steps:
+#       - uses: actions/checkout@v4
+#         with:
+#           persist-credentials: false
+#       - name: Run zizmor
+#         uses: zizmorcore/zizmor-action@0dce2577a4760a2749d8cfb7a84b7d5585ebcb7d
+#         with:
+#           inputs: .
+
+  docker-build-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Build Docker Image (Dry Run)
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: Dockerfile
+        push: false
+        tags: raptr:test

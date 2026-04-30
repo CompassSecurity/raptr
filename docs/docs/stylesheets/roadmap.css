@@ -1,0 +1,176 @@
+/* ------------------------------------------------------------------ */
+/*  Roadmap Timeline Page Styles                                      */
+/* ------------------------------------------------------------------ */
+
+.md-typeset .roadmap-header {
+  margin-bottom: 3rem;
+  margin-top: 2rem;
+}
+
+.md-typeset .roadmap-header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  border: none;
+}
+
+.md-typeset .roadmap-header p {
+  color: var(--md-default-fg-color--light);
+  font-size: 1.1rem;
+}
+
+.timeline {
+  display: grid;
+  grid-template-columns: 80px 24px 1fr;
+  gap: 0 16px;
+  position: relative;
+  max-width: 100%;
+}
+
+@media screen and (min-width: 768px) {
+  .timeline {
+    grid-template-columns: 120px 24px 1fr;
+    gap: 0 24px;
+    max-width: 900px;
+  }
+}
+
+/* The vertical line */
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(80px + 16px + 11px);
+  width: 2px;
+  background-color: var(--md-default-fg-color--lightest);
+  z-index: 1;
+}
+
+@media screen and (min-width: 768px) {
+  .timeline::before {
+    left: calc(120px + 24px + 11px);
+  }
+}
+
+.timeline-item {
+  display: contents; /* Allows children to participate in the grid layout */
+}
+
+.timeline-date {
+  text-align: right;
+  padding-top: 20px;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--md-default-fg-color--light);
+  white-space: nowrap;
+}
+
+@media screen and (min-width: 768px) {
+  .timeline-date {
+    font-size: 0.95rem;
+  }
+}
+
+.timeline-marker {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--md-default-fg-color--light);
+  background-color: var(--md-default-bg-color); /* Matches page background */
+  margin-top: 22px; /* aligns vertically with first line of content */
+  position: relative;
+  z-index: 2;
+  justify-self: center;
+}
+
+.timeline-item.completed .timeline-marker {
+  background-color: var(--md-primary-fg-color); /* Fill it in */
+  border-color: var(--md-primary-fg-color);
+}
+
+/* The checkmark inside the completed bubble */
+.timeline-item.completed .timeline-marker::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 2px;
+  width: 4px;
+  height: 7px;
+  border: solid var(--md-default-bg-color);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.timeline-content {
+  padding-bottom: 1.25rem;
+  min-width: 0; /* Prevents flex/grid children from overflowing implicitly */
+}
+
+.timeline-card {
+  background-color: var(--md-code-bg-color);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 8px;
+  padding: 16px 20px;
+  box-shadow: var(--md-shadow-z1);
+  word-wrap: break-word; /* Ensure text wraps */
+  overflow: hidden; /* Prevent spillover */
+}
+
+.md-typeset .timeline-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  flex-wrap: wrap; /* allow wrapping on super thin screens */
+  gap: 0.5rem;
+}
+
+.md-typeset .timeline-card-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--md-default-fg-color);
+  word-break: break-word;
+}
+
+@media screen and (min-width: 768px) {
+  .md-typeset .timeline-card-header h3 {
+    font-size: 1.1rem;
+  }
+}
+
+.timeline-card-header h3 .twemoji {
+  color: var(--md-default-fg-color--light);
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0; /* Don't squash icons */
+  margin-top: 0.1rem;
+}
+
+.timeline-version {
+  color: var(--md-primary-fg-color);
+  font-family: var(--md-code-font-family);
+  font-size: 0.85em;
+  text-decoration: underline;
+  text-decoration-color: var(--md-primary-fg-color);
+  white-space: nowrap;
+}
+
+.md-typeset .timeline-card p {
+  margin: 0;
+  color: var(--md-default-fg-color--light);
+  font-style: italic;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+@media screen and (min-width: 768px) {
+  .md-typeset .timeline-card p {
+    font-size: 0.95rem;
+  }
+}
+

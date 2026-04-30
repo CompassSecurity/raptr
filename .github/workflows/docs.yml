@@ -1,0 +1,39 @@
+name: Deploy docs to GitHub Pages
+on:
+  workflow_dispatch: # manual trigger only until GitHub Pages is available
+
+permissions:
+  contents: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Configure Git Credentials
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.14
+      
+      - name: Install dependencies
+        working-directory: ./backend
+        run: uv sync --all-groups
+
+      - name: Build docs
+        run: cd backend && uv run zensical build --config-file ../docs/zensical.toml
+
+      - name: Deploy to GitHub Pages
+        run: cd backend && uv run zensical gh-deploy --config-file ../docs/zensical.toml --force

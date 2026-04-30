@@ -1,0 +1,23 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# env file
+.env
+
+# Virtual environments
+.venv
+
+# SQLite database
+raptr.db
+raptr.db-journal
+
+# ruff
+.ruff_cache/
+
+# Project Context
+AGENT.md

@@ -1,0 +1,114 @@
+[project]
+site_name = "RAPTR"
+site_url = "https://CompassSecurity.github.io/raptr/"
+repo_url = "https://github.com/CompassSecurity/raptr"
+repo_name = "CompassSecurity/raptr"
+extra_css = ["stylesheets/landing.css", "stylesheets/roadmap.css"]
+
+nav = [
+  { "Home" = "index.md" },
+  { "Quick Start" = "quick-start/index.md" },
+  { "Release Notes" = "release-notes/index.md" },
+  { "Roadmap" = "roadmap.md" },
+  { "User Guide" = [
+    { "Getting Started" = "user-guide/getting_started.md" },
+    { "Key Objects" = "user-guide/key_objects.md" },
+    { "User Types and Roles" = "user-guide/user_types.md" },
+    { "Templates" = "user-guide/templates.md" },
+    { "Knowledge Base" = "user-guide/knowledge_base.md" },
+    { "Visibility" = "user-guide/visibility.md" },
+    { "Deletion Concept" = "user-guide/deletion.md" },
+    { "Managing Assessments" = "user-guide/assessments.md" },
+    { "Working with Activities" = "user-guide/activities.md" },
+    { "Assets and Tags" = "user-guide/assets_and_tags.md" },
+    { "Evaluation and Reporting" = "user-guide/evaluation.md" },
+    { "User Preferences & UI" = "user-guide/user_preferences_and_ui.md" },
+    { "Administration" = "user-guide/administration.md" },
+  ]},
+  { "Admin Guide" = [
+    { "Overview" = "admin-guide/index.md" },
+    { "Deployment" = "admin-guide/deployment.md" },
+    { "Configuration" = "admin-guide/configuration.md" },
+    { "External Authentication" = "admin-guide/external_authentication.md" },
+    { "Data Persistence & Backups" = "admin-guide/data_persistence.md" },
+    { "Custom Data & Templates" = "admin-guide/custom_data.md" },
+    { "Report Templates" = "admin-guide/report_templates.md" },
+  ]},
+  { "Developer Guide" = [
+    { "Overview" = "developer-guide/index.md" },
+    { "Backend" = [
+      { "Overview" = "developer-guide/backend/index.md" },
+      { "Adding Endpoints" = "developer-guide/backend/endpoints.md" },
+      { "Filtering & Sorting" = "developer-guide/backend/filtering.md" },
+      { "Authentication & Authorization" = "developer-guide/backend/auth.md" },
+      { "Database & Testing" = "developer-guide/backend/database.md" },
+    ]},
+    { "Frontend" = "developer-guide/frontend.md" },
+    { "Contributing" = "developer-guide/contributing.md" },
+    { "Issues & Requests" = "developer-guide/issues.md" },
+  ]},
+]
+
+# --------------------------------------------------------------------------
+# Theme
+# --------------------------------------------------------------------------
+[project.theme]
+features = [
+  "navigation.tabs",
+  "navigation.expand",
+  "navigation.instant",
+  "navigation.instant.prefetch",
+  "navigation.footer",
+  "navigation.top",
+  "navigation.tracking",
+  "search.suggest",
+  "search.highlight",
+  "content.code.copy",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "deep purple"
+accent = "deep purple"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "deep purple"
+accent = "deep purple"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+# --------------------------------------------------------------------------
+# Markdown extensions
+# --------------------------------------------------------------------------
+[project.markdown_extensions]
+attr_list = {}
+md_in_html = {}
+admonition = {}
+
+[project.markdown_extensions.pymdownx]
+details = {}
+inlinehilite = {}
+snippets = {}
+
+[project.markdown_extensions.pymdownx.emoji]
+emoji_index = "zensical.extensions.emoji.twemoji"
+emoji_generator = "zensical.extensions.emoji.to_svg"
+
+[project.markdown_extensions.pymdownx.highlight]
+anchor_linenums = true
+
+[project.markdown_extensions.pymdownx.tasklist]
+custom_checkbox = true
+
+[project.markdown_extensions.pymdownx.superfences]
+custom_fences = [
+  { name = "mermaid", class = "mermaid" },
+]
+
+[project.markdown_extensions.pymdownx.blocks]
+caption = {}

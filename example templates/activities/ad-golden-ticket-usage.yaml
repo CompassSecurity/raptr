@@ -1,0 +1,16 @@
+mitreTechnique: T1558.001
+mitreTactic: TA0006
+name: "AD: Golden Ticket Usage"
+activityRationale: Adversaries who have the KRBTGT account password hash may forge Kerberos
+  ticket-granting tickets (TGT), also known as a golden ticket. Golden tickets enable
+  adversaries to generate authentication material for any account in Active Directory.
+activityActions: ""
+priority: High
+expectedseverity: Critical
+expectedLogging: true
+expectedPrevention: false
+expectedAlertCreation: true
+expectedStakeholderNotification: false
+activityRequirements: "KRBTGT password hash. After the test the KRBTGT password must be rotated twice."
+provider: compass
+activityNotes: ""

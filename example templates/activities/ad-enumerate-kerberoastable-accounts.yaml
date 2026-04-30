@@ -1,0 +1,16 @@
+mitreTechnique: T1558.003
+mitreTactic: TA0006
+name: "AD: Enumerate Kerberoastable Accounts"
+activityRationale: Adversaries may enumerate accounts in the domain for which a ticket-granting
+  service (TGS) ticket can be requested which may be vulnerable to a Brute Force attack.
+activityActions: ""
+priority: Low
+expectedseverity: Low
+expectedLogging: true
+expectedPrevention: false
+expectedAlertCreation: true
+expectedStakeholderNotification: false
+activityRequirements: "Accounts with configured Service Principal Names (SPNs)"
+provider: compass
+activityNotes: ""
+

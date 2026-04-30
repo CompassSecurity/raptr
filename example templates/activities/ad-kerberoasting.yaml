@@ -1,0 +1,17 @@
+mitreTechnique: T1558.003
+mitreTactic: TA0006
+name: "AD: Kerberoasting"
+activityRationale: Adversaries may request a ticket-granting service (TGS) ticket, which is
+  encrypted using a weak algorithm, such as RC4. These tickets can be attacked with
+  an offline brute force attack.
+activityActions: ""
+priority: High
+expectedseverity: High
+expectedLogging: true
+expectedPrevention: false
+expectedAlertCreation: true
+expectedStakeholderNotification: false
+activityRequirements: "Accounts with a configured Service Principal Name (SPN)."
+provider: compass
+activityNotes: ""
+

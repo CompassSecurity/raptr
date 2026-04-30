@@ -1,0 +1,28 @@
+# Documentation
+docs/
+mkdocs.yml
+site/
+
+# Git & CI
+.git
+.github
+.gitignore
+
+# IDE & editor
+.vscode
+.idea
+*.swp
+
+# Python artifacts
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+backend/.venv
+
+# Frontend dev artifacts
+frontend/node_modules
+
+# Misc
+*.md
+LICENSE

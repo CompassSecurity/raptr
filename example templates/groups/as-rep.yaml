@@ -1,0 +1,4 @@
+name: 'AS-Rep'
+activities:
+  - 'AD: Enumerate AS-REP Roastable Accounts'
+  - 'AD: AS-REP Roasting'

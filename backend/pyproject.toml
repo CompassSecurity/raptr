@@ -1,0 +1,36 @@
+[project]
+name = "raptr-backend-api"
+version = "0.1.0-beta.1"
+description = "The backend API for the RAPTR application"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "certifi>=2025.11.12",
+    "docxtpl>=0.20.2",
+    "fastapi[standard]>=0.124.4",
+    "jinja2>=3.1.6",
+    "markdown-it-py>=4.0.0",
+    "pathvalidate>=3.3.1",
+    "psycopg>=3.3.2",
+    "psycopg-binary>=3.3.2",
+    "pwdlib[argon2]>=0.3.0",
+    "pydantic-settings>=2.12.0",
+    "pyjwt[crypto]>=2.10.1",
+    "pyotp>=2.9.0",
+    "pyyaml>=6.0.3",
+    "sqlalchemy>=2.0.45",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "ruff>=0.14.9",
+    "zensical",
+]
+
+[tool.pytest.ini_options]
+pythonpath = "."
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E501"]

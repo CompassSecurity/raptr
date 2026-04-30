@@ -1,0 +1,3 @@
+name: "OtherIssues"
+evaluationCriteria: "Are there any other issues that were observed?"
+description: "For example: Detection logic not tailored, Localization issues, etc."

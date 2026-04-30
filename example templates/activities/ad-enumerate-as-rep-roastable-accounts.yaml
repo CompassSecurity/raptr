@@ -1,0 +1,16 @@
+mitreTechnique: T1558.004
+mitreTactic: TA0006
+name: "AD: Enumerate AS-REP Roastable Accounts"
+activityRationale: Adversaries may enumerate accounts that have Kerberos preauthentication
+  disabled. These accounts are then targeted in an AS-REP roasting attack.
+activityActions: ""
+priority: Low
+expectedseverity: Low
+expectedLogging: true
+expectedPrevention: false
+expectedAlertCreation: true
+expectedStakeholderNotification: false
+activityRequirements: "Accounts with Kerberos pre-authentication disabled."
+provider: compass
+activityNotes: ""
+

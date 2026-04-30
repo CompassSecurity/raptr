@@ -1,0 +1,3 @@
+name: "SoCProceduresCountermeasures"
+evaluationCriteria: "Did the SOC take immediate adequate countermeasures?"
+description: "The SOC should take immediate and adequate actions to counter the detected activity if the SOC is able to do this for the respective event."

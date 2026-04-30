@@ -1,0 +1,11 @@
+name: 'Standard AD Campaign'
+description: 'Standard Active Directory assessment campaign'
+items:
+  - type: group
+    ref: 'AS-Rep'
+  - type: group
+    ref: 'Kerberoasting'
+  - type: activity
+    ref: 'AD: DCSync'
+  - type: activity
+    ref: 'AD: Golden Ticket Usage'

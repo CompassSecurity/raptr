@@ -1,0 +1,4 @@
+name: 'Kerberoasting'
+activities:
+  - 'AD: Enumerate Kerberoastable Accounts'
+  - 'AD: Kerberoasting'

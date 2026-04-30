@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ assessment.name | default('RAPTR Assessment Report') }}</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'var(--background)',
+                        foreground: 'var(--foreground)',
+                        muted: 'var(--muted)',
+                        'muted-foreground': 'var(--muted-foreground)',
+                        card: 'var(--card)',
+                        'card-foreground': 'var(--card-foreground)',
+                        border: 'var(--border)',
+                        popover: 'var(--popover)',
+                        'popover-foreground': 'var(--popover-foreground)',
+                        primary: 'var(--primary)',
+                        'primary-foreground': 'var(--primary-foreground)',
+                        secondary: 'var(--secondary)',
+                        'secondary-foreground': 'var(--secondary-foreground)',
+                        accent: 'var(--accent)',
+                        'accent-foreground': 'var(--accent-foreground)',
+                        destructive: 'var(--destructive)',
+                        input: 'var(--input)',
+                        ring: 'var(--ring)',
+                    },
+                    borderRadius: {
+                        lg: 'var(--radius)',
+                        md: 'calc(var(--radius) - 2px)',
+                        sm: 'calc(var(--radius) - 4px)',
+                        xl: 'calc(var(--radius) + 4px)',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            --radius: 0.65rem;
+            --background: oklch(1 0 0);
+            --foreground: oklch(0.141 0.005 285.823);
+            --card: oklch(1 0 0);
+            --card-foreground: oklch(0.141 0.005 285.823);
+            --popover: oklch(1 0 0);
+            --popover-foreground: oklch(0.141 0.005 285.823);
+            --primary: oklch(0.541 0.281 293.009);
+            --primary-foreground: oklch(0.969 0.016 293.756);
+            --secondary: oklch(0.967 0.001 286.375);
+            --secondary-foreground: oklch(0.21 0.006 285.885);
+            --muted: oklch(0.967 0.001 286.375);
+            --muted-foreground: oklch(0.552 0.016 285.938);
+            --accent: oklch(0.967 0.001 286.375);
+            --accent-foreground: oklch(0.21 0.006 285.885);
+            --destructive: oklch(0.577 0.245 27.325);
+            --border: oklch(0.92 0.004 286.32);
+            --input: oklch(0.92 0.004 286.32);
+            --ring: oklch(0.702 0.183 293.541);
+        }
+
+        .dark {
+            --background: oklch(0.141 0.005 285.823);
+            --foreground: oklch(0.985 0 0);
+            --card: oklch(0.21 0.006 285.885);
+            --card-foreground: oklch(0.985 0 0);
+            --popover: oklch(0.21 0.006 285.885);
+            --popover-foreground: oklch(0.985 0 0);
+            --primary: oklch(0.606 0.25 292.717);
+            --primary-foreground: oklch(0.969 0.016 293.756);
+            --secondary: oklch(0.274 0.006 286.033);
+            --secondary-foreground: oklch(0.985 0 0);
+            --muted: oklch(0.274 0.006 286.033);
+            --muted-foreground: oklch(0.705 0.015 286.067);
+            --accent: oklch(0.274 0.006 286.033);
+            --accent-foreground: oklch(0.985 0 0);
+            --destructive: oklch(0.704 0.191 22.216);
+            --border: oklch(1 0 0 / 10%);
+            --input: oklch(1 0 0 / 15%);
+            --ring: oklch(0.38 0.189 293.745);
+        }
+
+        html {
+            font-size: 14px;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+
+        * {
+            border-color: var(--border);
+        }
+
+        /* Custom scrollbars */
+        .table-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-scroll::-webkit-scrollbar-track {
+            background: var(--muted);
+            border-radius: 4px;
+        }
+
+        .table-scroll::-webkit-scrollbar-thumb {
+            background: var(--muted-foreground);
+            opacity: 0.5;
+            border-radius: 4px;
+        }
+
+        /* Ensure markdown images fit */
+        .prose img {
+            max-width: 100%;
+            max-height: 300px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            margin-top: 1.5em;
+            margin-bottom: 1.5em;
+            cursor: pointer;
+            transition: opacity 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        }
+
+        .prose img:hover {
+            opacity: 0.85;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen p-4 md:p-8 antialiased transition-colors duration-200" x-data="reportApp()"
+    @keydown.escape.window="if(lightboxOpen) closeLightbox()">
+
+    <div class="max-w-[1800px] w-full mx-auto space-y-6"
+        @click="if ($event.target.tagName === 'IMG' && $event.target.closest('.prose')) openLightbox($event.target.src)">
+
+        <header
+            class="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-border pb-6 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight">{{ assessment.name | default('Security Red Team
+                    Assessment') }}</h1>
+                <p class="text-muted-foreground mt-2 max-w-2xl">{{ assessment.description | default('Comprehensive red
+                    team security assessment results.') }}</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <button @click="toggleTimeZone()"
+                    class="rounded-lg border border-border bg-background hover:bg-accent px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap">
+                    <span x-show="timeZone === 'local'" x-cloak>🕐 Local Time</span>
+                    <span x-show="timeZone === 'utc'" x-cloak>🌐 UTC</span>
+                </button>
+                <button @click="toggleTheme()"
+                    class="rounded-lg border border-border bg-background hover:bg-accent px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap">
+                    <span x-show="theme === 'dark'" x-cloak>☀️ Light Mode</span>
+                    <span x-show="theme === 'light'" x-cloak>🌙 Dark Mode</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- ═══ STATISTICS SECTION ═══ -->
+        <div x-data="{ statsOpen: false }" class="bg-card text-card-foreground border border-border shadow-sm rounded-xl overflow-hidden">
+            <button @click="statsOpen = !statsOpen"
+                class="w-full flex items-center justify-between px-6 py-4 hover:bg-accent/50 transition-colors select-none">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <h2 class="text-lg font-semibold">Assessment Statistics</h2>
+                </div>
+                <svg class="w-5 h-5 text-muted-foreground transition-transform duration-200" :class="statsOpen && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+
+            <div x-show="statsOpen" x-collapse x-cloak class="border-t border-border">
+                <div class="p-6 space-y-8">
+
+                    <!-- Row 1: State Distribution + Coverage Score + Priority Breakdown -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                        <!-- State Distribution — Doughnut -->
+                        <div class="border border-border rounded-xl p-5">
+                            <h3 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">Activity State Distribution</h3>
+                            {% set state_colors = {'Pending': '#71717a', 'Waiting Red': '#ef4444', 'Waiting Blue': '#3b82f6', 'Ready': '#14b8a6', 'In Progress': '#f97316', 'In Evaluation': '#a855f7', 'Completed': '#16a34a', 'Cancelled': '#eab308'} %}
+                            {% set total_count = statistics.state_distribution | sum(attribute='count') %}
+                            {% if statistics.state_distribution and total_count > 0 %}
+                            <div class="flex items-center gap-6">
+                                <!-- Doughnut via conic-gradient -->
+                                {% set ns = namespace(offset=0) %}
+                                <div class="relative flex-shrink-0" style="width: 180px; height: 180px;">
+                                    <div class="w-full h-full rounded-full" style="background: conic-gradient({% for item in statistics.state_distribution %}{{ state_colors.get(item.state, '#6b7280') }} {{ ns.offset }}deg {{ ns.offset + (item.count / total_count * 360) }}deg{% if not loop.last %}, {% endif %}{% set ns.offset = ns.offset + (item.count / total_count * 360) %}{% endfor %});"></div>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="rounded-full bg-card flex flex-col items-center justify-center" style="width: 60%; height: 60%;">
+                                            <span class="text-3xl font-bold text-foreground">{{ total_count }}</span>
+                                            <span class="text-xs text-muted-foreground">Total</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Legend -->
+                                <div class="space-y-1.5 flex-1 min-w-0">
+                                    {% for item in statistics.state_distribution %}
+                                    <div class="flex items-center gap-2 text-sm">
+                                        <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: {{ state_colors.get(item.state, '#6b7280') }}"></span>
+                                        <span class="truncate flex-1">{{ item.state }}</span>
+                                        <span class="font-mono font-medium text-muted-foreground">{{ item.count }}</span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% else %}
+                            <p class="text-sm text-muted-foreground italic">No data available.</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Average Coverage Score -->
+                        <div class="border border-border rounded-xl p-5 flex flex-col">
+                            <h3 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">Average Coverage Score</h3>
+                            <div class="flex-1 flex items-center justify-center">
+                                {% if statistics.average_coverage_score is not none %}
+                                {% set score = statistics.average_coverage_score | round(1) %}
+                                <span class="text-6xl font-bold {% if score >= 75 %}text-green-600{% elif score >= 25 %}text-yellow-500{% else %}text-red-500{% endif %}">{{ score }}</span>
+                                {% else %}
+                                <span class="text-6xl font-bold text-muted-foreground">N/A</span>
+                                {% endif %}
+                            </div>
+                            <div class="grid grid-cols-4 divide-x divide-border border-t border-border mt-4 pt-3 -mx-5 px-5">
+                                {% for item in statistics.average_coverage_scores_by_priority %}
+                                <div class="text-center px-2">
+                                    <div class="text-xs text-muted-foreground uppercase font-medium">{{ item.priority }}</div>
+                                    {% if item.average_score is not none %}
+                                    {% set ps = item.average_score | round(1) %}
+                                    <div class="text-lg font-bold font-mono {% if ps >= 75 %}text-green-600{% elif ps >= 25 %}text-yellow-500{% else %}text-red-500{% endif %}">{{ ps }}</div>
+                                    {% else %}
+                                    <div class="text-lg font-bold font-mono text-muted-foreground">—</div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Priority Breakdown -->
+                        <div class="border border-border rounded-xl p-5">
+                            <h3 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">Completed by Priority</h3>
+                            {% set priority_colors = {'Critical': '#dc2626', 'High': '#ea580c', 'Medium': '#ca8a04', 'Low': '#16a34a', 'None': '#9ca3af'} %}
+                            {% set max_priority_count = statistics.priority_breakdown | map(attribute='count') | max if statistics.priority_breakdown else 1 %}
+                            <div class="space-y-3">
+                                {% for item in statistics.priority_breakdown %}
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="font-medium" style="color: {{ priority_colors.get(item.priority, '#9ca3af') }}">{{ item.priority }}</span>
+                                        <span class="font-mono">{{ item.count }}</span>
+                                    </div>
+                                    <div class="h-3 bg-muted rounded-full overflow-hidden">
+                                        <div class="h-full rounded-full transition-all" style="width: {{ (item.count / max_priority_count * 100) if max_priority_count > 0 else 0 }}%; background-color: {{ priority_colors.get(item.priority, '#9ca3af') }}"></div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                {% if not statistics.priority_breakdown %}
+                                <p class="text-sm text-muted-foreground italic">No completed activities.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: MITRE ATT&CK Heatmap -->
+                    {% if statistics.mitre_tactic_scores %}
+                    <div class="border border-border rounded-xl p-5">
+                        <h3 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">MITRE ATT&CK Coverage Heatmap</h3>
+                        <div class="overflow-x-auto table-scroll">
+                            <div class="flex gap-0.5" style="min-width: max-content;">
+                                {% for tactic in statistics.mitre_tactic_scores %}
+                                <div class="flex-shrink-0" style="width: 160px;">
+                                    <div class="bg-muted font-semibold text-xs text-center px-2 py-2.5 border-b-2 border-primary truncate" title="{{ tactic.tactic }}">{{ tactic.tactic | truncate(22, True) }}</div>
+                                    <div class="space-y-0.5 mt-0.5">
+                                        {% for tech in tactic.techniques %}
+                                        {% set t_score = tech.overall_score %}
+                                        {% if t_score is not none %}
+                                            {% if t_score <= 50 %}
+                                                {% set r = 220 %}{% set g = (t_score * 4.4) | int %}{% set b = 0 %}
+                                            {% else %}
+                                                {% set r = (220 - ((t_score - 50) * 4.4)) | int %}{% set g = 220 %}{% set b = 0 %}
+                                            {% endif %}
+                                            {% set bg_color = 'rgba(' ~ r ~ ',' ~ g ~ ',' ~ b ~ ',0.8)' %}
+                                            {% set text_class = 'text-white' if (t_score < 20 or t_score > 80) else 'text-foreground' %}
+                                        {% else %}
+                                            {% set bg_color = 'transparent' %}
+                                            {% set text_class = 'text-muted-foreground' %}
+                                        {% endif %}
+                                        <div class="text-xs text-center px-1.5 py-2 rounded border border-border truncate cursor-default {{ text_class }}"
+                                             style="background-color: {{ bg_color }};"
+                                             title="{{ tech.technique }} — Score: {{ tech.overall_score | round(1) if tech.overall_score is not none else 'N/A' }}%&#10;Logged: {{ tech.logged_score | round(1) if tech.logged_score is not none else 'N/A' }}%&#10;Prevented: {{ tech.prevented_score | round(1) if tech.prevented_score is not none else 'N/A' }}%&#10;Alerted: {{ tech.alerted_score | round(1) if tech.alerted_score is not none else 'N/A' }}%&#10;Notified: {{ tech.stakeholder_notified_score | round(1) if tech.stakeholder_notified_score is not none else 'N/A' }}%">
+                                            {{ tech.technique | truncate(20, True) }}
+                                            {% if t_score is not none %}<br><span class="font-mono font-bold">{{ t_score | round(0) | int }}%</span>{% endif %}
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Row 3: Overarching MITRE Tactics Radar -->
+                    {% if statistics.mitre_overall_tactic_scores %}
+                    <div class="border border-border rounded-xl p-5">
+                        <h3 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">Overarching MITRE Tactics</h3>
+                        <div class="flex justify-center">
+                            <div style="max-width: 700px; width: 100%; height: 500px;">
+                                <canvas id="radarOverall"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Row 3b: Per-Tactic Radar Charts -->
+                    {% if statistics.mitre_tactic_scores %}
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {% for tactic_item in statistics.mitre_tactic_scores %}
+                        {% if tactic_item.techniques %}
+                        <div class="border border-border rounded-xl p-5">
+                            <h3 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">{{ tactic_item.tactic }}</h3>
+                            <div style="height: 400px;">
+                                <canvas id="radarTactic{{ loop.index }}"></canvas>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Row 4: Mean Time Metrics + Severity Accuracy -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                        <!-- Mean Time Metrics — Horizontal Stacked Bar -->
+                        {% if statistics.mean_time_metrics %}
+                        <div class="border border-border rounded-xl p-5">
+                            <h3 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">Mean Time to Detect & Notify Stakeholder</h3>
+                            <div style="height: 320px;">
+                                <canvas id="chartMeanTime"></canvas>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Severity Accuracy — Stacked Column Bar -->
+                        {% if statistics.severity_accuracy %}
+                        <div class="border border-border rounded-xl p-5">
+                            <h3 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">Alert Severity Accuracy</h3>
+                            <div style="height: 320px;">
+                                <canvas id="chartSeverity"></canvas>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-card text-card-foreground border border-border shadow-sm rounded-xl overflow-hidden">
+            <div class="overflow-x-auto table-scroll">
+                <div class="min-w-[1200px]">
+
+                    <div class="bg-muted/50 border-b border-border">
+                        <div
+                            class="flex flex-col md:flex-row justify-between items-center gap-4 px-4 py-3 border-b border-border">
+                            <div class="relative w-full md:w-96">
+                                <input type="text" x-model="searchQuery"
+                                    placeholder="Filter by activity name, tactic, or technique..."
+                                    class="flex h-9 w-full rounded-lg border border-input bg-background px-3 py-1 pl-9 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring placeholder:text-muted-foreground">
+                                <svg class="w-4 h-4 absolute left-3 top-2.5 text-muted-foreground" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                            <span class="flex items-center gap-1.5"><span
+                                    class="flex items-center justify-center w-4 h-4 rounded bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400">✓</span>
+                                Expected & Occurred</span>
+                            <span class="flex items-center gap-1.5"><span
+                                    class="flex items-center justify-center w-4 h-4 rounded bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400">✗</span>
+                                Expected but Missed</span>
+                            <span class="flex items-center gap-1.5"><span
+                                    class="flex items-center justify-center w-4 h-4 rounded bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-400">−</span>
+                                Not Expected (None)</span>
+                        </div>
+                    </div>
+
+                    <div
+                        class="grid grid-cols-12 gap-4 px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider select-none">
+                        <div class="col-span-3 flex items-center gap-1 cursor-pointer hover:text-foreground transition-colors group"
+                            @click="setSort('_name')">
+                            Activity Name <template x-if="sortBy === '_name'"><span
+                                    x-html="getSortIcon()"></span></template>
+                        </div>
+                        <div class="col-span-1 flex items-center gap-1 cursor-pointer hover:text-foreground transition-colors"
+                            @click="setSort('_tactic')">
+                            MITRE Tactic <template x-if="sortBy === '_tactic'"><span
+                                    x-html="getSortIcon()"></span></template>
+                        </div>
+                        <div class="col-span-1 flex items-center gap-1 cursor-pointer hover:text-foreground transition-colors"
+                            @click="setSort('_technique')">
+                            MITRE Technique <template x-if="sortBy === '_technique'"><span
+                                    x-html="getSortIcon()"></span></template>
+                        </div>
+                        <div class="col-span-1 flex items-center gap-1 cursor-pointer hover:text-foreground transition-colors"
+                            @click="setSort('_priority')">
+                            Priority <template x-if="sortBy === '_priority'"><span
+                                    x-html="getSortIcon()"></span></template>
+                        </div>
+                        <div class="col-span-1 flex items-center justify-center gap-1 cursor-pointer hover:text-foreground transition-colors"
+                            @click="setSort('logged_evaluation')">
+                            Logged <template x-if="sortBy === 'logged_evaluation'"><span
+                                    x-html="getSortIcon()"></span></template>
+                        </div>
+                        <div class="col-span-1 flex items-center justify-center gap-1 cursor-pointer hover:text-foreground transition-colors"
+                            @click="setSort('prevented_evaluation')">
+                            Prevented <template x-if="sortBy === 'prevented_evaluation'"><span
+                                    x-html="getSortIcon()"></span></template>
+                        </div>
+                        <div class="col-span-1 flex items-center justify-center gap-1 cursor-pointer hover:text-foreground transition-colors"
+                            @click="setSort('alerted_evaluation')">
+                            Alerted <template x-if="sortBy === 'alerted_evaluation'"><span
+                                    x-html="getSortIcon()"></span></template>
+                        </div>
+                        <div class="col-span-1 flex items-center justify-center gap-1 cursor-pointer hover:text-foreground transition-colors"
+                            @click="setSort('stakeholder_notified_evaluation')">
+                            Notified <template x-if="sortBy === 'stakeholder_notified_evaluation'"><span
+                                    x-html="getSortIcon()"></span></template>
+                        </div>
+                        <div class="col-span-1 flex items-center justify-center gap-1 cursor-pointer hover:text-foreground transition-colors"
+                            @click="setSort('_other_fails')">
+                            Other <template x-if="sortBy === '_other_fails'"><span
+                                    x-html="getSortIcon()"></span></template>
+                        </div>
+                        <div class="col-span-1 flex items-center justify-center gap-1 cursor-pointer hover:text-foreground transition-colors"
+                            @click="setSort('_score')">
+                            Score <template x-if="sortBy === '_score'"><span x-html="getSortIcon()"></span></template>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divide-y divide-border">
+                    <template x-for="activity in sortedAndFilteredActivities" :key="activity.id">
+                        <div class="transition-colors hover:bg-accent/50">
+
+                            <button @click="activity.expanded = !activity.expanded"
+                                class="w-full grid grid-cols-12 gap-4 px-4 py-3 items-center text-left focus:outline-none focus:bg-accent transition-colors">
+                                <div class="col-span-3 flex items-center gap-2 overflow-hidden">
+                                    <svg class="w-4 h-4 flex-shrink-0 text-muted-foreground transition-transform duration-300"
+                                        :class="activity.expanded ? 'rotate-180' : ''" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                    <span class="font-medium text-foreground truncate" title="activity._name"
+                                        x-text="activity._name"></span>
+                                </div>
+                                <div class="col-span-1 truncate text-sm text-muted-foreground" x-text="activity._tactic"
+                                    :title="activity._tactic"></div>
+                                <div class="col-span-1 truncate text-sm font-mono text-muted-foreground"
+                                    x-text="activity._technique" :title="activity._technique"></div>
+                                <div class="col-span-1 truncate text-sm font-medium"
+                                    :class="getPriorityColor(activity._priority)" x-text="activity._priority"></div>
+
+                                <div class="col-span-1 flex justify-center">
+                                    <span
+                                        class="inline-flex items-center justify-center w-6 h-6 rounded text-sm font-bold border"
+                                        :class="getEvalColor(activity.logged, activity.expected_logging)"
+                                        x-text="getEvalIcon(activity.logged, activity.expected_logging)"></span>
+                                </div>
+                                <div class="col-span-1 flex justify-center">
+                                    <span
+                                        class="inline-flex items-center justify-center w-6 h-6 rounded text-sm font-bold border"
+                                        :class="getEvalColor(activity.prevented, activity.expected_prevention)"
+                                        x-text="getEvalIcon(activity.prevented, activity.expected_prevention)"></span>
+                                </div>
+                                <div class="col-span-1 flex justify-center">
+                                    <span
+                                        class="inline-flex items-center justify-center w-6 h-6 rounded text-sm font-bold border"
+                                        :class="getEvalColor(activity.alerted, activity.expected_alert_creation)"
+                                        x-text="getEvalIcon(activity.alerted, activity.expected_alert_creation)"></span>
+                                </div>
+                                <div class="col-span-1 flex justify-center">
+                                    <span
+                                        class="inline-flex items-center justify-center w-6 h-6 rounded text-sm font-bold border"
+                                        :class="getEvalColor(activity.stakeholder_notified, activity.expected_stakeholder_notification)"
+                                        x-text="getEvalIcon(activity.stakeholder_notified, activity.expected_stakeholder_notification)"></span>
+                                </div>
+                                <div class="col-span-1 flex justify-center">
+                                    <span x-show="activity._other_fails > 0"
+                                        class="inline-flex items-center justify-center min-w-[1.5rem] h-6 rounded-full text-xs font-bold bg-destructive text-destructive-foreground px-1.5"
+                                        x-text="activity._other_fails"></span>
+                                    <span x-show="activity._other_fails === 0"
+                                        class="text-sm text-muted-foreground">—</span>
+                                </div>
+                                <div class="col-span-1 text-center font-bold text-sm"
+                                    :class="getScoreColor(activity._score)" x-text="activity._score + '%'"></div>
+                            </button>
+
+                            <div x-show="activity.expanded" x-collapse x-cloak>
+                                <div class="p-6 border-t border-border bg-card flex flex-col gap-6 cursor-default">
+
+                                    <!-- ═══ RED TEAM — Attack Context ═══ -->
+                                    <div x-data="{ open: true }" class="border border-border rounded-xl shadow-sm border-l-4 border-l-red-500">
+                                        <div @click="open = !open" class="px-6 py-4 border-b border-border cursor-pointer select-none flex items-center gap-3">
+                                            <svg class="w-5 h-5 text-muted-foreground transition-transform duration-200 flex-shrink-0" :class="open && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                            </svg>
+                                            <h3
+                                                class="text-lg font-semibold text-red-700 dark:text-red-400 flex items-center gap-2">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                                </svg>
+                                                Attack Context
+                                            </h3>
+                                        </div>
+
+                                        <div x-show="open" x-collapse class="px-6 py-6 space-y-6">
+                                            <div
+                                                class="flex flex-col xl:flex-row gap-6 bg-muted/30 border border-border rounded-lg p-4">
+                                                <div class="flex-shrink-0 xl:w-1/3 xl:border-r border-border xl:pr-6">
+                                                    <h4
+                                                        class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                                                        Execution Window</h4>
+                                                    <div
+                                                        class="grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-sm font-mono font-medium text-foreground border border-border rounded-lg p-3">
+                                                        <div class="flex flex-col">
+                                                            <span class="text-xs text-muted-foreground font-sans font-normal">Start</span>
+                                                            <span x-text="formatDate(activity.start_time)"></span>
+                                                        </div>
+                                                        <svg class="w-5 h-5 text-muted-foreground self-end mb-0.5" fill="none"
+                                                            stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3">
+                                                            </path>
+                                                        </svg>
+                                                        <div class="flex flex-col text-right">
+                                                            <span class="text-xs text-muted-foreground font-sans font-normal">End</span>
+                                                            <span x-text="formatDate(activity.end_time)"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                    <div>
+                                                        <h4
+                                                            class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                                                            Sources</h4>
+                                                        <div class="flex flex-wrap gap-2">
+                                                            <template x-for="(source, idx) in (activity.sources || [])"
+                                                                :key="'src-'+idx">
+                                                                <div class="relative" x-data="{ open: false }"
+                                                                    @click.away="open = false">
+                                                                    <button @click="open = !open"
+                                                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-background border border-border hover:bg-accent text-xs font-medium transition-colors shadow-sm">
+                                                                        <span class="text-primary"
+                                                                            x-html="getIconSVG(source.icon)"></span>
+                                                                        <span x-text="source.name"></span>
+                                                                    </button>
+                                                                    <div x-show="open" x-transition
+                                                                        class="absolute z-10 top-full mt-1 left-0 w-max min-w-[200px] max-w-xs bg-popover text-popover-foreground border border-border rounded-lg shadow-lg p-3 text-xs">
+                                                                        <div
+                                                                            class="font-bold border-b border-border pb-1 mb-2">
+                                                                            Properties</div>
+                                                                        <template
+                                                                            x-for="(val, key) in (source.properties || {})">
+                                                                            <div
+                                                                                class="flex justify-between gap-4 py-0.5">
+                                                                                <span class="text-muted-foreground"
+                                                                                    x-text="key"></span>
+                                                                                <span class="font-mono text-right"
+                                                                                    x-text="val"></span>
+                                                                            </div>
+                                                                        </template>
+                                                                        <div x-show="!source.properties || Object.keys(source.properties).length === 0"
+                                                                            class="italic text-muted-foreground">No
+                                                                            properties defined.</div>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                            <div x-show="!(activity.sources && activity.sources.length)"
+                                                                class="text-xs text-muted-foreground italic">None
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <h4
+                                                            class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                                                            Targets</h4>
+                                                        <div class="flex flex-wrap gap-2">
+                                                            <template x-for="(target, idx) in (activity.targets || [])"
+                                                                :key="'tgt-'+idx">
+                                                                <div class="relative" x-data="{ open: false }"
+                                                                    @click.away="open = false">
+                                                                    <button @click="open = !open"
+                                                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-background border border-border hover:bg-accent text-xs font-medium transition-colors shadow-sm">
+                                                                        <span class="text-red-500"
+                                                                            x-html="getIconSVG(target.icon, 'target')"></span>
+                                                                        <span x-text="target.name"></span>
+                                                                    </button>
+                                                                    <div x-show="open" x-transition
+                                                                        class="absolute z-10 top-full mt-1 left-0 w-max min-w-[200px] max-w-xs bg-popover text-popover-foreground border border-border rounded-lg shadow-lg p-3 text-xs">
+                                                                        <div
+                                                                            class="font-bold border-b border-border pb-1 mb-2">
+                                                                            Properties</div>
+                                                                        <template
+                                                                            x-for="(val, key) in (target.properties || {})">
+                                                                            <div
+                                                                                class="flex justify-between gap-4 py-0.5">
+                                                                                <span class="text-muted-foreground"
+                                                                                    x-text="key"></span>
+                                                                                <span class="font-mono text-right"
+                                                                                    x-text="val"></span>
+                                                                            </div>
+                                                                        </template>
+                                                                        <div x-show="!target.properties || Object.keys(target.properties).length === 0"
+                                                                            class="italic text-muted-foreground">No
+                                                                            properties defined.</div>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                            <div x-show="!(activity.targets && activity.targets.length)"
+                                                                class="text-xs text-muted-foreground italic">None
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <h4
+                                                            class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                                                            Tools Used</h4>
+                                                        <div class="flex flex-wrap gap-2">
+                                                            <template x-for="(tool, idx) in (activity.tools || [])"
+                                                                :key="'tl-'+idx">
+                                                                <div class="relative" x-data="{ open: false }"
+                                                                    @click.away="open = false">
+                                                                    <button @click="open = !open"
+                                                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-background border border-border hover:bg-accent text-xs font-medium transition-colors shadow-sm">
+                                                                        <span class="text-orange-500"
+                                                                            x-html="getIconSVG(tool.icon, 'tool')"></span>
+                                                                        <span x-text="tool.name"></span>
+                                                                    </button>
+                                                                    <div x-show="open" x-transition
+                                                                        class="absolute z-10 top-full mt-1 left-0 w-max min-w-[200px] max-w-xs bg-popover text-popover-foreground border border-border rounded-lg shadow-lg p-3 text-xs">
+                                                                        <div
+                                                                            class="font-bold border-b border-border pb-1 mb-2">
+                                                                            Properties</div>
+                                                                        <template x-for="(val, key) in (tool.properties || {})">
+                                                                            <div
+                                                                                class="flex justify-between gap-4 py-0.5">
+                                                                                <span class="text-muted-foreground"
+                                                                                    x-text="key"></span>
+                                                                                <span class="font-mono text-right"
+                                                                                    x-text="val"></span>
+                                                                            </div>
+                                                                        </template>
+                                                                        <div x-show="!tool.properties || Object.keys(tool.properties).length === 0"
+                                                                            class="italic text-muted-foreground">No
+                                                                            properties defined.</div>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                            <div x-show="!(activity.tools && activity.tools.length)"
+                                                                class="text-xs text-muted-foreground italic">None
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Activity Details -->
+                                            <div class="mt-4">
+                                                <h4 class="text-sm font-semibold text-foreground tracking-tight">
+                                                    Activity Actions</h4>
+                                                <div class="border border-border rounded-lg p-4 mt-2 w-full">
+                                                    <div class="prose prose-sm xl:prose-base dark:prose-invert max-w-full w-full"
+                                                        x-html="renderMarkdown(activity.actions || '', activity) || '<p class=\'text-muted-foreground italic\'>No execution details provided.</p>'">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Red Team Notes -->
+                                            <div x-show="activity.notes" class="mt-4">
+                                                <h4 class="text-sm font-semibold text-foreground tracking-tight">
+                                                    Activity Notes</h4>
+                                                <div class="border border-border rounded-lg p-4 mt-2">
+                                                    <div class="prose prose-sm xl:prose-base dark:prose-invert max-w-none"
+                                                        x-html="renderMarkdown(activity.notes, activity)"></div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+
+                                    <!-- ═══ BLUE TEAM — Detection & Response ═══ -->
+                                    <div x-data="{ open: true }" class="border border-border rounded-xl shadow-sm border-l-4 border-l-blue-500">
+                                        <div @click="open = !open" class="px-6 py-4 border-b border-border cursor-pointer select-none flex items-center gap-3">
+                                            <svg class="w-5 h-5 text-muted-foreground transition-transform duration-200 flex-shrink-0" :class="open && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                            </svg>
+                                            <h3
+                                                class="text-lg font-semibold text-blue-700 dark:text-blue-400 flex items-center gap-2">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                                                    </path>
+                                                </svg>
+                                                Detection & Response
+                                            </h3>
+                                        </div>
+                                        <div x-show="open" x-collapse class="px-6 py-6 space-y-6">
+
+                                            <!-- Detection Results Grid — vertical stack -->
+                                            <div class="grid grid-cols-1 gap-4">
+
+                                                <!-- Logged -->
+                                                <div
+                                                    class="bg-muted/30 border border-border rounded-lg p-4 space-y-4">
+                                                    <div class="flex items-center gap-2 flex-wrap">
+                                                        <h5 class="text-sm font-semibold text-foreground">Logged</h5>
+                                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-border bg-muted/50 text-xs">
+                                                            <span class="text-muted-foreground">Expected:</span>
+                                                            <span class="font-semibold" x-text="activity.expected_logging ? 'Yes' : 'No'"></span>
+                                                        </span>
+                                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-border bg-muted/50 text-xs">
+                                                            <span class="text-muted-foreground">Result:</span>
+                                                            <span class="font-semibold" x-text="activity.logged ? 'Yes' : 'No'"></span>
+                                                        </span>
+                                                        <span class="ml-auto inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium"
+                                                            :class="getResultBadgeClass(activity.logged_evaluation)"
+                                                            x-text="getResultLabel(activity.logged_evaluation)"></span>
+                                                    </div>
+
+                                                    <!-- Log Time & Sources -->
+                                                    <div class="flex flex-col xl:flex-row xl:items-stretch gap-4">
+                                                        <div class="flex-shrink-0 xl:w-1/3 flex flex-col">
+                                                            <h4 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Log Time</h4>
+                                                            <div class="border border-border rounded-lg p-3 text-sm font-mono font-medium text-foreground flex-1 flex items-center">
+                                                                <span x-text="formatDate(activity.log_time || 'N/A')"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-1 flex flex-col">
+                                                            <h4 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Sources</h4>
+                                                            <div class="border border-border rounded-lg p-3 flex-1 flex items-center">
+                                                                <div class="flex flex-wrap gap-1.5">
+                                                                    <template x-for="(s, i) in (activity.log_sources || [])" :key="'ls-'+i">
+                                                                        <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                                                                            <button @click="open = !open"
+                                                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-background border border-border hover:bg-accent text-xs font-medium transition-colors shadow-sm">
+                                                                                <span class="text-primary" x-html="getIconSVG(s.icon)"></span>
+                                                                                <span x-text="s.name"></span>
+                                                                            </button>
+                                                                            <div x-show="open" x-transition class="absolute z-10 top-full mt-1 left-0 w-max min-w-[200px] max-w-xs bg-popover text-popover-foreground border border-border rounded-lg shadow-lg p-3 text-xs">
+                                                                                <div class="font-bold border-b border-border pb-1 mb-2">Properties</div>
+                                                                                <template x-for="(val, key) in (s.properties || {})">
+                                                                                    <div class="flex justify-between gap-4 py-0.5">
+                                                                                        <span class="text-muted-foreground" x-text="key"></span>
+                                                                                        <span class="font-mono text-right" x-text="val"></span>
+                                                                                    </div>
+                                                                                </template>
+                                                                                <div x-show="!s.properties || Object.keys(s.properties).length === 0"
+                                                                                    class="italic text-muted-foreground">No properties defined.</div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </template>
+                                                                    <span
+                                                                        x-show="!activity.log_sources || activity.log_sources.length === 0"
+                                                                        class="text-xs text-muted-foreground italic">None</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Notes -->
+                                                    <div>
+                                                        <h4 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Notes</h4>
+                                                        <div class="border border-border rounded-lg p-3">
+                                                            <div class="prose prose-sm xl:prose-base dark:prose-invert max-w-none"
+                                                                x-html="renderMarkdown(activity.log_notes || '*None*', activity)">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Prevented -->
+                                                <div
+                                                    class="bg-muted/30 border border-border rounded-lg p-4 space-y-4">
+                                                    <div class="flex items-center gap-2 flex-wrap">
+                                                        <h5 class="text-sm font-semibold text-foreground">Prevented</h5>
+                                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-border bg-muted/50 text-xs">
+                                                            <span class="text-muted-foreground">Expected:</span>
+                                                            <span class="font-semibold" x-text="activity.expected_prevention ? 'Yes' : 'No'"></span>
+                                                        </span>
+                                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-border bg-muted/50 text-xs">
+                                                            <span class="text-muted-foreground">Result:</span>
+                                                            <span class="font-semibold" x-text="activity.prevented ? 'Yes' : 'No'"></span>
+                                                        </span>
+                                                        <span class="ml-auto inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium"
+                                                            :class="getResultBadgeClass(activity.prevented_evaluation)"
+                                                            x-text="getResultLabel(activity.prevented_evaluation)"></span>
+                                                    </div>
+
+                                                    <!-- Prevention Time & Sources -->
+                                                    <div class="flex flex-col xl:flex-row xl:items-stretch gap-4">
+                                                        <div class="flex-shrink-0 xl:w-1/3 flex flex-col">
+                                                            <h4 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Prevention Time</h4>
+                                                            <div class="border border-border rounded-lg p-3 text-sm font-mono font-medium text-foreground flex-1 flex items-center">
+                                                                <span x-text="formatDate(activity.prevent_time || 'N/A')"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-1 flex flex-col">
+                                                            <h4 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Sources</h4>
+                                                            <div class="border border-border rounded-lg p-3 flex-1 flex items-center">
+                                                                <div class="flex flex-wrap gap-1.5">
+                                                                    <template x-for="(s, i) in (activity.prevention_sources || [])" :key="'ps-'+i">
+                                                                        <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                                                                            <button @click="open = !open"
+                                                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-background border border-border hover:bg-accent text-xs font-medium transition-colors shadow-sm">
+                                                                                <span class="text-primary" x-html="getIconSVG(s.icon)"></span>
+                                                                                <span x-text="s.name"></span>
+                                                                            </button>
+                                                                            <div x-show="open" x-transition class="absolute z-10 top-full mt-1 left-0 w-max min-w-[200px] max-w-xs bg-popover text-popover-foreground border border-border rounded-lg shadow-lg p-3 text-xs">
+                                                                                <div class="font-bold border-b border-border pb-1 mb-2">Properties</div>
+                                                                                <template x-for="(val, key) in (s.properties || {})">
+                                                                                    <div class="flex justify-between gap-4 py-0.5">
+                                                                                        <span class="text-muted-foreground" x-text="key"></span>
+                                                                                        <span class="font-mono text-right" x-text="val"></span>
+                                                                                    </div>
+                                                                                </template>
+                                                                                <div x-show="!s.properties || Object.keys(s.properties).length === 0"
+                                                                                    class="italic text-muted-foreground">No properties defined.</div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </template>
+                                                                    <span
+                                                                        x-show="!activity.prevention_sources || activity.prevention_sources.length === 0"
+                                                                        class="text-xs text-muted-foreground italic">None</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Notes -->
+                                                    <div>
+                                                        <h4 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Notes</h4>
+                                                        <div class="border border-border rounded-lg p-3">
+                                                            <div class="prose prose-sm xl:prose-base dark:prose-invert max-w-none"
+                                                                x-html="renderMarkdown(activity.prevent_notes || '*None*', activity)">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Alerted -->
+                                                <div
+                                                    class="bg-muted/30 border border-border rounded-lg p-4 space-y-4">
+                                                    <div class="flex items-center gap-2 flex-wrap">
+                                                        <h5 class="text-sm font-semibold text-foreground">Alerted</h5>
+                                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-border bg-muted/50 text-xs">
+                                                            <span class="text-muted-foreground">Expected:</span>
+                                                            <span class="font-semibold" x-text="activity.expected_alert_creation ? 'Yes' : 'No'"></span>
+                                                        </span>
+                                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-border bg-muted/50 text-xs">
+                                                            <span class="text-muted-foreground">Result:</span>
+                                                            <span class="font-semibold" x-text="activity.alerted ? 'Yes' : 'No'"></span>
+                                                        </span>
+                                                        <span class="ml-auto inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium"
+                                                            :class="getResultBadgeClass(activity.alerted_evaluation)"
+                                                            x-text="getResultLabel(activity.alerted_evaluation)"></span>
+                                                    </div>
+
+                                                    <!-- Alert Time, Severity & Sources -->
+                                                    <div class="flex flex-col xl:flex-row xl:items-stretch gap-4">
+                                                        <div class="flex-shrink-0 flex flex-col">
+                                                            <h4 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Alert Time</h4>
+                                                            <div class="border border-border rounded-lg p-3 text-sm font-mono font-medium text-foreground flex-1 flex items-center">
+                                                                <span x-text="formatDate(activity.alert_time)"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-shrink-0 flex flex-col min-w-[120px]">
+                                                            <h4 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Severity</h4>
+                                                            <div class="border border-border rounded-lg px-4 py-3 text-sm font-mono font-medium text-foreground flex-1 flex items-center">
+                                                                <span class="capitalize" x-text="activity.alert_severity || 'N/A'"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-1 flex flex-col">
+                                                            <h4 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Sources</h4>
+                                                            <div class="border border-border rounded-lg p-3 flex-1 flex items-center">
+                                                                <div class="flex flex-wrap gap-1.5">
+                                                                    <template x-for="(s, i) in (activity.alert_sources || [])" :key="'as-'+i">
+                                                                        <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                                                                            <button @click="open = !open"
+                                                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-background border border-border hover:bg-accent text-xs font-medium transition-colors shadow-sm">
+                                                                                <span class="text-primary" x-html="getIconSVG(s.icon)"></span>
+                                                                                <span x-text="s.name"></span>
+                                                                            </button>
+                                                                            <div x-show="open" x-transition class="absolute z-10 top-full mt-1 left-0 w-max min-w-[200px] max-w-xs bg-popover text-popover-foreground border border-border rounded-lg shadow-lg p-3 text-xs">
+                                                                                <div class="font-bold border-b border-border pb-1 mb-2">Properties</div>
+                                                                                <template x-for="(val, key) in (s.properties || {})">
+                                                                                    <div class="flex justify-between gap-4 py-0.5">
+                                                                                        <span class="text-muted-foreground" x-text="key"></span>
+                                                                                        <span class="font-mono text-right" x-text="val"></span>
+                                                                                    </div>
+                                                                                </template>
+                                                                                <div x-show="!s.properties || Object.keys(s.properties).length === 0"
+                                                                                    class="italic text-muted-foreground">No properties defined.</div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </template>
+                                                                    <span
+                                                                        x-show="!activity.alert_sources || activity.alert_sources.length === 0"
+                                                                        class="text-xs text-muted-foreground italic">None</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Notes -->
+                                                    <div>
+                                                        <h4 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Notes</h4>
+                                                        <div class="border border-border rounded-lg p-3">
+                                                            <div class="prose prose-sm xl:prose-base dark:prose-invert max-w-none"
+                                                                x-html="renderMarkdown(activity.alert_notes || '*None*', activity)">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Stakeholder Notified -->
+                                                <div
+                                                    class="bg-muted/30 border border-border rounded-lg p-4 space-y-4">
+                                                    <div class="flex items-center gap-2 flex-wrap">
+                                                        <h5 class="text-sm font-semibold text-foreground">Stakeholder Notified</h5>
+                                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-border bg-muted/50 text-xs">
+                                                            <span class="text-muted-foreground">Expected:</span>
+                                                            <span class="font-semibold" x-text="activity.expected_stakeholder_notification ? 'Yes' : 'No'"></span>
+                                                        </span>
+                                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-border bg-muted/50 text-xs">
+                                                            <span class="text-muted-foreground">Result:</span>
+                                                            <span class="font-semibold" x-text="activity.stakeholder_notified ? 'Yes' : 'No'"></span>
+                                                        </span>
+                                                        <span class="ml-auto inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium"
+                                                            :class="getResultBadgeClass(activity.stakeholder_notified_evaluation)"
+                                                            x-text="getResultLabel(activity.stakeholder_notified_evaluation)"></span>
+                                                    </div>
+
+                                                    <!-- Notification Time, Severity & Sources -->
+                                                    <div class="flex flex-col xl:flex-row xl:items-stretch gap-4">
+                                                        <div class="flex-shrink-0 flex flex-col">
+                                                            <h4 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Notification Time</h4>
+                                                            <div class="border border-border rounded-lg p-3 text-sm font-mono font-medium text-foreground flex-1 flex items-center">
+                                                                <span x-text="formatDate(activity.stakeholder_notification_time)"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-shrink-0 flex flex-col min-w-[120px]">
+                                                            <h4 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Severity</h4>
+                                                            <div class="border border-border rounded-lg px-4 py-3 text-sm font-mono font-medium text-foreground flex-1 flex items-center">
+                                                                <span class="capitalize" x-text="activity.stakeholder_notification_severity || 'N/A'"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-1 flex flex-col">
+                                                            <h4 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Sources</h4>
+                                                            <div class="border border-border rounded-lg p-3 flex-1 flex items-center">
+                                                                <div class="flex flex-wrap gap-1.5">
+                                                                    <template x-for="(s, i) in (activity.stakeholder_notification_sources || [])" :key="'sns-'+i">
+                                                                        <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                                                                            <button @click="open = !open"
+                                                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-background border border-border hover:bg-accent text-xs font-medium transition-colors shadow-sm">
+                                                                                <span class="text-primary" x-html="getIconSVG(s.icon)"></span>
+                                                                                <span x-text="s.name"></span>
+                                                                            </button>
+                                                                            <div x-show="open" x-transition class="absolute z-10 top-full mt-1 left-0 w-max min-w-[200px] max-w-xs bg-popover text-popover-foreground border border-border rounded-lg shadow-lg p-3 text-xs">
+                                                                                <div class="font-bold border-b border-border pb-1 mb-2">Properties</div>
+                                                                                <template x-for="(val, key) in (s.properties || {})">
+                                                                                    <div class="flex justify-between gap-4 py-0.5">
+                                                                                        <span class="text-muted-foreground" x-text="key"></span>
+                                                                                        <span class="font-mono text-right" x-text="val"></span>
+                                                                                    </div>
+                                                                                </template>
+                                                                                <div x-show="!s.properties || Object.keys(s.properties).length === 0"
+                                                                                    class="italic text-muted-foreground">No properties defined.</div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </template>
+                                                                    <span
+                                                                        x-show="!activity.stakeholder_notification_sources || activity.stakeholder_notification_sources.length === 0"
+                                                                        class="text-xs text-muted-foreground italic">None</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Notes -->
+                                                    <div>
+                                                        <h4 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Notes</h4>
+                                                        <div class="border border-border rounded-lg p-3">
+                                                            <div class="prose prose-sm xl:prose-base dark:prose-invert max-w-none"
+                                                                x-html="renderMarkdown(activity.stakeholder_notification_notes || '*None*', activity)">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Evaluation Metrics — timing & severity -->
+                                            <div>
+                                                <h4 class="text-sm font-semibold text-foreground tracking-tight">
+                                                    Evaluation Metrics</h4>
+                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                                                    <div
+                                                        class="flex items-center justify-between border border-border rounded-lg px-4 py-3">
+                                                        <div>
+                                                            <div class="text-xs text-muted-foreground">Event to
+                                                                Alert</div>
+                                                            <div class="text-sm font-mono font-medium"
+                                                                x-text="activity.event_to_alert_data || 'N/A'">
+                                                            </div>
+                                                        </div>
+                                                        <span
+                                                            class="inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium"
+                                                            :class="getResultBadgeClass(activity.event_to_alert_result)"
+                                                            x-text="getResultLabel(activity.event_to_alert_result)"></span>
+                                                    </div>
+                                                    <div
+                                                        class="flex items-center justify-between border border-border rounded-lg px-4 py-3">
+                                                        <div>
+                                                            <div class="text-xs text-muted-foreground">Alert to
+                                                                Stakeholder</div>
+                                                            <div class="text-sm font-mono font-medium"
+                                                                x-text="activity.alert_to_stakeholder_data || 'N/A'">
+                                                            </div>
+                                                        </div>
+                                                        <span
+                                                            class="inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium"
+                                                            :class="getResultBadgeClass(activity.alert_to_stakeholder_result)"
+                                                            x-text="getResultLabel(activity.alert_to_stakeholder_result)"></span>
+                                                    </div>
+                                                    <div
+                                                        class="flex items-center justify-between border border-border rounded-lg px-4 py-3">
+                                                        <div>
+                                                            <div class="text-xs text-muted-foreground">Alert
+                                                                Severity</div>
+                                                            <div class="text-sm font-mono font-medium"
+                                                                x-text="activity.alert_severity_data || 'N/A'">
+                                                            </div>
+                                                        </div>
+                                                        <span
+                                                            class="inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium"
+                                                            :class="getResultBadgeClass(activity.alert_severity_result)"
+                                                            x-text="getResultLabel(activity.alert_severity_result)"></span>
+                                                    </div>
+                                                    <div
+                                                        class="flex items-center justify-between border border-border rounded-lg px-4 py-3">
+                                                        <div>
+                                                            <div class="text-xs text-muted-foreground">Notification
+                                                                Severity</div>
+                                                            <div class="text-sm font-mono font-medium"
+                                                                x-text="activity.stakeholder_notification_severity_data || 'N/A'">
+                                                            </div>
+                                                        </div>
+                                                        <span
+                                                            class="inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium"
+                                                            :class="getResultBadgeClass(activity.stakeholder_notification_severity_result)"
+                                                            x-text="getResultLabel(activity.stakeholder_notification_severity_result)"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Dynamic Questions -->
+                                            <div>
+                                                <h4 class="text-sm font-semibold text-foreground tracking-tight">
+                                                    Evaluation Questions</h4>
+                                                <div class="space-y-3 mt-3">
+                                                    <template x-for="(dq, dqi) in (activity.dynamic_questions || [])"
+                                                        :key="'dq-'+dqi">
+                                                        <div class="border border-border rounded-lg px-4 py-3">
+                                                            <div class="flex items-start justify-between gap-4">
+                                                                <div class="flex-1">
+                                                                    <div class="text-sm font-medium text-foreground"
+                                                                        x-text="dq.question"></div>
+                                                                    <div class="text-xs text-muted-foreground mt-0.5"
+                                                                        x-text="dq.description || 'No description provided.'">
+                                                                    </div>
+                                                                    <div class="prose prose-sm dark:prose-invert max-w-none mt-2"
+                                                                        x-html="renderMarkdown(dq.data || '*No answer provided.*', activity)">
+                                                                    </div>
+                                                                </div>
+                                                                <span
+                                                                    class="inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium flex-shrink-0"
+                                                                    :class="getResultBadgeClass(dq.result)"
+                                                                    x-text="getResultLabel(dq.result)"></span>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                    <div x-show="!activity.dynamic_questions || activity.dynamic_questions.length === 0"
+                                                        class="text-sm text-muted-foreground italic mt-2">No
+                                                        evaluation questions assigned.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- closes Blue Team card -->
+
+                                    <!-- ═══ ATTACHMENTS ═══ -->
+                                    <template x-if="activity.files && activity.files.length">
+                                        <div x-data="{ open: true }" class="border border-border rounded-xl shadow-sm border-l-4 border-l-slate-500 dark:border-l-slate-400">
+                                            <div @click="open = !open" class="px-6 py-4 border-b border-border cursor-pointer select-none flex items-center gap-3">
+                                                <svg class="w-5 h-5 text-muted-foreground transition-transform duration-200 flex-shrink-0" :class="open && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                                <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13">
+                                                        </path>
+                                                    </svg>
+                                                    Attachments
+                                                </h3>
+                                            </div>
+                                            <div x-show="open" x-collapse class="px-6 py-6">
+                                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                                                    <template x-for="(file, fi) in activity.files" :key="'af-'+fi">
+                                                        <a :href="'data:' + (file.content_type || 'application/octet-stream') + ';base64,' + file.data_base64"
+                                                            :download="file.filename || 'attachment'"
+                                                            class="flex items-center justify-between p-3 border border-border rounded-lg bg-card hover:bg-muted/50 transition-colors shadow-sm min-w-0 group">
+                                                            <div class="flex items-center gap-3 min-w-0">
+                                                                <div class="p-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-md border border-border/50 flex-shrink-0">
+                                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z">
+                                                                        </path>
+                                                                    </svg>
+                                                                </div>
+                                                                <span class="text-sm font-medium text-foreground truncate"
+                                                                    :title="file.filename"
+                                                                    x-text="file.filename || 'document'"></span>
+                                                            </div>
+                                                            <svg class="w-4 h-4 text-muted-foreground group-hover:text-foreground flex-shrink-0 ml-3"
+                                                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4">
+                                                                </path>
+                                                            </svg>
+                                                        </a>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                </div>
+                                <!-- closes p-6 flex col wrapper -->
+                            </div>
+                            <!-- closes x-show expanded -->
+
+                        </div>
+                        <!-- closes activity row -->
+                    </template>
+                    <!-- closes x-for -->
+                </div>
+                <!-- closes divide-y -->
+            </div>
+            <!-- closes overflow-x-auto -->
+
+            <div x-show="sortedAndFilteredActivities.length === 0" class="text-center py-12" x-cloak>
+                <svg class="w-10 h-10 mx-auto text-muted-foreground/40 mb-3" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                    </path>
+                </svg>
+                <p class="text-muted-foreground">No activities found matching criteria.</p>
+            </div>
+        </div>
+        <!-- closes bg-card -->
+    </div>
+    <!-- closes max-w container -->
+
+    <!-- Lightbox Modal -->
+    <template x-if="lightboxOpen">
+        <div class="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm p-4"
+            @click="closeLightbox()" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0">
+            <div class="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center bg-card rounded-lg shadow-2xl overflow-hidden border border-border"
+                @click.stop>
+                <button
+                    class="absolute top-2 right-2 p-1.5 bg-background/50 hover:bg-background rounded-full transition-colors text-foreground shadow-sm group"
+                    @click.stop="closeLightbox()">
+                    <svg class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+                <div class="overflow-auto max-h-[90vh] p-2 flex items-center justify-center bg-muted/20">
+                    <img :src="lightboxImage" class="max-w-full max-h-full object-contain">
+                </div>
+            </div>
+        </div>
+    </template>
+
+    {% set raw_activities = activities_flat if activities_flat else (activities_grouped | map(attribute='activities') |
+    sum(start=[]) if activities_grouped else []) %}
+    <script>
+        const rawActivities = {{ raw_activities | tojson }};
+
+        const activitiesData = rawActivities.map(a => {
+            // Count additional (non-core-four) evaluation failures
+            const otherFails = [
+                a.event_to_alert_result,
+                a.alert_to_stakeholder_result,
+                a.alert_severity_result,
+                a.stakeholder_notification_severity_result,
+            ].filter(r => r === 'fail').length
+                + (a.dynamic_questions || []).filter(dq => dq.result === 'fail').length;
+
+            return {
+                ...a,
+                expanded: false,
+                _name: a.name || a.mitre_technique_name || 'Unnamed Activity',
+                _tactic: a.mitre_tactic_name || a.mitre_tactic || 'Unknown',
+                _technique: a.mitre_technique || 'Unknown',
+                _priority: a.priority || 'Unknown',
+                _score: a.coverage_score ?? 0,
+                _other_fails: otherFails,
+            };
+        });
+
+        function reportApp() {
+            return {
+                theme: 'dark',
+                timeZone: 'local',
+                searchQuery: '',
+                sortBy: 'position',
+                sortOrder: 'asc',
+                activities: activitiesData,
+
+                // Lightbox State
+                lightboxOpen: false,
+                lightboxImage: '',
+
+                openLightbox(src) {
+                    this.lightboxImage = src;
+                    this.lightboxOpen = true;
+                    document.body.style.overflow = 'hidden';
+                },
+
+                closeLightbox() {
+                    this.lightboxOpen = false;
+                    setTimeout(() => { this.lightboxImage = ''; }, 200); // clear after animation
+                    document.body.style.overflow = '';
+                },
+
+                init() {
+                    if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+                        this.theme = 'light';
+                        document.documentElement.classList.remove('dark');
+                    } else {
+                        document.documentElement.classList.add('dark');
+                    }
+                },
+
+                toggleTheme() {
+                    this.theme = this.theme === 'dark' ? 'light' : 'dark';
+                    if (this.theme === 'dark') {
+                        document.documentElement.classList.add('dark');
+                        localStorage.theme = 'dark';
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.theme = 'light';
+                    }
+                    // Re-render charts with updated theme colors
+                    if (typeof initAllCharts === 'function') initAllCharts();
+                },
+
+                toggleTimeZone() {
+                    this.timeZone = this.timeZone === 'local' ? 'utc' : 'local';
+                },
+
+                setSort(column) {
+                    // Default sort logic is by 'position' ascending
+                    if (this.sortBy === column) {
+                        if (this.sortOrder === 'asc') {
+                            this.sortOrder = 'desc';
+                        } else {
+                            // Reset on third click
+                            this.sortBy = 'position';
+                            this.sortOrder = 'asc';
+                        }
+                    } else {
+                        // First click on a new column
+                        this.sortBy = column;
+                        this.sortOrder = 'asc';
+                    }
+                },
+
+                getSortIcon() {
+                    const iconUp = `<svg class="w-4 h-4 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>`;
+                    const iconDown = `<svg class="w-4 h-4 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
+                    return this.sortOrder === 'asc' ? iconUp : iconDown;
+                },
+
+                get sortedAndFilteredActivities() {
+                    let filtered = this.activities.filter(a => {
+                        const q = this.searchQuery.toLowerCase();
+                        return a._name.toLowerCase().includes(q) ||
+                            a._tactic.toLowerCase().includes(q) ||
+                            a._technique.toLowerCase().includes(q) ||
+                            a._priority.toLowerCase().includes(q);
+                    });
+
+                    // Map eval sort keys to their actual/expected boolean field pairs
+                    const evalFieldMap = {
+                        'logged_evaluation': ['logged', 'expected_logging'],
+                        'prevented_evaluation': ['prevented', 'expected_prevention'],
+                        'alerted_evaluation': ['alerted', 'expected_alert_creation'],
+                        'stakeholder_notified_evaluation': ['stakeholder_notified', 'expected_stakeholder_notification'],
+                    };
+
+                    filtered = filtered.sort((a, b) => {
+                        let valA, valB;
+                        const evalFields = evalFieldMap[this.sortBy];
+
+                        if (evalFields) {
+                            // Sort by actual/expected boolean pairs (matches displayed icons)
+                            // Expected & actual (✓) > Not expected & actual (+) > Not expected & not actual (−) > Expected & missed (✗)
+                            const getWeight = (item) => {
+                                const actual = item[evalFields[0]] === true;
+                                const expected = item[evalFields[1]] === true;
+                                if (expected && actual) return 3;   // ✓ pass
+                                if (!expected && actual) return 2;  // + bonus
+                                if (!expected && !actual) return 1; // − neutral
+                                return 0;                           // ✗ missed
+                            };
+                            valA = getWeight(a);
+                            valB = getWeight(b);
+                        } else {
+                            valA = a[this.sortBy];
+                            valB = b[this.sortBy];
+                            if (typeof valA === 'string') valA = valA.toLowerCase();
+                            if (typeof valB === 'string') valB = valB.toLowerCase();
+                        }
+
+                        if (valA < valB) return this.sortOrder === 'asc' ? -1 : 1;
+                        if (valA > valB) return this.sortOrder === 'asc' ? 1 : -1;
+                        return 0;
+                    });
+                    return filtered;
+                },
+
+                // Markdown parsing wrapper
+                renderMarkdown(content, activity = null) {
+                    if (!content || content.trim() === '') return '';
+                    let mdContent = content;
+
+                    // Hydrate markdown image links with base64 picture data if available
+                    if (activity && activity.files && activity.files.length > 0) {
+                        activity.files.forEach(file => {
+                            // Only inline hydrate files that are actually images and have base64 payload
+                            if (!file.data_base64 || !file.content_type || !file.content_type.startsWith('image/')) return;
+
+                            const dataUri = `data:${file.content_type};base64,${file.data_base64}`;
+
+                            // Try replacing backend download URLs by matching the file UUID
+                            if (file.id) {
+                                // e.g. ![...](.../files/<uuid>/download)
+                                const idRegex = new RegExp(`\\]\\([^)]*?${file.id}[^)]*?\\)`, 'g');
+                                mdContent = mdContent.replace(idRegex, `](${dataUri} "${file.filename || ''}")`);
+                            }
+                        });
+                    }
+
+                    return marked.parse(mdContent, { breaks: true, gfm: true });
+                },
+
+                // Format datetime strings into a readable localized format
+                formatDate(dateStr) {
+                    if (!dateStr) return 'N/A';
+
+                    try {
+                        const date = new Date(dateStr);
+                        if (isNaN(date.getTime())) return dateStr;
+                        const opts = {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                        };
+                        if (this.timeZone === 'utc') {
+                            opts.timeZone = 'UTC';
+                            opts.timeZoneName = 'short';
+                        }
+                        return date.toLocaleString(undefined, opts);
+                    } catch (e) {
+                        return dateStr;
+                    }
+                },
+
+                // Lucide SVG icon paths — matches frontend icon set
+                _lucideIcons: {
+                    Computer: '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>',
+                    Cloud: '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>',
+                    Database: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/>',
+                    Shield: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+                    ShieldCheck: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+                    Users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+                    Network: '<rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/>',
+                    SearchCode: '<path d="m13 13.5 2-2.5-2-2.5"/><path d="m21 21-4.3-4.3"/><path d="M9 8.5 7 11l2 2.5"/><circle cx="11" cy="11" r="8"/>',
+                    Hammer: '<path d="m15 12-8.373 8.373a1 1 0 1 1-3-3L12 9"/><path d="m18 15 4-4"/><path d="m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172V7l-2.26-2.26a6 6 0 0 0-4.202-1.756L9 2.96l.92.82A6.18 6.18 0 0 1 12 8.4V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5"/>',
+                    User: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+                    Globe: '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+                },
+
+                getIconSVG(iconName) {
+                    const name = iconName || 'Computer';
+                    const paths = this._lucideIcons[name] || this._lucideIcons['Computer'];
+                    return `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
+                },
+
+                getPriorityColor(priority) {
+                    const p = priority.toLowerCase();
+                    if (p === 'high' || p === 'critical') return 'text-red-500';
+                    if (p === 'medium') return 'text-orange-500';
+                    if (p === 'low' || p === 'info') return 'text-yellow-500';
+                    return 'text-muted-foreground';
+                },
+
+                getEvalColor(actual, expected) {
+                    const act = actual === true;
+                    const exp = expected === true;
+                    if (exp && act) return 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400 border-green-500/30 dark:border-green-500/30';
+                    if (exp && !act) return 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400 border-red-500/30 dark:border-red-500/30';
+                    if (!exp && !act) return 'bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-400 border-gray-300 dark:border-gray-500/30';
+                    if (!exp && act) return 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400 border-blue-500/30 dark:border-blue-500/30';
+                    return 'bg-transparent border-transparent';
+                },
+
+                getEvalIcon(actual, expected) {
+                    const act = actual === true;
+                    const exp = expected === true;
+                    if (exp && act) return '✓';
+                    if (exp && !act) return '✗';
+                    if (!exp && !act) return '−';
+                    if (!exp && act) return '+';
+                    return '?';
+                },
+
+                getResultBadgeClass(result) {
+                    const r = (result || '').toLowerCase();
+                    if (r === 'pass') return 'bg-green-600 text-white border-green-600';
+                    if (r === 'fail') return 'bg-red-600 text-white border-red-600';
+                    return 'bg-muted text-muted-foreground border-border';
+                },
+
+                getResultLabel(result) {
+                    const r = (result || '').toLowerCase();
+                    if (r === 'pass') return 'PASS';
+                    if (r === 'fail') return 'FAIL';
+                    return 'N/A';
+                },
+
+                getScoreColor(score) {
+                    if (score === 100) return 'text-green-600';
+                    if (score >= 25) return 'text-yellow-500';
+                    return 'text-red-600';
+                },
+
+                formatDuration(seconds) {
+                    if (seconds === null || seconds === undefined) return '—';
+                    const s = Math.abs(Math.round(seconds));
+                    if (s < 60) return s + 's';
+                    const h = Math.floor(s / 3600);
+                    const m = Math.floor((s % 3600) / 60);
+                    const sec = s % 60;
+                    if (h > 0) return h + 'h ' + m + 'm';
+                    return m + 'm ' + sec + 's';
+                }
+            };
+        }
+    </script>
+
+    {% if statistics.mitre_overall_tactic_scores or statistics.mitre_tactic_scores or statistics.mean_time_metrics or statistics.severity_accuracy %}
+    <script>
+        // ---------- Chart helpers ----------
+        const _chartInstances = [];
+
+        function _themeColors() {
+            const isDark = document.documentElement.classList.contains('dark');
+            return {
+                labelColor: isDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)',
+                gridColor:  isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)',
+            };
+        }
+
+        function buildRadarConfig(labels, datasets) {
+            const { gridColor, labelColor } = _themeColors();
+            return {
+                type: 'radar',
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            suggestedMin: 0,
+                            min: -25,
+                            suggestedMax: 100,
+                            ticks: { stepSize: 25, color: labelColor, backdropColor: 'transparent', font: { size: 10 } },
+                            grid: { color: gridColor },
+                            angleLines: { color: gridColor },
+                            pointLabels: { color: labelColor, font: { size: 11 } }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'rect', boxWidth: 8, padding: 15, color: labelColor, font: { size: 11 } } },
+                        tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': ' + (ctx.raw != null ? ctx.raw.toFixed(1) + '%' : 'N/A') } }
+                    }
+                }
+            };
+        }
+
+        function makeDatasets(items) {
+            const val = (item, field) => item[field] != null ? Math.round(item[field] * 10) / 10 : 0;
+            return [
+                { label: 'Overall Score', data: items.map(i => val(i, 'overall_score')), borderColor: 'rgba(124,58,237,0.8)', backgroundColor: 'rgba(124,58,237,0.15)', borderWidth: 2, pointRadius: 4, hidden: false },
+                { label: 'Expected Logged', data: items.map(i => val(i, 'expected_logged_score')), borderColor: 'rgba(59,130,246,0.6)', borderDash: [5,5], backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 3, hidden: true },
+                { label: 'Logged', data: items.map(i => val(i, 'logged_score')), borderColor: 'rgba(59,130,246,0.9)', backgroundColor: 'rgba(59,130,246,0.1)', borderWidth: 2, pointRadius: 3, hidden: true },
+                { label: 'Expected Prevented', data: items.map(i => val(i, 'expected_prevented_score')), borderColor: 'rgba(34,197,94,0.6)', borderDash: [5,5], backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 3, hidden: true },
+                { label: 'Prevented', data: items.map(i => val(i, 'prevented_score')), borderColor: 'rgba(34,197,94,0.9)', backgroundColor: 'rgba(34,197,94,0.1)', borderWidth: 2, pointRadius: 3, hidden: true },
+                { label: 'Expected Alerted', data: items.map(i => val(i, 'expected_alerted_score')), borderColor: 'rgba(249,115,22,0.6)', borderDash: [5,5], backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 3, hidden: true },
+                { label: 'Alerted', data: items.map(i => val(i, 'alerted_score')), borderColor: 'rgba(249,115,22,0.9)', backgroundColor: 'rgba(249,115,22,0.1)', borderWidth: 2, pointRadius: 3, hidden: true },
+                { label: 'Expected Notified', data: items.map(i => val(i, 'expected_stakeholder_notified_score')), borderColor: 'rgba(239,68,68,0.6)', borderDash: [5,5], backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 3, hidden: true },
+                { label: 'Notified', data: items.map(i => val(i, 'stakeholder_notified_score')), borderColor: 'rgba(239,68,68,0.9)', backgroundColor: 'rgba(239,68,68,0.1)', borderWidth: 2, pointRadius: 3, hidden: true },
+            ];
+        }
+
+        function fmtDur(s) {
+            if (s == null) return '—';
+            s = Math.abs(Math.round(s));
+            if (s < 60) return s + 's';
+            const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+            return h > 0 ? h + 'h ' + m + 'm' : m + 'm ' + sec + 's';
+        }
+
+        // ---------- Create / recreate all charts ----------
+        function initAllCharts() {
+            // Destroy previous instances
+            _chartInstances.forEach(c => c.destroy());
+            _chartInstances.length = 0;
+
+            const { gridColor, labelColor } = _themeColors();
+
+            // Overarching radar
+            {% if statistics.mitre_overall_tactic_scores %}
+            (function() {
+                const data = {{ statistics.mitre_overall_tactic_scores | tojson }};
+                const labels = data.map(d => {
+                    const t = d.tactic || '';
+                    return t.length > 25 ? t.substring(0, 22) + '...' : t;
+                });
+                const el = document.getElementById('radarOverall');
+                if (el) _chartInstances.push(new Chart(el, buildRadarConfig(labels, makeDatasets(data))));
+            })();
+            {% endif %}
+
+            // Per-tactic radars
+            {% if statistics.mitre_tactic_scores %}
+            {% for tactic_item in statistics.mitre_tactic_scores %}
+            {% if tactic_item.techniques %}
+            (function() {
+                const data = {{ tactic_item.techniques | tojson }};
+                const labels = data.map(d => {
+                    const t = d.technique || '';
+                    return t.length > 25 ? t.substring(0, 22) + '...' : t;
+                });
+                const el = document.getElementById('radarTactic{{ loop.index }}');
+                if (el) _chartInstances.push(new Chart(el, buildRadarConfig(labels, makeDatasets(data))));
+            })();
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+
+            // Mean Time to Detect & Respond: Horizontal Stacked Bar
+            {% if statistics.mean_time_metrics %}
+            (function() {
+                const data = {{ statistics.mean_time_metrics | tojson }};
+                const labels = data.map(d => d.priority);
+                const el = document.getElementById('chartMeanTime');
+                if (el) _chartInstances.push(new Chart(el, {
+                    type: 'bar',
+                    data: {
+                        labels,
+                        datasets: [
+                            { label: 'Mean Time to Detect', data: data.map(d => d.mean_time_to_detect_seconds || 0), backgroundColor: '#3b82f6', borderRadius: 4, maxBarThickness: 32 },
+                            { label: 'Mean Time to Notify Stakeholder', data: data.map(d => d.mean_time_to_respond_seconds || 0), backgroundColor: '#7c3aed', borderRadius: 4, maxBarThickness: 32 },
+                        ]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+                        scales: {
+                            x: { stacked: true, ticks: { color: labelColor, callback: (v) => fmtDur(v) }, grid: { color: gridColor } },
+                            y: { stacked: true, ticks: { color: labelColor }, grid: { display: false } }
+                        },
+                        plugins: {
+                            legend: { position: 'top', labels: { color: labelColor, usePointStyle: true, pointStyle: 'rect', boxWidth: 8, padding: 12 } },
+                            tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': ' + fmtDur(ctx.raw) } }
+                        }
+                    }
+                }));
+            })();
+            {% endif %}
+
+            // Alert Severity Accuracy: Stacked Column Bar
+            {% if statistics.severity_accuracy %}
+            (function() {
+                const data = {{ statistics.severity_accuracy | tojson }};
+                const labels = data.map(d => d.expected_severity);
+                const severities = [
+                    { key: 'actual_informational', label: 'Informational', color: '#9ca3af' },
+                    { key: 'actual_low', label: 'Low', color: '#3b82f6' },
+                    { key: 'actual_medium', label: 'Medium', color: '#eab308' },
+                    { key: 'actual_high', label: 'High', color: '#f97316' },
+                    { key: 'actual_critical', label: 'Critical', color: '#ef4444' },
+                    { key: 'actual_none', label: 'Missed/None', color: '#1f2937' },
+                ];
+                const el = document.getElementById('chartSeverity');
+                if (el) _chartInstances.push(new Chart(el, {
+                    type: 'bar',
+                    data: {
+                        labels,
+                        datasets: severities.map(s => ({
+                            label: s.label,
+                            data: data.map(d => d[s.key] || 0),
+                            backgroundColor: s.color,
+                            borderRadius: 2,
+                            maxBarThickness: 48,
+                        }))
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: {
+                            x: { stacked: true, ticks: { color: labelColor }, grid: { display: false } },
+                            y: { stacked: true, ticks: { color: labelColor, stepSize: 1 }, grid: { color: gridColor } }
+                        },
+                        plugins: {
+                            legend: { position: 'top', labels: { color: labelColor, usePointStyle: true, pointStyle: 'rect', boxWidth: 8, padding: 12 } },
+                            tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': ' + ctx.raw } }
+                        }
+                    }
+                }));
+            })();
+            {% endif %}
+        }
+
+        // Initialize charts after Alpine has set the theme
+        document.addEventListener('DOMContentLoaded', () => {
+            // Small delay to ensure Alpine's init() has run and set the dark class
+            requestAnimationFrame(() => initAllCharts());
+        });
+    </script>
+    {% endif %}
+</body>
+
+</html>

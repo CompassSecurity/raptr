@@ -1,0 +1,385 @@
+/* ------------------------------------------------------------------ */
+/*  RAPTR Landing Page Styles                                         */
+/* ------------------------------------------------------------------ */
+
+/* Hide title on the landing page */
+.md-typeset .landing-page > h1:first-child {
+  display: none;
+}
+
+/* ---- Hero Logo (light/dark toggle) ------------------------------- */
+.hero-logo {
+  margin-bottom: 1.5rem;
+}
+
+.hero-logo img {
+  width: clamp(300px, 50vw, 800px);
+  height: auto;
+  margin: 0 auto;
+  display: block;
+}
+
+[data-md-color-scheme="default"] .light-only {
+  display: none;
+}
+
+[data-md-color-scheme="slate"] .dark-only {
+  display: none;
+}
+
+/* ---- Hero Section ------------------------------------------------ */
+.hero {
+  padding: 6rem 1rem 4rem;
+  text-align: center;
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: 3.2rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  letter-spacing: -0.03em;
+}
+
+.hero h1 .hero-gradient {
+  background: linear-gradient(135deg, var(--md-primary-fg-color), #7c4dff, #b388ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 1.35rem;
+  color: var(--md-default-fg-color--light);
+  max-width: 44rem;
+  margin: 0 auto 2.5rem;
+  line-height: 1.6;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Allow mkdocs native button styles to control appearance */
+
+/* ---- Tech badges ------------------------------------------------- */
+.tech-badges {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.tech-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 2rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: var(--md-code-bg-color);
+  color: var(--md-default-fg-color--light);
+  border: 1px solid var(--md-default-fg-color--lightest);
+}
+
+
+
+/* ---- Section header ---------------------------------------------- */
+.features-header {
+  text-align: center;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 4rem 1rem 1rem;
+}
+
+.features-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.features-header p {
+  color: var(--md-default-fg-color--light);
+  font-size: 1.05rem;
+  max-width: 36rem;
+  margin: 0 auto;
+}
+
+/* ---- Borderless Feature Grid --------------------------------------- */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: 2rem 3rem;
+  margin: 2rem auto 4rem;
+  max-width: 60rem;
+  padding: 0 1rem;
+}
+
+.feature-block {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+.feature-block .feature-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: var(--md-default-fg-color--lightest);
+  color: var(--md-default-fg-color);
+}
+
+.feature-block .feature-icon .twemoji svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: currentColor;
+}
+
+.feature-block .feature-info h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+  line-height: 1.3;
+}
+
+.feature-block .feature-info p {
+  color: var(--md-default-fg-color--light);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-top: 0;
+}
+
+/* ---- Alternate Background Section ---------------------------------- */
+.alternate-section {
+  position: relative;
+  margin: 4rem 0;
+  padding-bottom: 2rem;
+  z-index: 0;
+}
+
+.alternate-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  background-color: var(--md-code-bg-color);
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  z-index: -1;
+}
+
+/* ---- Deep Dive Feature Items --------------------------------------- */
+.feature-item {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 4rem 1rem;
+}
+
+.feature-item .grid {
+  align-items: center;
+  gap: 4rem;
+}
+
+.feature-item .feature-text h3 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.feature-item .feature-text p {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--md-default-fg-color--light);
+  margin-bottom: 1.5rem;
+}
+
+.feature-item .feature-text .md-button {
+  margin-top: 1rem;
+}
+
+.feature-item .feature-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  box-shadow: var(--md-shadow-z2);
+  display: block;
+}
+
+@media screen and (max-width: 76.1875em) {
+  .feature-item .grid {
+    gap: 2rem;
+  }
+}
+
+/* ---- CTA Section ------------------------------------------------- */
+.cta-section {
+  text-align: center;
+  padding: 3rem 1rem 4rem;
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.cta-section h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.cta-section p {
+  color: var(--md-default-fg-color--light);
+  margin-bottom: 2rem;
+  font-size: 1.05rem;
+}
+
+/* Fix spacing inside landing page */
+.landing-page .md-typeset h2 {
+  margin-top: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Mobile Optimization (Smartphones)                                 */
+/* ------------------------------------------------------------------ */
+@media screen and (max-width: 767px) {
+  /* Hero Section */
+  .hero {
+    padding: 1.5rem 1rem 1rem;
+  }
+  
+  .hero h1 {
+    font-size: 2.2rem;
+  }
+  
+  .hero p {
+    font-size: 1.15rem;
+  }
+
+  /* Adjust Logo */
+  .hero-logo img {
+    max-width: 80%;
+  }
+
+  /* Adjust Hero Buttons */
+  .hero-buttons {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .hero-buttons .md-button {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  /* Adjust Tech Badges Grid */
+  .tech-badges {
+    gap: 0.6rem;
+    padding: 0 0.5rem;
+  }
+
+  .tech-badge {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+    margin-bottom: 0.4rem;
+  }
+  
+  /* Grid Layouts - Stack vertically */
+  .feature-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0;
+    margin: 1rem auto 1.5rem;
+  }
+  
+  /* Less spacing in general */
+  .features-header {
+    padding: 1.5rem 1rem 0.5rem;
+  }
+  
+  .features-header h2 {
+    font-size: 1.6rem;
+  }
+  
+  .features-header p {
+    font-size: 1rem;
+  }
+
+  /* Deep Dive Feature Sections */
+  .feature-item {
+    padding: 1.5rem 1rem;
+  }
+
+  .feature-item .grid {
+    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 
+   * Force Text -> Image -> Button on mobile for all rows.
+   * By using display: contents, the children of feature-text 
+   * become direct flex items of .grid and can be ordered individually.
+   */
+  .feature-item .feature-text {
+    display: contents;
+  }
+  
+  /* Make all text elements sit above the image by default */
+  .feature-item .feature-text > * {
+    order: 2;
+  }
+  
+  .feature-item .feature-text h3 {
+    order: 1;
+    font-size: 1.5rem;
+    margin-bottom: 0;
+  }
+
+  /* The image goes after the text paragraphs */
+  .feature-item .feature-image {
+    order: 3;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Target the specific paragraph wrapper MkDocs generates for the button */
+  .feature-item .feature-text p:has(.md-button) {
+    order: 4;
+    display: flex;
+    margin-top: 0;
+  }
+
+  /* Alternate background margin reduction */
+  .alternate-section {
+    margin: 1.5rem 0;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Call to action */
+  .cta-section {
+    padding: 1.5rem 1rem 2rem;
+  }
+  
+  .cta-section h2 {
+    font-size: 1.6rem;
+  }
+
+  .cta-section p {
+    font-size: 1rem;
+  }
+}
+
