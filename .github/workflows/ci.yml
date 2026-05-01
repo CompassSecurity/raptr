@@ -6,9 +6,13 @@ on:
     branches: [ "main" ]
 
 
+permissions: {}
+
 jobs:
   backend-checks:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     defaults:
       run:
@@ -16,6 +20,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
 
     - name: Set up Python 3.14
       uses: actions/setup-python@v5
@@ -39,6 +45,8 @@ jobs:
 
   frontend-checks:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     defaults:
       run:
@@ -46,6 +54,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
 
     - name: Set up Bun
       uses: oven-sh/setup-bun@v2
@@ -77,8 +87,12 @@ jobs:
 
   docker-build-check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
     
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
