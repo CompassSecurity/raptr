@@ -6,11 +6,11 @@ This page covers how to deploy and run RAPTR in different environments.
 
 For your convenience, we provide the following RAPTR container images:
 
-- `ghcr.io/CompassSecurity/raptr:latest` - The image is updated whenever a merge to the main branch is performed.
-- `ghcr.io/CompassSecurity/raptr:v{version}` - A dedicated versioned image is created from time to time. This is maintained through Git tags. An entry in the [Release Notes](../release-notes/index.md) for the version will be available.
+- `ghcr.io/compasssecurity/raptr:latest` - The image is updated whenever a merge to the main branch is performed.
+- `ghcr.io/compasssecurity/raptr:v{version}` - A dedicated versioned image is created from time to time. This is maintained through Git tags. An entry in the [Release Notes](../release-notes/index.md) for the version will be available.
 
 ```bash
-docker pull ghcr.io/CompassSecurity/raptr:latest
+docker pull ghcr.io/compasssecurity/raptr:latest
 ```
 
 The RAPTR container image combines the backend and frontend into a single container. The frontend is served by the backend using FastAPI's StaticFiles.
@@ -100,7 +100,7 @@ docker run -d \
   -e ADMIN_EMAIL=admin@raptr.app \
   -e ADMIN_PASSWORD=your-secure-password \
   -v raptr_data:/data \
-  ghcr.io/CompassSecurity/raptr:latest
+  ghcr.io/compasssecurity/raptr:latest
 ```
 
 This starts RAPTR on `http://localhost:8000` with:
@@ -118,7 +118,7 @@ docker run -d \
   -p 8000:8000 \
   --env-file .env \
   -v raptr_data:/data \
-  ghcr.io/CompassSecurity/raptr:latest
+  ghcr.io/compasssecurity/raptr:latest
 ```
 
 ??? tip "Persisting data"
@@ -226,7 +226,7 @@ To use your local build in Docker Compose, replace the `image` field:
 ```yaml
 raptr:
   build: .
-  # image: ghcr.io/CompassSecurity/raptr:latest  # comment out
+  # image: ghcr.io/compasssecurity/raptr:latest  # comment out
 ```
 
 ## Running Locally (Development)

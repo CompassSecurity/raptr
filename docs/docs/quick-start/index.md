@@ -36,7 +36,7 @@ docker run -d \
   -e ADMIN_EMAIL=admin@raptr.app \
   -e ADMIN_PASSWORD=your-secure-password \
   -v raptr_data:/data \
-  ghcr.io/CompassSecurity/raptr:latest
+  ghcr.io/compasssecurity/raptr:latest
 ```
 
 Open [http://localhost:8000](http://localhost:8000) and log in with the credentials above.

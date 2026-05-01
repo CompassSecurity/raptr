@@ -40,7 +40,7 @@ docker run -d \
   -e DB_ENGINE=sqlite \
   -e SQLITE_DB_PATH=/data/raptr.db \
   -v raptr_data:/data \
-  ghcr.io/CompassSecurity/raptr:latest
+  ghcr.io/compasssecurity/raptr:latest
 ```
 
 !!! warning "Without a volume mount, SQLite data is lost when the container is removed."
