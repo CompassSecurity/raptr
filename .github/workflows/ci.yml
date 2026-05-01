@@ -58,21 +58,21 @@ jobs:
     - name: Type check and build
       run: bun run build
 
-#   security-scan:
-#     name: Security Scan (zizmor)
-#     runs-on: ubuntu-latest
-#     permissions:
-#       contents: read
-#       security-events: write
-#       actions: read
-#     steps:
-#       - uses: actions/checkout@v4
-#         with:
-#           persist-credentials: false
-#       - name: Run zizmor
-#         uses: zizmorcore/zizmor-action@0dce2577a4760a2749d8cfb7a84b7d5585ebcb7d
-#         with:
-#           inputs: .
+  security-scan:
+    name: Security Scan (zizmor)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+    - name: Run zizmor
+      uses: zizmorcore/zizmor-action@0dce2577a4760a2749d8cfb7a84b7d5585ebcb7d
+      with:
+        inputs: .
 
   docker-build-check:
     runs-on: ubuntu-latest
