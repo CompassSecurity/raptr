@@ -225,8 +225,8 @@ const handlePaste = async (event: ClipboardEvent) => {
     <div
       v-if="!isEditing"
       ref="previewRef"
-      class="min-h-[80px] w-full rounded-md border border-input bg-background/50 px-3 py-2 text-sm ring-offset-background md:text-sm prose dark:prose-invert max-w-none hover:bg-muted/20 cursor-pointer transition-colors"
-      :class="{'cursor-default': disabled, 'text-muted-foreground italic': !value}"
+      class="min-h-[80px] w-full rounded-md border border-input bg-background/50 px-3 py-2 text-sm ring-offset-background md:text-sm prose dark:prose-invert max-w-none transition-colors"
+      :class="{'cursor-default': disabled, 'hover:bg-muted/20 cursor-pointer': !disabled, 'text-muted-foreground italic': !value}"
       @click="handlePreviewClick"
     >
       <div v-if="value" class="markdown-content" v-html="renderedContent"></div>
