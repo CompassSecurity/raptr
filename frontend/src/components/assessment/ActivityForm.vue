@@ -197,7 +197,15 @@ watch(
                 formData.value.updated_at = newVal.updated_at;
 
                 // Refresh original snapshot so conflict detection compares against the latest saved state
-                originalData.value = JSON.parse(JSON.stringify(newVal));
+                // We must apply the same frontend defaults to originalData so hasUnsavedChanges doesn't trigger falsely
+                const newOriginal = JSON.parse(JSON.stringify(newVal));
+                newOriginal.logged = newOriginal.logged ?? false;
+                newOriginal.alerted = newOriginal.alerted ?? false;
+                newOriginal.prevented = newOriginal.prevented ?? false;
+                newOriginal.stakeholder_notification_created =
+                    newOriginal.stakeholder_notification_created ?? false;
+
+                originalData.value = newOriginal;
                 return;
             }
 
@@ -508,10 +516,18 @@ const hasUnsavedChanges = computed(() => {
         'linked_knowledge_base_articles',
     ]);
 
-    const cleanAndSort = (obj: any, isRoot = false): any => {
+    const ignoreEvalKeys = new Set([
+        'logged_evaluation',
+        'alerted_evaluation',
+        'prevented_evaluation',
+        'stakeholder_notified_evaluation',
+        'activity_coverage_score',
+    ]);
+
+    const cleanAndSort = (obj: any, isRoot = false, isEval = false): any => {
         if (Array.isArray(obj)) {
             const arr = obj
-                .map((v) => cleanAndSort(v, false))
+                .map((v) => cleanAndSort(v, false, false))
                 .filter((v) => v !== null && v !== undefined && v !== '');
             return arr.length > 0 ? arr : undefined;
         }
@@ -520,7 +536,37 @@ const hasUnsavedChanges = computed(() => {
             const result: Record<string, any> = {};
             for (const key of sortedKeys) {
                 if (isRoot && ignoreKeys.has(key)) continue;
-                const val = cleanAndSort(obj[key], false);
+                if (isEval && ignoreEvalKeys.has(key)) continue;
+
+                let val = cleanAndSort(
+                    obj[key],
+                    false,
+                    isRoot && key === 'evaluation',
+                );
+
+                // Ignore auto-calculated strings entirely as they are purely derived
+                if (
+                    typeof val === 'string' &&
+                    val.endsWith('(auto-calculated)')
+                ) {
+                    continue;
+                }
+
+                // Normalize ISO datetime strings so .000Z and Z match
+                if (
+                    typeof val === 'string' &&
+                    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/.test(
+                        val,
+                    )
+                ) {
+                    try {
+                        const d = new Date(val);
+                        if (!Number.isNaN(d.getTime())) val = d.toISOString();
+                    } catch {
+                        // ignore
+                    }
+                }
+
                 if (val !== null && val !== undefined && val !== '') {
                     if (Array.isArray(val) && val.length === 0) continue;
                     if (
@@ -533,6 +579,22 @@ const hasUnsavedChanges = computed(() => {
             }
             return Object.keys(result).length > 0 ? result : undefined;
         }
+
+        // Normalize root-level string if it's a date
+        if (
+            typeof obj === 'string' &&
+            /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/.test(
+                obj,
+            )
+        ) {
+            try {
+                const d = new Date(obj);
+                if (!Number.isNaN(d.getTime())) return d.toISOString();
+            } catch {
+                // ignore
+            }
+        }
+
         return obj;
     };
 
