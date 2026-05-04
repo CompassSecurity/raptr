@@ -183,9 +183,9 @@ async function handleDynamicQuestionsUpdated() {
                                     <Badge :class="evalBadgeClass(eventToAlertEvalStatus)">{{ eventToAlertEvalStatus }}</Badge>
                                 </div>
                                 <EvalResultToggle
+                                    v-if="!readonly"
                                     :model-value="(formData.evaluation as any)?.event_to_alert_evaluation_result || 'n/a'"
                                     @update:model-value="formData.evaluation = { ...formData.evaluation!, ['event_to_alert_evaluation_result']: $event as any }"
-                                    :disabled="readonly"
                                 />
                             </div>
                             <MarkdownEditor :on-upload="uploadImage" :resolve-image-url="resolveImageUrl"
@@ -204,9 +204,9 @@ async function handleDynamicQuestionsUpdated() {
                                     <Badge :class="evalBadgeClass(alertToStakeholderEvalStatus)">{{ alertToStakeholderEvalStatus }}</Badge>
                                 </div>
                                 <EvalResultToggle
+                                    v-if="!readonly"
                                     :model-value="(formData.evaluation as any)?.alert_to_stakeholder_evaluation_result || 'n/a'"
                                     @update:model-value="formData.evaluation = { ...formData.evaluation!, ['alert_to_stakeholder_evaluation_result']: $event as any }"
-                                    :disabled="readonly"
                                 />
                             </div>
                             <MarkdownEditor :on-upload="uploadImage" :resolve-image-url="resolveImageUrl"
@@ -225,9 +225,9 @@ async function handleDynamicQuestionsUpdated() {
                                     <Badge :class="evalBadgeClass(alertSeverityEvalStatus)">{{ alertSeverityEvalStatus }}</Badge>
                                 </div>
                                 <EvalResultToggle
+                                    v-if="!readonly"
                                     :model-value="(formData.evaluation as any)?.alert_severity_evaluation_result || 'n/a'"
                                     @update:model-value="formData.evaluation = { ...formData.evaluation!, ['alert_severity_evaluation_result']: $event as any }"
-                                    :disabled="readonly"
                                 />
                             </div>
                             <MarkdownEditor :on-upload="uploadImage" :resolve-image-url="resolveImageUrl"
@@ -246,9 +246,9 @@ async function handleDynamicQuestionsUpdated() {
                                     <Badge :class="evalBadgeClass(stakeholderSeverityEvalStatus)">{{ stakeholderSeverityEvalStatus }}</Badge>
                                 </div>
                                 <EvalResultToggle
+                                    v-if="!readonly"
                                     :model-value="(formData.evaluation as any)?.stakeholder_notification_severity_evaluation_result || 'n/a'"
                                     @update:model-value="formData.evaluation = { ...formData.evaluation!, ['stakeholder_notification_severity_evaluation_result']: $event as any }"
-                                    :disabled="readonly"
                                 />
                             </div>
                             <MarkdownEditor :on-upload="uploadImage" :resolve-image-url="resolveImageUrl"
@@ -290,9 +290,9 @@ async function handleDynamicQuestionsUpdated() {
                                         </Badge>
                                     </div>
                                     <EvalResultToggle
+                                        v-if="!readonly"
                                         :model-value="question.evaluation_result || 'n/a'"
                                         @update:model-value="updateDynamicQuestion(question.evaluation_template_id, 'evaluation_result', $event)"
-                                        :disabled="readonly"
                                     />
                                 </div>
                                 <p v-if="evaluationTemplates[question.evaluation_template_id]?.description" class="text-xs text-muted-foreground">

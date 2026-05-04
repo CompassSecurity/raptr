@@ -2,6 +2,7 @@
 import { ChevronDown } from 'lucide-vue-next';
 import { computed } from 'vue';
 import ActivityAssetsManager from '@/components/assessment/ActivityAssetsManager.vue';
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Collapsible,
@@ -19,7 +20,9 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { usePreferencesStore } from '@/stores/preferences';
 import type { ActivityRead, AssetRead } from '@/types/utils';
+import { formatDateTime } from '@/utils/dateFormatter';
 import { schemas } from '@/types/zod';
 
 const props = defineProps<{
@@ -37,6 +40,17 @@ const formData = defineModel<Partial<ActivityRead>>('formData', {
 });
 
 const severityOptions = schemas.ActivitySeverity.options;
+const preferencesStore = usePreferencesStore();
+
+// Formatted date strings for readonly display
+function readonlyDate(value: string | null | undefined): string {
+    return formatDateTime(
+        value,
+        preferencesStore.effectiveTimezone,
+        preferencesStore.dateFormat,
+        preferencesStore.timeFormat,
+    );
+}
 
 // Writable computed properties for detection toggles
 const logged = computed({
@@ -139,17 +153,26 @@ const stakeholderNotificationCreated = computed({
                             <div class="flex items-center gap-3">
                                 <Label class="text-sm font-semibold" for="switch_logged">Activity Logged</Label>
                             </div>
-                            <Switch id="switch_logged" v-model="logged" :disabled="readonly" />
+                            <template v-if="readonly">
+                                <Badge :class="logged ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ logged ? 'Yes' : 'No' }}</Badge>
+                            </template>
+                            <template v-else>
+                                <Switch id="switch_logged" v-model="logged" />
+                            </template>
                         </div>
 
                         <div v-if="logged" class="space-y-4 pt-2 border-t">
                             <div class="space-y-2 w-full sm:w-1/2 pr-2">
                                 <Label class="text-sm font-medium">Log Time</Label>
-                                <DateTimePicker
-                                    :model-value="formData.log_time ?? undefined"
-                                    @update:model-value="formData.log_time = $event ?? null"
-                                    :disabled="readonly"
-                                />
+                                <template v-if="readonly">
+                                    <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.log_time) }}</div>
+                                </template>
+                                <template v-else>
+                                    <DateTimePicker
+                                        :model-value="formData.log_time ?? undefined"
+                                        @update:model-value="formData.log_time = $event ?? null"
+                                    />
+                                </template>
                             </div>
                             <ActivityAssetsManager
                                 :sources="formData.log_sources ?? []"
@@ -185,17 +208,26 @@ const stakeholderNotificationCreated = computed({
                             <div class="flex items-center gap-3">
                                 <Label class="text-sm font-semibold" for="switch_prevented">Activity Prevented</Label>
                             </div>
-                            <Switch id="switch_prevented" v-model="prevented" :disabled="readonly" />
+                            <template v-if="readonly">
+                                <Badge :class="prevented ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ prevented ? 'Yes' : 'No' }}</Badge>
+                            </template>
+                            <template v-else>
+                                <Switch id="switch_prevented" v-model="prevented" />
+                            </template>
                         </div>
 
                         <div v-if="prevented" class="space-y-4 pt-2 border-t">
                             <div class="space-y-2 w-full sm:w-1/2 pr-2">
                                 <Label class="text-sm font-medium">Prevention Time</Label>
-                                <DateTimePicker
-                                    :model-value="formData.prevent_time ?? undefined"
-                                    @update:model-value="formData.prevent_time = $event ?? null"
-                                    :disabled="readonly"
-                                />
+                                <template v-if="readonly">
+                                    <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.prevent_time) }}</div>
+                                </template>
+                                <template v-else>
+                                    <DateTimePicker
+                                        :model-value="formData.prevent_time ?? undefined"
+                                        @update:model-value="formData.prevent_time = $event ?? null"
+                                    />
+                                </template>
                             </div>
                             <ActivityAssetsManager
                                 :sources="formData.prevention_sources ?? []"
@@ -231,31 +263,45 @@ const stakeholderNotificationCreated = computed({
                             <div class="flex items-center gap-3">
                                 <Label class="text-sm font-semibold" for="switch_alerted">Alert Generated</Label>
                             </div>
-                            <Switch id="switch_alerted" v-model="alerted" :disabled="readonly" />
+                            <template v-if="readonly">
+                                <Badge :class="alerted ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ alerted ? 'Yes' : 'No' }}</Badge>
+                            </template>
+                            <template v-else>
+                                <Switch id="switch_alerted" v-model="alerted" />
+                            </template>
                         </div>
 
                         <div v-if="alerted" class="space-y-4 pt-2 border-t">
                             <div class="space-y-4">
                                 <div class="space-y-2 w-full sm:w-1/2 pr-2">
                                     <Label class="text-sm font-medium">Alert Time</Label>
-                                    <DateTimePicker
-                                        :model-value="formData.alert_time ?? undefined"
-                                        @update:model-value="formData.alert_time = $event ?? null"
-                                        :disabled="readonly"
-                                    />
+                                    <template v-if="readonly">
+                                        <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.alert_time) }}</div>
+                                    </template>
+                                    <template v-else>
+                                        <DateTimePicker
+                                            :model-value="formData.alert_time ?? undefined"
+                                            @update:model-value="formData.alert_time = $event ?? null"
+                                        />
+                                    </template>
                                 </div>
                                 <div class="space-y-2 w-full sm:w-1/2 pr-2">
                                     <Label class="text-sm font-medium">Alert Severity</Label>
-                                    <Select v-model="formData.alert_severity" :disabled="readonly">
-                                        <SelectTrigger class="w-full">
-                                            <SelectValue :placeholder="formData.alert_severity || '\xa0'" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem v-for="opt in severityOptions" :key="opt" :value="opt">
-                                                {{ opt }}
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <template v-if="readonly">
+                                        <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ formData.alert_severity || '—' }}</div>
+                                    </template>
+                                    <template v-else>
+                                        <Select v-model="formData.alert_severity">
+                                            <SelectTrigger class="w-full">
+                                                <SelectValue :placeholder="formData.alert_severity || '\xa0'" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem v-for="opt in severityOptions" :key="opt" :value="opt">
+                                                    {{ opt }}
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </template>
                                 </div>
                             </div>
                             <ActivityAssetsManager
@@ -292,31 +338,45 @@ const stakeholderNotificationCreated = computed({
                             <div class="flex items-center gap-3">
                                 <Label class="text-sm font-semibold" for="switch_stakeholder">Stakeholder Notification Created</Label>
                             </div>
-                            <Switch id="switch_stakeholder" v-model="stakeholderNotificationCreated" :disabled="readonly" />
+                            <template v-if="readonly">
+                                <Badge :class="stakeholderNotificationCreated ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ stakeholderNotificationCreated ? 'Yes' : 'No' }}</Badge>
+                            </template>
+                            <template v-else>
+                                <Switch id="switch_stakeholder" v-model="stakeholderNotificationCreated" />
+                            </template>
                         </div>
 
                         <div v-if="stakeholderNotificationCreated" class="space-y-4 pt-2 border-t">
                             <div class="space-y-4">
                                 <div class="space-y-2 w-full sm:w-1/2 pr-2">
                                     <Label class="text-sm font-medium">Notification Time</Label>
-                                    <DateTimePicker
-                                        :model-value="formData.stakeholder_notification_time ?? undefined"
-                                        @update:model-value="formData.stakeholder_notification_time = $event ?? null"
-                                        :disabled="readonly"
-                                    />
+                                    <template v-if="readonly">
+                                        <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.stakeholder_notification_time) }}</div>
+                                    </template>
+                                    <template v-else>
+                                        <DateTimePicker
+                                            :model-value="formData.stakeholder_notification_time ?? undefined"
+                                            @update:model-value="formData.stakeholder_notification_time = $event ?? null"
+                                        />
+                                    </template>
                                 </div>
                                 <div class="space-y-2 w-full sm:w-1/2 pr-2">
                                     <Label class="text-sm font-medium">Notification Severity</Label>
-                                    <Select v-model="formData.stakeholder_notification_severity" :disabled="readonly">
-                                        <SelectTrigger class="w-full">
-                                            <SelectValue :placeholder="formData.stakeholder_notification_severity || '\xa0'" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem v-for="opt in severityOptions" :key="opt" :value="opt">
-                                                {{ opt }}
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <template v-if="readonly">
+                                        <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ formData.stakeholder_notification_severity || '—' }}</div>
+                                    </template>
+                                    <template v-else>
+                                        <Select v-model="formData.stakeholder_notification_severity">
+                                            <SelectTrigger class="w-full">
+                                                <SelectValue :placeholder="formData.stakeholder_notification_severity || '\xa0'" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem v-for="opt in severityOptions" :key="opt" :value="opt">
+                                                    {{ opt }}
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </template>
                                 </div>
                             </div>
                             <ActivityAssetsManager

@@ -10,6 +10,7 @@ import ActivityGeneralInfo from '@/components/assessment/ActivityGeneralInfo.vue
 import ActivityHistoryModal from '@/components/assessment/ActivityHistoryModal.vue';
 import ConflictResolutionDialog from '@/components/assessment/ConflictResolutionDialog.vue';
 import KnowledgeBaseModal from '@/components/assessment/KnowledgeBaseModal.vue';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -50,7 +51,9 @@ import type {
     AssetRead,
     TagRead,
 } from '@/types/utils';
+import { formatDateTime } from '@/utils/dateFormatter';
 import { schemas } from '@/types/zod';
+import { usePreferencesStore } from '@/stores/preferences';
 
 const props = defineProps<{
     activity: ActivityRead;
@@ -106,6 +109,18 @@ const headerStateOptions = computed(() => {
 const headerStateDisabled = computed(
     () => isSpectator.value || (isBlue.value && !stateEditable.value),
 );
+
+const preferencesStore = usePreferencesStore();
+
+// Formatted date strings for readonly display
+function readonlyDate(value: string | null | undefined): string {
+    return formatDateTime(
+        value,
+        preferencesStore.effectiveTimezone,
+        preferencesStore.dateFormat,
+        preferencesStore.timeFormat,
+    );
+}
 
 const showKBModal = ref(false);
 const showHistoryModal = ref(false);
@@ -491,20 +506,24 @@ async function handleCloneActivity() {
                     </p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <Select
-                        :model-value="formData.state ?? undefined"
-                        @update:model-value="formData.state = $event as any"
-                        :disabled="headerStateDisabled"
-                    >
-                        <SelectTrigger class="w-[160px]">
-                            <SelectValue :placeholder="formData.state ?? '\xa0'" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem v-for="opt in headerStateOptions" :key="opt" :value="opt">
-                                {{ opt }}
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <template v-if="headerStateDisabled">
+                        <Badge variant="outline" class="text-sm px-4 py-2 h-auto">{{ formData.state || '—' }}</Badge>
+                    </template>
+                    <template v-else>
+                        <Select
+                            :model-value="formData.state ?? undefined"
+                            @update:model-value="formData.state = $event as any"
+                        >
+                            <SelectTrigger class="w-[160px]">
+                                <SelectValue :placeholder="formData.state ?? '\xa0'" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem v-for="opt in headerStateOptions" :key="opt" :value="opt">
+                                    {{ opt }}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </template>
                     <Button v-if="!isSpectator && !isBlue" variant="outline" size="lg" @click="showKBModal = true">
                         <BookOpen class="mr-2 h-4 w-4" />
                         Knowledge Base
@@ -593,19 +612,27 @@ async function handleCloneActivity() {
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="space-y-2">
                                 <Label class="text-sm font-medium">Start Time</Label>
-                                <DateTimePicker
-                                    :model-value="formData.activity_start_time ?? undefined"
-                                    @update:model-value="formData.activity_start_time = $event ?? null"
-                                    :disabled="redTeamReadonly"
-                                />
+                                <template v-if="redTeamReadonly">
+                                    <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.activity_start_time) }}</div>
+                                </template>
+                                <template v-else>
+                                    <DateTimePicker
+                                        :model-value="formData.activity_start_time ?? undefined"
+                                        @update:model-value="formData.activity_start_time = $event ?? null"
+                                    />
+                                </template>
                             </div>
                             <div class="space-y-2">
                                 <Label class="text-sm font-medium">End Time</Label>
-                                <DateTimePicker
-                                    :model-value="formData.activity_end_time ?? undefined"
-                                    @update:model-value="formData.activity_end_time = $event ?? null"
-                                    :disabled="redTeamReadonly"
-                                />
+                                <template v-if="redTeamReadonly">
+                                    <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.activity_end_time) }}</div>
+                                </template>
+                                <template v-else>
+                                    <DateTimePicker
+                                        :model-value="formData.activity_end_time ?? undefined"
+                                        @update:model-value="formData.activity_end_time = $event ?? null"
+                                    />
+                                </template>
                             </div>
                         </div>
                     </div>
