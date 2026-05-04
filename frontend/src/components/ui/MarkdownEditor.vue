@@ -2,7 +2,6 @@
 import { ref, computed, nextTick, watch, onMounted, onUnmounted, type ComponentPublicInstance } from 'vue';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
-import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Eye, Pencil, Upload } from 'lucide-vue-next';
 import { useVModel } from '@vueuse/core';
@@ -198,65 +197,71 @@ const handlePaste = async (event: ClipboardEvent) => {
 
 <template>
   <div :class="cn('flex flex-col gap-2 w-full group', className)">
-    <div class="flex items-center justify-between mb-1 min-h-[24px]">
-        <label v-if="label" :for="id" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{{ label }}</label>
-        <div class="flex items-center gap-2 ml-auto" v-if="!disabled">
-             <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                class="h-6 px-2 text-xs flex gap-1 items-center hover:bg-muted"
-                @click="toggleMode"
-                :title="isEditing ? 'Switch to Preview' : 'Edit Markdown'"
-            >
-                <template v-if="isEditing">
-                    <Eye class="h-3 w-3" />
-                    <span>Preview</span>
-                </template>
-                <template v-else>
-                    <Pencil class="h-3 w-3" />
-                    <span>Edit</span>
-                </template>
-            </Button>
-        </div>
-    </div>
+    <label v-if="label" :for="id" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{{ label }}</label>
 
-    <!-- View Mode -->
-    <div
-      v-if="!isEditing"
-      ref="previewRef"
-      class="min-h-[80px] w-full rounded-md border border-input bg-background/50 px-3 py-2 text-sm ring-offset-background md:text-sm prose dark:prose-invert max-w-none transition-colors"
-      :class="{'cursor-default': disabled, 'hover:bg-muted/20 cursor-pointer': !disabled, 'text-muted-foreground italic': !value}"
-      @click="handlePreviewClick"
-    >
-      <div v-if="value" class="markdown-content" v-html="renderedContent"></div>
-      <div v-else class="select-none flex items-center gap-2">
-         <Pencil class="h-3 w-3 opacity-50"/> <span>{{ placeholder }}</span>
+    <!-- Editor container with tabs -->
+    <div class="rounded-md border border-input overflow-hidden">
+      <!-- Tab bar (hidden when disabled/readonly) -->
+      <div v-if="!disabled" class="flex items-center border-b border-input bg-muted/30 px-1">
+          <button
+              type="button"
+              class="px-3 py-2.5 text-sm font-medium transition-colors relative"
+              :class="!isEditing
+                  ? 'text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-primary after:rounded-t'
+                  : 'text-muted-foreground hover:text-foreground'"
+              @click="isEditing && toggleMode()"
+          >
+              <span class="flex items-center gap-1"><Eye class="h-3 w-3" /> Preview</span>
+          </button>
+          <button
+              type="button"
+              class="px-3 py-2.5 text-sm font-medium transition-colors relative"
+              :class="isEditing
+                  ? 'text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-primary after:rounded-t'
+                  : 'text-muted-foreground hover:text-foreground'"
+              @click="!isEditing && toggleMode()"
+          >
+              <span class="flex items-center gap-1"><Pencil class="h-3 w-3" /> Write</span>
+          </button>
       </div>
-    </div>
 
-    <!-- Edit Mode -->
-    <div v-else class="relative">
-      <Textarea
-        ref="textareaRef"
-        v-model="value"
-        :id="id"
-        :placeholder="placeholder"
-        :disabled="disabled || isLoading"
-        class="min-h-[150px] font-mono resize-y"
-        @paste="handlePaste"
-        @keydown.esc="toggleMode"
-      />
-      <!-- Loading Overlay -->
-      <div v-if="isLoading" class="absolute inset-0 bg-background/80 flex flex-col items-center justify-center rounded-md backdrop-blur-sm z-10">
-        <Loader2 class="h-6 w-6 animate-spin text-primary" />
-        <span class="text-xs text-muted-foreground mt-2">Uploading image...</span>
-      </div>
-       <div class="text-[10px] text-muted-foreground mt-1 flex gap-4 justify-between px-1">
-            <span v-if="onUpload" class="flex items-center gap-1"><Upload class="h-3 w-3"/> Paste image to upload</span>
-            <span v-else></span>
-            <span>ESC to preview</span>
+      <!-- View Mode -->
+      <div
+        v-if="!isEditing"
+        ref="previewRef"
+        class="min-h-[80px] w-full bg-background/50 px-3 py-2 text-sm prose dark:prose-invert max-w-none transition-colors"
+        :class="{'cursor-default': disabled, 'hover:bg-muted/20 cursor-pointer': !disabled, 'text-muted-foreground italic': !value}"
+        @click="handlePreviewClick"
+      >
+        <div v-if="value" class="markdown-content" v-html="renderedContent"></div>
+        <div v-else class="select-none flex items-center gap-2">
+           <Pencil v-if="!disabled" class="h-3 w-3 opacity-50"/> <span>{{ placeholder }}</span>
         </div>
+      </div>
+
+      <!-- Edit Mode -->
+      <div v-else class="relative">
+        <Textarea
+          ref="textareaRef"
+          v-model="value"
+          :id="id"
+          :placeholder="placeholder"
+          :disabled="disabled || isLoading"
+          class="min-h-[150px] font-mono resize-y border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0"
+          @paste="handlePaste"
+          @keydown.esc="toggleMode"
+        />
+        <!-- Loading Overlay -->
+        <div v-if="isLoading" class="absolute inset-0 bg-background/80 flex flex-col items-center justify-center rounded-md backdrop-blur-sm z-10">
+          <Loader2 class="h-6 w-6 animate-spin text-primary" />
+          <span class="text-xs text-muted-foreground mt-2">Uploading image...</span>
+        </div>
+         <div class="text-[10px] text-muted-foreground mt-1 flex gap-4 justify-between px-1 pb-1">
+              <span v-if="onUpload" class="flex items-center gap-1"><Upload class="h-3 w-3"/> Paste image to upload</span>
+              <span v-else></span>
+              <span>ESC to preview</span>
+          </div>
+      </div>
     </div>
 
     <!-- Image Lightbox -->
