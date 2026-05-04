@@ -93,20 +93,19 @@ router.beforeEach(
     async (
         to: RouteLocationNormalized,
         _from: RouteLocationNormalized,
-        next: NavigationGuardNext,
     ) => {
         const authStore = useAuthStore();
 
         // Allow MFA routes even if user is not fully loaded, but token exists
         if (['/mfa', '/mfa/setup'].includes(to.path)) {
             if (!authStore.token) {
-                return next('/login');
+                return '/login';
             }
-            return next();
+            return true;
         }
 
         if (to.meta.requiresAuth && !authStore.token) {
-            next('/login');
+            return '/login';
         } else {
             if (authStore.token && !authStore.user) {
                 try {
@@ -115,7 +114,7 @@ router.beforeEach(
                     // handled in store (logout)
                 }
             }
-            next();
+            return true;
         }
     },
 );

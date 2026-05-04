@@ -144,31 +144,28 @@ const activityFormRef = ref<any>(null);
 const showUnsavedDialog = ref(false);
 let resolveNavigation: ((value: boolean) => void) | null = null;
 
-function checkUnsavedChanges(next: NavigationGuardNext) {
+function checkUnsavedChanges(): boolean | Promise<boolean> {
     if (activityFormRef.value?.hasUnsavedChanges) {
         showUnsavedDialog.value = true;
-        resolveNavigation = (proceed: boolean) => {
-            if (proceed) next();
-            else next(false);
-        };
-    } else {
-        next();
+        return new Promise((resolve) => {
+            resolveNavigation = resolve;
+        });
     }
+    return true;
 }
 
-onBeforeRouteLeave((_to, _from, next) => {
-    checkUnsavedChanges(next);
+onBeforeRouteLeave((_to, _from) => {
+    return checkUnsavedChanges();
 });
 
-onBeforeRouteUpdate((to, from, next) => {
+onBeforeRouteUpdate((to, from) => {
     if (
         to.params.activityId !== from.params.activityId ||
         to.params.groupId !== from.params.groupId
     ) {
-        checkUnsavedChanges(next);
-    } else {
-        next();
+        return checkUnsavedChanges();
     }
+    return true;
 });
 
 function confirmDiscard() {
