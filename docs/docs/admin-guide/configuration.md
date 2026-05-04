@@ -13,6 +13,7 @@ The in-app [configuration page](../user-guide/administration.md#view-system-conf
 | `APPLICATION_NAME` | `RAPTR` | Name used for JWT tokens as `iss` and `aud` claims, as MFA issuer during TOTP setup and as logger name |
 | `LOG_LEVEL` | `INFO` | Python logging level: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL` |
 | `FASTAPI_DOCUMENTATION` | `true` | Enable the OpenAPI documentation at `/docs` and `/redoc`. Set to `false` in production to hide the API docs |
+| `WELCOME_MESSAGE` | *(none)* | Message displayed on the login page |
 
 ??? bug "Inconsistent Logging"
     The implemented logging requires a rework. Not all relevant logs are created or stored in the DB (audit trail).

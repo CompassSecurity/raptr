@@ -320,6 +320,7 @@ const Configuration = z
     MITRE_JSON_URL: z.string(),
     CUSTOM_DATA_URL: z.union([z.string(), z.null()]),
     ATOMIC_RED_TEAM_URL: z.string(),
+    WELCOME_MESSAGE: z.union([z.string(), z.null()]),
     EXTERNAL_AUTH_CONFIGS: z.union([z.array(ExternalAuthConfig), z.null()]),
   })
   .passthrough();
@@ -3227,6 +3228,14 @@ Returns a provisioning URI for QR code generation.`,
         schema: HTTPValidationError,
       },
     ],
+  },
+  {
+    method: "get",
+    path: "/api/v1/auth/motd",
+    alias: "get_motd_api_v1_auth_motd_get",
+    description: `Get the welcome message of the day.`,
+    requestFormat: "json",
+    response: z.object({ message: z.string() }).passthrough(),
   },
   {
     method: "get",

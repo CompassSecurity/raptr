@@ -59,4 +59,5 @@ class Configuration(BaseModel):
     MITRE_JSON_URL: str
     CUSTOM_DATA_URL: str | None
     ATOMIC_RED_TEAM_URL: str
+    WELCOME_MESSAGE: str | None
     EXTERNAL_AUTH_CONFIGS: list[ExternalAuthConfig] | None

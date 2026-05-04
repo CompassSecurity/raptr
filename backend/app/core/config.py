@@ -52,6 +52,9 @@ class Settings(BaseSettings):
     # External Identity Providers
     EXTERNAL_AUTH_CONFIGS: list[ExternalAuthConfig] = []
 
+    # Welcome message
+    WELCOME_MESSAGE: str | None = None
+
     # MITRE settings
     MITRE_JSON_URL: str = "https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json"
 

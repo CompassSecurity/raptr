@@ -9,6 +9,7 @@ from app.core.authentication import (
     login_service,
     logout_service,
 )
+from app.core.config import settings
 from app.core.mfa import (
     setup_mfa_service,
     validate_mfa_and_issue_token_service,
@@ -90,3 +91,11 @@ def get_providers():
     Get a list of available external authentication providers.
     """
     return get_external_auth_providers_service()
+
+
+@router.get("/motd", response_model=MessageResponse)
+def get_motd():
+    """
+    Get the welcome message of the day.
+    """
+    return MessageResponse(message=settings.WELCOME_MESSAGE or "")
