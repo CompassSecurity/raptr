@@ -56,4 +56,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            APP_VERSION=${{ steps.meta.outputs.version == 'main' && format('latest-{0}', env.sha_short) || steps.meta.outputs.version }}
+            APP_VERSION=${{ steps.meta.outputs.version == 'latest' && format('latest-{0}', env.sha_short) || steps.meta.outputs.version }}
