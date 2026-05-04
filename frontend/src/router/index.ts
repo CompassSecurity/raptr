@@ -1,4 +1,4 @@
-import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
+import type { RouteLocationNormalized } from 'vue-router';
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import AdminView from '@/views/AdminView.vue';
@@ -90,10 +90,7 @@ const router = createRouter({
 });
 
 router.beforeEach(
-    async (
-        to: RouteLocationNormalized,
-        _from: RouteLocationNormalized,
-    ) => {
+    async (to: RouteLocationNormalized, _from: RouteLocationNormalized) => {
         const authStore = useAuthStore();
 
         // Allow MFA routes even if user is not fully loaded, but token exists
