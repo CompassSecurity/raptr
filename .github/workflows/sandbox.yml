@@ -11,6 +11,7 @@ permissions: {}
 jobs:
   redeploy:
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - name: Install doctl (DigitalOcean CLI)
         uses: digitalocean/action-doctl@v2
