@@ -116,7 +116,7 @@ const handleOpenChange = (val: boolean) => {
 
 <template>
     <Dialog :open="open" @update:open="handleOpenChange">
-        <DialogContent class="sm:max-w-[95vw] md:max-w-[1200px] w-[95vw] h-[90vh] flex flex-col p-0 gap-0">
+        <DialogContent aria-describedby="undefined" class="sm:max-w-[95vw] md:max-w-[1200px] w-[95vw] h-[90vh] flex flex-col p-0 gap-0">
             <DialogHeader class="p-4 sm:p-6 border-b shrink-0">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pr-8">
                     <DialogTitle class="flex items-center gap-2 text-xl sm:text-2xl">
