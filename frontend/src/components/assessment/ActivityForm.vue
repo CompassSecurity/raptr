@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BookOpen, ChevronDown, Copy, History } from 'lucide-vue-next';
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import ActivityAssetsManager from '@/components/assessment/ActivityAssetsManager.vue';
 import ActivityAttachments from '@/components/assessment/ActivityAttachments.vue';
@@ -490,6 +490,46 @@ async function handleCloneActivity() {
         isCloning.value = false;
     }
 }
+
+// Unsaved changes detection
+const hasUnsavedChanges = computed(() => {
+    if (!formData.value.id || !originalData.value.id) return false;
+    if (formData.value.id !== originalData.value.id) return false;
+
+    // Fields to ignore when comparing (volatile / externally updated)
+    const ignoreKeys = new Set([
+        'updated_at',
+        'created_at',
+        'linked_knowledge_base_articles',
+    ]);
+
+    const serialize = (obj: Record<string, unknown>) => {
+        const filtered: Record<string, unknown> = {};
+        for (const [key, val] of Object.entries(obj)) {
+            if (ignoreKeys.has(key)) continue;
+            filtered[key] = val;
+        }
+        return JSON.stringify(filtered);
+    };
+
+    return (
+        serialize(formData.value as Record<string, unknown>) !==
+        serialize(originalData.value as Record<string, unknown>)
+    );
+});
+
+// Warn on browser tab close / refresh with unsaved changes
+function handleBeforeUnload(e: BeforeUnloadEvent) {
+    if (hasUnsavedChanges.value) {
+        e.preventDefault();
+    }
+}
+onMounted(() => window.addEventListener('beforeunload', handleBeforeUnload));
+onUnmounted(() =>
+    window.removeEventListener('beforeunload', handleBeforeUnload),
+);
+
+defineExpose({ hasUnsavedChanges });
 </script>
 
 <template>
