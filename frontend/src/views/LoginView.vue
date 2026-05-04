@@ -35,9 +35,11 @@ const usernameInput = ref<InstanceType<typeof Input> | null>(null);
 onMounted(async () => {
     authStore.fetchProviders();
     usernameInput.value?.$el?.focus();
-    
+
     try {
-        const response = await api.get<{ message: string | null }>('/auth/motd');
+        const response = await api.get<{ message: string | null }>(
+            '/auth/motd',
+        );
         if (response.data.message) {
             motd.value = response.data.message;
         }
