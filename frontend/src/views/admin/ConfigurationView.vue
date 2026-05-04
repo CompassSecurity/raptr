@@ -44,6 +44,10 @@
             <span class="text-sm font-medium">Admin User</span>
             <span class="text-sm font-mono text-muted-foreground">{{ configuration.ADMIN_EMAIL }}</span>
           </div>
+          <div class="grid grid-cols-2 items-center gap-4">
+            <span class="text-sm font-medium">Welcome Message</span>
+            <span class="text-sm font-mono text-muted-foreground whitespace-pre-wrap">{{ configuration.WELCOME_MESSAGE || 'None' }}</span>
+          </div>
         </CardContent>
       </Card>
 

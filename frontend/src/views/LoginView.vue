@@ -3,6 +3,7 @@ import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { Info } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -20,18 +21,31 @@ import {
     FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { api } from '@/services/api';
 import { useAuthStore } from '@/stores/auth';
 import { schemas } from '@/types/zod';
 
 const router = useRouter();
 const authStore = useAuthStore();
 const loading = ref(false);
+const motd = ref<string | null>(null);
 
 const usernameInput = ref<InstanceType<typeof Input> | null>(null);
 
-onMounted(() => {
+onMounted(async () => {
     authStore.fetchProviders();
     usernameInput.value?.$el?.focus();
+
+    try {
+        const response = await api.get<{ message: string | null }>(
+            '/auth/motd',
+        );
+        if (response.data.message) {
+            motd.value = response.data.message;
+        }
+    } catch (e) {
+        // Silently ignore if MOTD fetch fails
+    }
 });
 
 const formSchema = toTypedSchema(
@@ -68,7 +82,12 @@ const onSubmit = form.handleSubmit(async (values) => {
 </script>
 
 <template>
-  <div class="flex items-center justify-center min-h-screen p-4">
+  <div class="flex flex-col items-center justify-center min-h-screen p-4">
+    <div v-if="motd" class="w-full max-w-md mb-6 p-4 rounded-lg bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-900 text-blue-800 dark:text-blue-200 text-sm flex items-start shadow-sm">
+      <Info class="w-5 h-5 mr-3 shrink-0 mt-0.5" />
+      <div class="leading-relaxed whitespace-pre-wrap">{{ motd }}</div>
+    </div>
+    
     <Card class="w-full max-w-md">
       <CardHeader class="space-y-1">
         <CardTitle class="text-2xl font-bold text-center">Sign In</CardTitle>

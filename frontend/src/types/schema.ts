@@ -145,6 +145,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/motd": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Motd
+         * @description Get the welcome message of the day.
+         */
+        get: operations["get_motd_api_v1_auth_motd_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/acl/": {
         parameters: {
             query?: never;
@@ -2832,6 +2852,8 @@ export interface components {
             CUSTOM_DATA_URL: string | null;
             /** Atomic Red Team Url */
             ATOMIC_RED_TEAM_URL: string;
+            /** Welcome Message */
+            WELCOME_MESSAGE: string | null;
             /** External Auth Configs */
             EXTERNAL_AUTH_CONFIGS: components["schemas"]["ExternalAuthConfig"][] | null;
         };
@@ -3874,6 +3896,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ExternalAuthProvider"][];
+                };
+            };
+        };
+    };
+    get_motd_api_v1_auth_motd_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponse"];
                 };
             };
         };

@@ -55,7 +55,7 @@ The configuration page `/admin/configuration` displays all current system settin
 
 Displayed settings include:
 
-- **General**: application name, log level, admin email
+- **General**: application name, log level, admin email, welcome message
 - **Security**: minimum password length, OTP settings, JWT configuration, token expiry
 - **Database**: PostgreSQL connection details
 - **External Resources**: URLs for MITRE data, Atomic Red Team templates, and custom template repositories
