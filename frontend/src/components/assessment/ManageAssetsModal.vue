@@ -53,6 +53,7 @@ import { useConfirmDialog } from '@/composables/useConfirmDialog';
 import { cn } from '@/lib/utils';
 import { assetService } from '@/services/assetService';
 import { useAuthStore } from '@/stores/auth';
+import CreatableCombobox from '@/components/ui/CreatableCombobox.vue';
 import type { AssetBase, AssetRead } from '@/types/utils';
 
 const props = defineProps<{
@@ -185,6 +186,32 @@ const filteredAssets = computed(() => {
     }
 
     return assets;
+});
+
+// All unique property keys for autocomplete
+const availablePropertyKeys = computed(() => {
+    const keys = new Set<string>();
+    for (const asset of localAssets.value) {
+        if (asset.properties) {
+            for (const key of Object.keys(asset.properties)) {
+                keys.add(key);
+            }
+        }
+    }
+    return Array.from(keys).sort();
+});
+
+// All unique property values for autocomplete
+const availablePropertyValues = computed(() => {
+    const vals = new Set<string>();
+    for (const asset of localAssets.value) {
+        if (asset.properties) {
+            for (const val of Object.values(asset.properties)) {
+                if (val) vals.add(String(val));
+            }
+        }
+    }
+    return Array.from(vals).sort();
 });
 
 // Helper functions for properties
@@ -672,15 +699,19 @@ watch(
                   :key="index"
                   class="flex gap-2"
                 >
-                  <Input
+                  <CreatableCombobox
                     v-model="prop.key"
+                    :options="availablePropertyKeys"
                     placeholder="Key"
+                    searchPlaceholder="Search or create key..."
                     class="flex-1"
                     :disabled="loading"
                   />
-                  <Input
+                  <CreatableCombobox
                     v-model="prop.value"
+                    :options="availablePropertyValues"
                     placeholder="Value"
+                    searchPlaceholder="Search or create value..."
                     class="flex-1"
                     :disabled="loading"
                   />

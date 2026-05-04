@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BookOpen, ChevronDown, Copy, History } from 'lucide-vue-next';
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import ActivityAssetsManager from '@/components/assessment/ActivityAssetsManager.vue';
 import ActivityAttachments from '@/components/assessment/ActivityAttachments.vue';
@@ -10,6 +10,7 @@ import ActivityGeneralInfo from '@/components/assessment/ActivityGeneralInfo.vue
 import ActivityHistoryModal from '@/components/assessment/ActivityHistoryModal.vue';
 import ConflictResolutionDialog from '@/components/assessment/ConflictResolutionDialog.vue';
 import KnowledgeBaseModal from '@/components/assessment/KnowledgeBaseModal.vue';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -50,7 +51,9 @@ import type {
     AssetRead,
     TagRead,
 } from '@/types/utils';
+import { formatDateTime } from '@/utils/dateFormatter';
 import { schemas } from '@/types/zod';
+import { usePreferencesStore } from '@/stores/preferences';
 
 const props = defineProps<{
     activity: ActivityRead;
@@ -106,6 +109,18 @@ const headerStateOptions = computed(() => {
 const headerStateDisabled = computed(
     () => isSpectator.value || (isBlue.value && !stateEditable.value),
 );
+
+const preferencesStore = usePreferencesStore();
+
+// Formatted date strings for readonly display
+function readonlyDate(value: string | null | undefined): string {
+    return formatDateTime(
+        value,
+        preferencesStore.effectiveTimezone,
+        preferencesStore.dateFormat,
+        preferencesStore.timeFormat,
+    );
+}
 
 const showKBModal = ref(false);
 const showHistoryModal = ref(false);
@@ -188,7 +203,7 @@ watch(
 
             // Full Initialization (Switching activities or first load)
             formData.value = JSON.parse(JSON.stringify(newVal));
-            originalData.value = JSON.parse(JSON.stringify(newVal)); // Save original snapshot
+
             // Ensure arrays are initialized
             formData.value.sources = formData.value.sources || [];
             formData.value.targets = formData.value.targets || [];
@@ -206,6 +221,11 @@ watch(
             formData.value.prevented = formData.value.prevented ?? false;
             formData.value.stakeholder_notification_created =
                 formData.value.stakeholder_notification_created ?? false;
+
+            // Save original snapshot AFTER default values are applied, watchers run, and v-model normalizes
+            nextTick(() => {
+                originalData.value = JSON.parse(JSON.stringify(formData.value));
+            });
         }
     },
     { immediate: true, deep: true },
@@ -475,6 +495,65 @@ async function handleCloneActivity() {
         isCloning.value = false;
     }
 }
+
+// Unsaved changes detection
+const hasUnsavedChanges = computed(() => {
+    if (!formData.value.id || !originalData.value.id) return false;
+    if (formData.value.id !== originalData.value.id) return false;
+
+    // Fields to ignore when comparing (volatile / externally updated)
+    const ignoreKeys = new Set([
+        'updated_at',
+        'created_at',
+        'linked_knowledge_base_articles',
+    ]);
+
+    const cleanAndSort = (obj: any, isRoot = false): any => {
+        if (Array.isArray(obj)) {
+            const arr = obj
+                .map((v) => cleanAndSort(v, false))
+                .filter((v) => v !== null && v !== undefined && v !== '');
+            return arr.length > 0 ? arr : undefined;
+        }
+        if (obj !== null && typeof obj === 'object') {
+            const sortedKeys = Object.keys(obj).sort();
+            const result: Record<string, any> = {};
+            for (const key of sortedKeys) {
+                if (isRoot && ignoreKeys.has(key)) continue;
+                const val = cleanAndSort(obj[key], false);
+                if (val !== null && val !== undefined && val !== '') {
+                    if (Array.isArray(val) && val.length === 0) continue;
+                    if (
+                        typeof val === 'object' &&
+                        Object.keys(val).length === 0
+                    )
+                        continue;
+                    result[key] = val;
+                }
+            }
+            return Object.keys(result).length > 0 ? result : undefined;
+        }
+        return obj;
+    };
+
+    return (
+        JSON.stringify(cleanAndSort(formData.value, true)) !==
+        JSON.stringify(cleanAndSort(originalData.value, true))
+    );
+});
+
+// Warn on browser tab close / refresh with unsaved changes
+function handleBeforeUnload(e: BeforeUnloadEvent) {
+    if (hasUnsavedChanges.value) {
+        e.preventDefault();
+    }
+}
+onMounted(() => window.addEventListener('beforeunload', handleBeforeUnload));
+onUnmounted(() =>
+    window.removeEventListener('beforeunload', handleBeforeUnload),
+);
+
+defineExpose({ hasUnsavedChanges });
 </script>
 
 <template>
@@ -491,20 +570,24 @@ async function handleCloneActivity() {
                     </p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <Select
-                        :model-value="formData.state ?? undefined"
-                        @update:model-value="formData.state = $event as any"
-                        :disabled="headerStateDisabled"
-                    >
-                        <SelectTrigger class="w-[160px]">
-                            <SelectValue :placeholder="formData.state ?? '\xa0'" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem v-for="opt in headerStateOptions" :key="opt" :value="opt">
-                                {{ opt }}
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <template v-if="headerStateDisabled">
+                        <Badge variant="outline" class="text-sm px-4 py-2 h-auto">{{ formData.state || '—' }}</Badge>
+                    </template>
+                    <template v-else>
+                        <Select
+                            :model-value="formData.state ?? undefined"
+                            @update:model-value="formData.state = $event as any"
+                        >
+                            <SelectTrigger class="w-[160px]">
+                                <SelectValue :placeholder="formData.state ?? '\xa0'" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem v-for="opt in headerStateOptions" :key="opt" :value="opt">
+                                    {{ opt }}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </template>
                     <Button v-if="!isSpectator && !isBlue" variant="outline" size="lg" @click="showKBModal = true">
                         <BookOpen class="mr-2 h-4 w-4" />
                         Knowledge Base
@@ -593,19 +676,27 @@ async function handleCloneActivity() {
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="space-y-2">
                                 <Label class="text-sm font-medium">Start Time</Label>
-                                <DateTimePicker
-                                    :model-value="formData.activity_start_time ?? undefined"
-                                    @update:model-value="formData.activity_start_time = $event ?? null"
-                                    :disabled="redTeamReadonly"
-                                />
+                                <template v-if="redTeamReadonly">
+                                    <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.activity_start_time) }}</div>
+                                </template>
+                                <template v-else>
+                                    <DateTimePicker
+                                        :model-value="formData.activity_start_time ?? undefined"
+                                        @update:model-value="formData.activity_start_time = $event ?? null"
+                                    />
+                                </template>
                             </div>
                             <div class="space-y-2">
                                 <Label class="text-sm font-medium">End Time</Label>
-                                <DateTimePicker
-                                    :model-value="formData.activity_end_time ?? undefined"
-                                    @update:model-value="formData.activity_end_time = $event ?? null"
-                                    :disabled="redTeamReadonly"
-                                />
+                                <template v-if="redTeamReadonly">
+                                    <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.activity_end_time) }}</div>
+                                </template>
+                                <template v-else>
+                                    <DateTimePicker
+                                        :model-value="formData.activity_end_time ?? undefined"
+                                        @update:model-value="formData.activity_end_time = $event ?? null"
+                                    />
+                                </template>
                             </div>
                         </div>
                     </div>

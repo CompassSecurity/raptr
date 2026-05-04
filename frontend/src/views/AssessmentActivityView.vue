@@ -1,9 +1,25 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import {
+    type NavigationGuardNext,
+    onBeforeRouteLeave,
+    onBeforeRouteUpdate,
+    useRoute,
+    useRouter,
+} from 'vue-router';
 import ActivityForm from '@/components/assessment/ActivityForm.vue';
 import ActivityGroupForm from '@/components/assessment/ActivityGroupForm.vue';
 import ActivitySidebar from '@/components/assessment/ActivitySidebar.vue';
+import {
+    AlertDialog,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 import {
     ResizableHandle,
     ResizablePanel,
@@ -123,6 +139,53 @@ function handleSidebarToggle() {
         }
     }
 }
+
+const activityFormRef = ref<any>(null);
+const showUnsavedDialog = ref(false);
+let resolveNavigation: ((value: boolean) => void) | null = null;
+
+function checkUnsavedChanges(next: NavigationGuardNext) {
+    if (activityFormRef.value?.hasUnsavedChanges) {
+        showUnsavedDialog.value = true;
+        resolveNavigation = (proceed: boolean) => {
+            if (proceed) next();
+            else next(false);
+        };
+    } else {
+        next();
+    }
+}
+
+onBeforeRouteLeave((_to, _from, next) => {
+    checkUnsavedChanges(next);
+});
+
+onBeforeRouteUpdate((to, from, next) => {
+    if (
+        to.params.activityId !== from.params.activityId ||
+        to.params.groupId !== from.params.groupId
+    ) {
+        checkUnsavedChanges(next);
+    } else {
+        next();
+    }
+});
+
+function confirmDiscard() {
+    showUnsavedDialog.value = false;
+    if (resolveNavigation) {
+        resolveNavigation(true);
+        resolveNavigation = null;
+    }
+}
+
+function cancelNavigation() {
+    showUnsavedDialog.value = false;
+    if (resolveNavigation) {
+        resolveNavigation(false);
+        resolveNavigation = null;
+    }
+}
 </script>
 
 <template>
@@ -146,6 +209,7 @@ function handleSidebarToggle() {
                     <main>
                         <div v-if="currentActivity" class="w-full py-6 px-8 max-w-[2500px] mx-auto">
                             <ActivityForm
+                                ref="activityFormRef"
                                 :activity="currentActivity"
                                 :assessment-id="assessmentId"
                                 :role="userRole"
@@ -172,5 +236,23 @@ function handleSidebarToggle() {
                 </ScrollArea>
             </ResizablePanel>
         </ResizablePanelGroup>
+
+        <!-- Unsaved Changes Dialog -->
+        <AlertDialog :open="showUnsavedDialog" @update:open="(val) => !val && cancelNavigation()">
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        You have unsaved changes in this activity. Are you sure you want to leave? Your changes will be lost.
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel @click="cancelNavigation">Stay on Page</AlertDialogCancel>
+                    <Button variant="destructive" @click="confirmDiscard">
+                        Discard Changes
+                    </Button>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     </div>
 </template>

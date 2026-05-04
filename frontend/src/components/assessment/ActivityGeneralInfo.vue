@@ -2,6 +2,7 @@
 import { ChevronDown } from 'lucide-vue-next';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { toast } from 'vue-sonner';
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Collapsible,
@@ -11,6 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import MarkdownEditor from '@/components/ui/MarkdownEditor.vue';
+import ReadonlyField from '@/components/ui/ReadonlyField.vue';
 import SearchableSelect from '@/components/ui/SearchableSelect.vue';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
@@ -79,6 +81,31 @@ const activityGroupOptions = computed(() => {
         label: g.is_default ? `${g.name} (Default)` : g.name,
         value: g.id,
     }));
+});
+
+// Readonly display labels
+const displayTactic = computed(() => {
+    if (!formData.value.mitre_tactic) return null;
+    const opt = availableTacticOptions.value.find(
+        (o) => o.value === formData.value.mitre_tactic,
+    );
+    return opt?.label || formData.value.mitre_tactic;
+});
+
+const displayTechnique = computed(() => {
+    if (!formData.value.mitre_technique) return null;
+    const opt = availableTechniqueOptions.value.find(
+        (o) => o.value === formData.value.mitre_technique,
+    );
+    return opt?.label || formData.value.mitre_technique;
+});
+
+const displayGroup = computed(() => {
+    if (!formData.value.activity_group_id) return null;
+    const opt = activityGroupOptions.value.find(
+        (o) => o.value === formData.value.activity_group_id,
+    );
+    return opt?.label || formData.value.activity_group_id;
 });
 
 // MITRE change handlers
@@ -212,67 +239,80 @@ onUnmounted(() => {
                 <!-- Activity Name -->
                 <div class="space-y-2">
                     <Label class="text-sm font-medium">Activity Name</Label>
-                    <Input
-                        v-model="formData.name"
-                        placeholder="Enter activity name"
-                        class="text-base"
-                        :disabled="readonly"
-                    />
+                    <template v-if="readonly">
+                        <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center text-base font-medium">{{ formData.name || '—' }}</div>
+                    </template>
+                    <template v-else>
+                        <Input
+                            v-model="formData.name"
+                            placeholder="Enter activity name"
+                            class="text-base"
+                        />
+                    </template>
                 </div>
 
                 <!-- MITRE ATT&CK -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <Label class="text-sm font-medium">MITRE Tactic</Label>
-                        <SearchableSelect
-                            :model-value="formData.mitre_tactic"
-                            :options="availableTacticOptions"
-                            placeholder="Select a tactic"
-                            search-placeholder="Search tactics..."
-                            :disabled="readonly"
-                            @update:model-value="handleTacticChange"
-                        />
-                    </div>
-                    <div class="space-y-2">
-                        <Label class="text-sm font-medium">MITRE Technique</Label>
-                        <SearchableSelect
-                            :model-value="formData.mitre_technique"
-                            :options="availableTechniqueOptions"
-                            placeholder="Select a technique"
-                            search-placeholder="Search techniques..."
-                            :disabled="readonly"
-                            @update:model-value="handleTechniqueChange"
-                        />
-                    </div>
+                    <template v-if="readonly">
+                        <ReadonlyField label="MITRE Tactic" :model-value="displayTactic" />
+                        <ReadonlyField label="MITRE Technique" :model-value="displayTechnique" />
+                    </template>
+                    <template v-else>
+                        <div class="space-y-2">
+                            <Label class="text-sm font-medium">MITRE Tactic</Label>
+                            <SearchableSelect
+                                :model-value="formData.mitre_tactic"
+                                :options="availableTacticOptions"
+                                placeholder="Select a tactic"
+                                search-placeholder="Search tactics..."
+                                @update:model-value="handleTacticChange"
+                            />
+                        </div>
+                        <div class="space-y-2">
+                            <Label class="text-sm font-medium">MITRE Technique</Label>
+                            <SearchableSelect
+                                :model-value="formData.mitre_technique"
+                                :options="availableTechniqueOptions"
+                                placeholder="Select a technique"
+                                search-placeholder="Search techniques..."
+                                @update:model-value="handleTechniqueChange"
+                            />
+                        </div>
+                    </template>
                 </div>
 
                 <!-- Priority & Activity Group -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <Label class="text-sm font-medium">Priority</Label>
-                        <Select :model-value="formData.priority ?? undefined" @update:model-value="formData.priority = $event as any" :disabled="readonly">
-                            <SelectTrigger class="w-full">
-                                <SelectValue :placeholder="formData.priority ?? '\xa0'" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem v-for="opt in priorityOptions" :key="opt" :value="opt">
-                                    {{ opt }}
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div class="space-y-2">
-                        <Label class="text-sm font-medium">Activity Group</Label>
-                        <SearchableSelect
-                            :model-value="formData.activity_group_id"
-                            :options="activityGroupOptions"
-                            placeholder="Select a group"
-                            search-placeholder="Search groups..."
-                            :clearable="false"
-                            :disabled="readonly"
-                            @update:model-value="formData.activity_group_id = $event || null"
-                        />
-                    </div>
+                    <template v-if="readonly">
+                        <ReadonlyField label="Priority" :model-value="formData.priority as string" />
+                        <ReadonlyField label="Activity Group" :model-value="displayGroup" />
+                    </template>
+                    <template v-else>
+                        <div class="space-y-2">
+                            <Label class="text-sm font-medium">Priority</Label>
+                            <Select :model-value="formData.priority ?? undefined" @update:model-value="formData.priority = $event as any">
+                                <SelectTrigger class="w-full">
+                                    <SelectValue :placeholder="formData.priority ?? '\xa0'" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem v-for="opt in priorityOptions" :key="opt" :value="opt">
+                                        {{ opt }}
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div class="space-y-2">
+                            <Label class="text-sm font-medium">Activity Group</Label>
+                            <SearchableSelect
+                                :model-value="formData.activity_group_id"
+                                :options="activityGroupOptions"
+                                placeholder="Select a group"
+                                search-placeholder="Search groups..."
+                                :clearable="false"
+                                @update:model-value="formData.activity_group_id = $event || null"
+                            />
+                        </div>
+                    </template>
                 </div>
 
                 <div class="space-y-4">
@@ -308,49 +348,70 @@ onUnmounted(() => {
                         <div class="space-y-4">
                             <div class="space-y-2">
                                 <Label class="text-sm font-medium">Expected Severity</Label>
-                                <Select :model-value="formData.expected_severity ?? undefined" @update:model-value="formData.expected_severity = $event as any" :disabled="readonly">
-                                    <SelectTrigger class="w-full">
-                                        <SelectValue :placeholder="formData.expected_severity ?? '\xa0'" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem v-for="opt in severityOptions" :key="opt" :value="opt">
-                                            {{ opt }}
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                <template v-if="readonly">
+                                    <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ formData.expected_severity || '—' }}</div>
+                                </template>
+                                <template v-else>
+                                    <Select :model-value="formData.expected_severity ?? undefined" @update:model-value="formData.expected_severity = $event as any">
+                                        <SelectTrigger class="w-full">
+                                            <SelectValue :placeholder="formData.expected_severity ?? '\xa0'" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem v-for="opt in severityOptions" :key="opt" :value="opt">
+                                                {{ opt }}
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </template>
                             </div>
-                            <div class="flex items-center space-x-3 border rounded-lg p-3.5 hover:bg-accent/50 transition-colors">
-                                <Switch
-                                    id="exp_log"
-                                    v-model="formData.expected_logging"
-                                    :disabled="readonly"
-                                />
-                                <Label htmlFor="exp_log" class="cursor-pointer text-sm font-normal">Expected Logging</Label>
-                            </div>
-                            <div class="flex items-center space-x-3 border rounded-lg p-3.5 hover:bg-accent/50 transition-colors">
-                                <Switch
-                                    id="exp_prev"
-                                    v-model="formData.expected_prevention"
-                                    :disabled="readonly"
-                                />
-                                <Label htmlFor="exp_prev" class="cursor-pointer text-sm font-normal">Expected Prevention</Label>
-                            </div>
-                            <div class="flex items-center space-x-3 border rounded-lg p-3.5 hover:bg-accent/50 transition-colors">
-                                <Switch
-                                    id="exp_alert"
-                                    v-model="formData.expected_alert_creation"
-                                    :disabled="readonly"
-                                />
-                                <Label htmlFor="exp_alert" class="cursor-pointer text-sm font-normal">Expected Alert Creation</Label>
-                            </div>
-                            <div class="flex items-center space-x-3 border rounded-lg p-3.5 hover:bg-accent/50 transition-colors">
-                                <Switch
-                                    id="exp_stakeholder"
-                                    v-model="formData.expected_stakeholder_notification"
-                                    :disabled="readonly"
-                                />
-                                <Label htmlFor="exp_stakeholder" class="cursor-pointer text-sm font-normal">Expected Stakeholder Notification</Label>
-                            </div>
+                            <template v-if="readonly">
+                                <div class="flex items-center justify-between border rounded-lg p-3.5">
+                                    <Label class="text-sm font-normal">Expected Logging</Label>
+                                    <Badge :class="formData.expected_logging ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ formData.expected_logging ? 'Yes' : 'No' }}</Badge>
+                                </div>
+                                <div class="flex items-center justify-between border rounded-lg p-3.5">
+                                    <Label class="text-sm font-normal">Expected Prevention</Label>
+                                    <Badge :class="formData.expected_prevention ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ formData.expected_prevention ? 'Yes' : 'No' }}</Badge>
+                                </div>
+                                <div class="flex items-center justify-between border rounded-lg p-3.5">
+                                    <Label class="text-sm font-normal">Expected Alert Creation</Label>
+                                    <Badge :class="formData.expected_alert_creation ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ formData.expected_alert_creation ? 'Yes' : 'No' }}</Badge>
+                                </div>
+                                <div class="flex items-center justify-between border rounded-lg p-3.5">
+                                    <Label class="text-sm font-normal">Expected Stakeholder Notification</Label>
+                                    <Badge :class="formData.expected_stakeholder_notification ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ formData.expected_stakeholder_notification ? 'Yes' : 'No' }}</Badge>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div class="flex items-center space-x-3 border rounded-lg p-3.5 hover:bg-accent/50 transition-colors">
+                                    <Switch
+                                        id="exp_log"
+                                        v-model="formData.expected_logging"
+                                    />
+                                    <Label htmlFor="exp_log" class="cursor-pointer text-sm font-normal">Expected Logging</Label>
+                                </div>
+                                <div class="flex items-center space-x-3 border rounded-lg p-3.5 hover:bg-accent/50 transition-colors">
+                                    <Switch
+                                        id="exp_prev"
+                                        v-model="formData.expected_prevention"
+                                    />
+                                    <Label htmlFor="exp_prev" class="cursor-pointer text-sm font-normal">Expected Prevention</Label>
+                                </div>
+                                <div class="flex items-center space-x-3 border rounded-lg p-3.5 hover:bg-accent/50 transition-colors">
+                                    <Switch
+                                        id="exp_alert"
+                                        v-model="formData.expected_alert_creation"
+                                    />
+                                    <Label htmlFor="exp_alert" class="cursor-pointer text-sm font-normal">Expected Alert Creation</Label>
+                                </div>
+                                <div class="flex items-center space-x-3 border rounded-lg p-3.5 hover:bg-accent/50 transition-colors">
+                                    <Switch
+                                        id="exp_stakeholder"
+                                        v-model="formData.expected_stakeholder_notification"
+                                    />
+                                    <Label htmlFor="exp_stakeholder" class="cursor-pointer text-sm font-normal">Expected Stakeholder Notification</Label>
+                                </div>
+                            </template>
                         </div>
                     </div>
 
@@ -363,25 +424,38 @@ onUnmounted(() => {
                         <div class="space-y-4">
                             <div class="space-y-2">
                                 <Label class="text-sm font-medium">State</Label>
-                                <Select :model-value="formData.state ?? undefined" @update:model-value="formData.state = $event as any" :disabled="readonly && !stateEditable">
-                                    <SelectTrigger class="w-full">
-                                        <SelectValue :placeholder="formData.state ?? '\xa0'" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem v-for="opt in availableStateOptions" :key="opt" :value="opt">
-                                            {{ opt }}
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                <template v-if="readonly && !stateEditable">
+                                    <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ formData.state || '—' }}</div>
+                                </template>
+                                <template v-else>
+                                    <Select :model-value="formData.state ?? undefined" @update:model-value="formData.state = $event as any">
+                                        <SelectTrigger class="w-full">
+                                            <SelectValue :placeholder="formData.state ?? '\xa0'" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem v-for="opt in availableStateOptions" :key="opt" :value="opt">
+                                                {{ opt }}
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </template>
                             </div>
-                            <div class="flex items-center space-x-3 border rounded-lg p-3.5 hover:bg-accent/50 transition-colors">
-                                <Switch id="visible" v-model="formData.visible" :disabled="readonly" />
-                                <Label htmlFor="visible" class="cursor-pointer text-sm font-medium">Visible</Label>
-                            </div>
+                            <template v-if="readonly">
+                                <div class="flex items-center justify-between border rounded-lg p-3.5">
+                                    <Label class="text-sm font-medium">Visible</Label>
+                                    <Badge :class="formData.visible ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ formData.visible ? 'Yes' : 'No' }}</Badge>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div class="flex items-center space-x-3 border rounded-lg p-3.5 hover:bg-accent/50 transition-colors">
+                                    <Switch id="visible" v-model="formData.visible" />
+                                    <Label htmlFor="visible" class="cursor-pointer text-sm font-medium">Visible</Label>
+                                </div>
+                            </template>
 
                             <div class="space-y-2 relative tags-input-container">
                                 <Label class="text-sm font-medium">Tags</Label>
-                                <TagsInput v-model="currentTagNames" :disabled="tagsReadonly ?? readonly" @focus="showTagSuggestions = true">
+                                <TagsInput v-model="currentTagNames" :disabled="tagsReadonly ?? readonly" @focus="showTagSuggestions = true" class="min-h-[38px]">
                                     <TagsInputItem
                                         v-for="item in currentTagNames"
                                         :key="item"
