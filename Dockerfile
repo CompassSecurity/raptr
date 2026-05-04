@@ -3,6 +3,10 @@ FROM oven/bun:1 AS frontend-builder
 
 WORKDIR /app/frontend
 
+# Catch build argument and expose it to Vite
+ARG APP_VERSION=dev
+ENV VITE_APP_VERSION=$APP_VERSION
+
 # Copy package files
 COPY frontend/package.json frontend/bun.lock ./
 
@@ -21,6 +25,10 @@ RUN NODE_ENV=production bun run build
 FROM python:3.14-slim AS backend-runner
 
 WORKDIR /app
+
+# Catch build argument and expose it to the backend
+ARG APP_VERSION=dev
+ENV RAPTR_VERSION=$APP_VERSION
 
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/

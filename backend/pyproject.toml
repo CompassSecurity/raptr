@@ -1,6 +1,6 @@
 [project]
 name = "raptr-backend-api"
-version = "0.1.0-beta.1"
+version = "0.0.0.dev0"
 description = "The backend API for the RAPTR application"
 readme = "README.md"
 requires-python = ">=3.14"

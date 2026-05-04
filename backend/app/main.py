@@ -35,7 +35,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     lifespan=lifespan,
     title="RAPTR Backend API",
-    version="0.1.0-beta.1",
+    version=settings.RAPTR_VERSION,
     openapi_url="/openapi.json" if settings.FASTAPI_DOCUMENTATION else None,
 )
 

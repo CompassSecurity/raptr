@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
 
     # General settings
+    RAPTR_VERSION: str = "dev-local"
     APPLICATION_NAME: str = "RAPTR"
     ADMIN_EMAIL: str = "admin@raptr.app"
     ADMIN_PASSWORD: str | None = None
