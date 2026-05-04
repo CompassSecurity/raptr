@@ -1,0 +1,22 @@
+version: 2
+updates:
+  # Python dependencies (Backend)
+  # Dependabot uses the "pip" ecosystem to parse pyproject.toml and uv.lock
+  - package-ecosystem: "pip"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+
+  # JavaScript/TypeScript dependencies (Frontend)
+  # Dependabot uses the "npm" ecosystem to parse package.json and bun.lockb / bun.lock
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+
+  # Dockerfile dependencies
+  # Monitors base images in the Dockerfile for updates
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
