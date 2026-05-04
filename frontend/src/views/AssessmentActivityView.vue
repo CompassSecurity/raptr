@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
 import {
+    type NavigationGuardNext,
     onBeforeRouteLeave,
     onBeforeRouteUpdate,
     useRoute,
@@ -11,7 +12,6 @@ import ActivityGroupForm from '@/components/assessment/ActivityGroupForm.vue';
 import ActivitySidebar from '@/components/assessment/ActivitySidebar.vue';
 import {
     AlertDialog,
-    AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
@@ -19,6 +19,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 import {
     ResizableHandle,
     ResizablePanel,
@@ -143,38 +144,47 @@ const activityFormRef = ref<any>(null);
 const showUnsavedDialog = ref(false);
 let resolveNavigation: ((value: boolean) => void) | null = null;
 
-async function checkUnsavedChanges(): Promise<boolean> {
+function checkUnsavedChanges(next: NavigationGuardNext) {
     if (activityFormRef.value?.hasUnsavedChanges) {
         showUnsavedDialog.value = true;
-        return new Promise((resolve) => {
-            resolveNavigation = resolve;
-        });
+        resolveNavigation = (proceed: boolean) => {
+            if (proceed) next();
+            else next(false);
+        };
+    } else {
+        next();
     }
-    return true;
 }
 
-onBeforeRouteLeave(async () => {
-    return await checkUnsavedChanges();
+onBeforeRouteLeave((_to, _from, next) => {
+    checkUnsavedChanges(next);
 });
 
-onBeforeRouteUpdate(async (to, from) => {
+onBeforeRouteUpdate((to, from, next) => {
     if (
         to.params.activityId !== from.params.activityId ||
         to.params.groupId !== from.params.groupId
     ) {
-        return await checkUnsavedChanges();
+        checkUnsavedChanges(next);
+    } else {
+        next();
     }
-    return true;
 });
 
 function confirmDiscard() {
     showUnsavedDialog.value = false;
-    if (resolveNavigation) resolveNavigation(true);
+    if (resolveNavigation) {
+        resolveNavigation(true);
+        resolveNavigation = null;
+    }
 }
 
 function cancelNavigation() {
     showUnsavedDialog.value = false;
-    if (resolveNavigation) resolveNavigation(false);
+    if (resolveNavigation) {
+        resolveNavigation(false);
+        resolveNavigation = null;
+    }
 }
 </script>
 
@@ -238,9 +248,9 @@ function cancelNavigation() {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel @click="cancelNavigation">Stay on Page</AlertDialogCancel>
-                    <AlertDialogAction @click="confirmDiscard" class="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    <Button variant="destructive" @click="confirmDiscard">
                         Discard Changes
-                    </AlertDialogAction>
+                    </Button>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

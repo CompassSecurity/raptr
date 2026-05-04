@@ -203,7 +203,7 @@ watch(
 
             // Full Initialization (Switching activities or first load)
             formData.value = JSON.parse(JSON.stringify(newVal));
-            originalData.value = JSON.parse(JSON.stringify(newVal)); // Save original snapshot
+
             // Ensure arrays are initialized
             formData.value.sources = formData.value.sources || [];
             formData.value.targets = formData.value.targets || [];
@@ -221,6 +221,11 @@ watch(
             formData.value.prevented = formData.value.prevented ?? false;
             formData.value.stakeholder_notification_created =
                 formData.value.stakeholder_notification_created ?? false;
+
+            // Save original snapshot AFTER default values are applied, watchers run, and v-model normalizes
+            nextTick(() => {
+                originalData.value = JSON.parse(JSON.stringify(formData.value));
+            });
         }
     },
     { immediate: true, deep: true },
@@ -503,18 +508,37 @@ const hasUnsavedChanges = computed(() => {
         'linked_knowledge_base_articles',
     ]);
 
-    const serialize = (obj: Record<string, unknown>) => {
-        const filtered: Record<string, unknown> = {};
-        for (const [key, val] of Object.entries(obj)) {
-            if (ignoreKeys.has(key)) continue;
-            filtered[key] = val;
+    const cleanAndSort = (obj: any, isRoot = false): any => {
+        if (Array.isArray(obj)) {
+            const arr = obj
+                .map((v) => cleanAndSort(v, false))
+                .filter((v) => v !== null && v !== undefined && v !== '');
+            return arr.length > 0 ? arr : undefined;
         }
-        return JSON.stringify(filtered);
+        if (obj !== null && typeof obj === 'object') {
+            const sortedKeys = Object.keys(obj).sort();
+            const result: Record<string, any> = {};
+            for (const key of sortedKeys) {
+                if (isRoot && ignoreKeys.has(key)) continue;
+                const val = cleanAndSort(obj[key], false);
+                if (val !== null && val !== undefined && val !== '') {
+                    if (Array.isArray(val) && val.length === 0) continue;
+                    if (
+                        typeof val === 'object' &&
+                        Object.keys(val).length === 0
+                    )
+                        continue;
+                    result[key] = val;
+                }
+            }
+            return Object.keys(result).length > 0 ? result : undefined;
+        }
+        return obj;
     };
 
     return (
-        serialize(formData.value as Record<string, unknown>) !==
-        serialize(originalData.value as Record<string, unknown>)
+        JSON.stringify(cleanAndSort(formData.value, true)) !==
+        JSON.stringify(cleanAndSort(originalData.value, true))
     );
 });
 
