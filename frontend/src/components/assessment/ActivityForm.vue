@@ -184,8 +184,7 @@ watch(
         // wholesale so external changes (other users, server merges) show up.
         if (sameActivity && userDirty.value) {
             if (formData.value.evaluation && newVal.evaluation) {
-                const newQuestions =
-                    newVal.evaluation.dynamic_questions || [];
+                const newQuestions = newVal.evaluation.dynamic_questions || [];
                 const currentQuestions =
                     formData.value.evaluation.dynamic_questions || [];
 
