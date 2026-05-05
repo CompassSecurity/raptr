@@ -2,7 +2,13 @@ import { type User as OidcUser, UserManager } from 'oidc-client-ts';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { api } from '@/services/api';
-import type { BodyLoginApiV1AuthTokenPost, MfaSetupResponse, Otp, Token, UserPasswordUpdate } from '@/types/types.gen';
+import type {
+    BodyLoginApiV1AuthTokenPost,
+    MfaSetupResponse,
+    Otp,
+    Token,
+    UserPasswordUpdate,
+} from '@/types/types.gen';
 import type { AclRole, ExternalAuthProvider, UserReadAcl } from '@/types/utils';
 
 type LoginBody = BodyLoginApiV1AuthTokenPost;

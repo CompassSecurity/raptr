@@ -1,7 +1,9 @@
 import type { TypedSchema, TypedSchemaError } from 'vee-validate';
-import type { ZodType, input, output } from 'zod';
+import type { input, output, ZodType } from 'zod';
 
-export function toTypedSchema<T extends ZodType>(schema: T): TypedSchema<input<T>, output<T>> {
+export function toTypedSchema<T extends ZodType>(
+    schema: T,
+): TypedSchema<input<T>, output<T>> {
     return {
         __type: 'VVTypedSchema' as const,
         async parse(value) {
@@ -9,10 +11,12 @@ export function toTypedSchema<T extends ZodType>(schema: T): TypedSchema<input<T
             if (result.success) {
                 return { value: result.data, errors: [] };
             }
-            const errors: TypedSchemaError[] = result.error.issues.map((issue) => ({
-                path: issue.path.map(String).join('.'),
-                errors: [issue.message],
-            }));
+            const errors: TypedSchemaError[] = result.error.issues.map(
+                (issue) => ({
+                    path: issue.path.map(String).join('.'),
+                    errors: [issue.message],
+                }),
+            );
             return { errors };
         },
     };

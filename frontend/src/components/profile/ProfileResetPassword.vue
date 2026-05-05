@@ -20,12 +20,14 @@ import { zUserPasswordUpdate } from '@/types/zod.gen';
 const authStore = useAuthStore();
 
 const formSchema = toTypedSchema(
-    zUserPasswordUpdate.extend({
-        confirm_password: z.string(),
-    }).refine((data) => data.new_password === data.confirm_password, {
-        message: "Passwords don't match",
-        path: ['confirm_password'],
-    }),
+    zUserPasswordUpdate
+        .extend({
+            confirm_password: z.string(),
+        })
+        .refine((data) => data.new_password === data.confirm_password, {
+            message: "Passwords don't match",
+            path: ['confirm_password'],
+        }),
 );
 
 const { handleSubmit, isSubmitting, resetForm } = useForm({

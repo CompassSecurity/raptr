@@ -54,7 +54,14 @@ export type AclRole = 'red' | 'blue' | 'spectator';
  *
  * Possible asset roles in an activity
  */
-export type ActivityAssetRole = 'source' | 'target' | 'tool' | 'log_source' | 'prevention_source' | 'alert_source' | 'stakeholder_notification_source';
+export type ActivityAssetRole =
+    | 'source'
+    | 'target'
+    | 'tool'
+    | 'log_source'
+    | 'prevention_source'
+    | 'alert_source'
+    | 'stakeholder_notification_source';
 
 /**
  * ActivityAssetUpdate
@@ -556,14 +563,27 @@ export type ActivityReorder = {
  *
  * Possible activity severity levels
  */
-export type ActivitySeverity = 'Informational' | 'Low' | 'Medium' | 'High' | 'Critical';
+export type ActivitySeverity =
+    | 'Informational'
+    | 'Low'
+    | 'Medium'
+    | 'High'
+    | 'Critical';
 
 /**
  * ActivityState
  *
  * Possible activity state levels
  */
-export type ActivityState = 'Pending' | 'Waiting Red' | 'Waiting Blue' | 'Ready' | 'In Progress' | 'In Evaluation' | 'Completed' | 'Cancelled';
+export type ActivityState =
+    | 'Pending'
+    | 'Waiting Red'
+    | 'Waiting Blue'
+    | 'Ready'
+    | 'In Progress'
+    | 'In Evaluation'
+    | 'Completed'
+    | 'Cancelled';
 
 /**
  * ActivityTagsUpdate
@@ -997,12 +1017,13 @@ export type BodyLoginApiV1AuthTokenPost = {
 /**
  * Body_upload_file_api_v1_assessments__assessment_id__activity__activity_id__upload_post
  */
-export type BodyUploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPost = {
-    /**
-     * File
-     */
-    file: Blob | File;
-};
+export type BodyUploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPost =
+    {
+        /**
+         * File
+         */
+        file: Blob | File;
+    };
 
 /**
  * CampaignTemplateItemRead
@@ -1864,7 +1885,14 @@ export type ReportContextRequest = {
     /**
      * Sort By
      */
-    sort_by?: 'activity_position' | 'name' | 'mitre_tactic' | 'priority' | 'state' | 'start_time' | 'coverage_score';
+    sort_by?:
+        | 'activity_position'
+        | 'name'
+        | 'mitre_tactic'
+        | 'priority'
+        | 'state'
+        | 'start_time'
+        | 'coverage_score';
     /**
      * Sort Order
      */
@@ -1880,7 +1908,14 @@ export type ReportGenerateRequest = {
     /**
      * Sort By
      */
-    sort_by?: 'activity_position' | 'name' | 'mitre_tactic' | 'priority' | 'state' | 'start_time' | 'coverage_score';
+    sort_by?:
+        | 'activity_position'
+        | 'name'
+        | 'mitre_tactic'
+        | 'priority'
+        | 'state'
+        | 'start_time'
+        | 'coverage_score';
     /**
      * Sort Order
      */
@@ -2328,7 +2363,8 @@ export type HealthCheckApiV1HealthGetResponses = {
     200: MessageResponse;
 };
 
-export type HealthCheckApiV1HealthGetResponse = HealthCheckApiV1HealthGetResponses[keyof HealthCheckApiV1HealthGetResponses];
+export type HealthCheckApiV1HealthGetResponse =
+    HealthCheckApiV1HealthGetResponses[keyof HealthCheckApiV1HealthGetResponses];
 
 export type LoginApiV1AuthTokenPostData = {
     body: BodyLoginApiV1AuthTokenPost;
@@ -2344,7 +2380,8 @@ export type LoginApiV1AuthTokenPostErrors = {
     422: HttpValidationError;
 };
 
-export type LoginApiV1AuthTokenPostError = LoginApiV1AuthTokenPostErrors[keyof LoginApiV1AuthTokenPostErrors];
+export type LoginApiV1AuthTokenPostError =
+    LoginApiV1AuthTokenPostErrors[keyof LoginApiV1AuthTokenPostErrors];
 
 export type LoginApiV1AuthTokenPostResponses = {
     /**
@@ -2353,7 +2390,8 @@ export type LoginApiV1AuthTokenPostResponses = {
     200: Token;
 };
 
-export type LoginApiV1AuthTokenPostResponse = LoginApiV1AuthTokenPostResponses[keyof LoginApiV1AuthTokenPostResponses];
+export type LoginApiV1AuthTokenPostResponse =
+    LoginApiV1AuthTokenPostResponses[keyof LoginApiV1AuthTokenPostResponses];
 
 export type LogoutApiV1AuthLogoutPostData = {
     body?: never;
@@ -2369,7 +2407,8 @@ export type LogoutApiV1AuthLogoutPostResponses = {
     200: MessageResponse;
 };
 
-export type LogoutApiV1AuthLogoutPostResponse = LogoutApiV1AuthLogoutPostResponses[keyof LogoutApiV1AuthLogoutPostResponses];
+export type LogoutApiV1AuthLogoutPostResponse =
+    LogoutApiV1AuthLogoutPostResponses[keyof LogoutApiV1AuthLogoutPostResponses];
 
 export type SetupMfaApiV1AuthMfaSetupPostData = {
     body?: never;
@@ -2385,7 +2424,8 @@ export type SetupMfaApiV1AuthMfaSetupPostResponses = {
     200: MfaSetupResponse;
 };
 
-export type SetupMfaApiV1AuthMfaSetupPostResponse = SetupMfaApiV1AuthMfaSetupPostResponses[keyof SetupMfaApiV1AuthMfaSetupPostResponses];
+export type SetupMfaApiV1AuthMfaSetupPostResponse =
+    SetupMfaApiV1AuthMfaSetupPostResponses[keyof SetupMfaApiV1AuthMfaSetupPostResponses];
 
 export type ValidateMfaSetupApiV1AuthMfaSetupValidatePostData = {
     body: Otp;
@@ -2401,7 +2441,8 @@ export type ValidateMfaSetupApiV1AuthMfaSetupValidatePostErrors = {
     422: HttpValidationError;
 };
 
-export type ValidateMfaSetupApiV1AuthMfaSetupValidatePostError = ValidateMfaSetupApiV1AuthMfaSetupValidatePostErrors[keyof ValidateMfaSetupApiV1AuthMfaSetupValidatePostErrors];
+export type ValidateMfaSetupApiV1AuthMfaSetupValidatePostError =
+    ValidateMfaSetupApiV1AuthMfaSetupValidatePostErrors[keyof ValidateMfaSetupApiV1AuthMfaSetupValidatePostErrors];
 
 export type ValidateMfaSetupApiV1AuthMfaSetupValidatePostResponses = {
     /**
@@ -2410,7 +2451,8 @@ export type ValidateMfaSetupApiV1AuthMfaSetupValidatePostResponses = {
     200: Token;
 };
 
-export type ValidateMfaSetupApiV1AuthMfaSetupValidatePostResponse = ValidateMfaSetupApiV1AuthMfaSetupValidatePostResponses[keyof ValidateMfaSetupApiV1AuthMfaSetupValidatePostResponses];
+export type ValidateMfaSetupApiV1AuthMfaSetupValidatePostResponse =
+    ValidateMfaSetupApiV1AuthMfaSetupValidatePostResponses[keyof ValidateMfaSetupApiV1AuthMfaSetupValidatePostResponses];
 
 export type ValidateMfaApiV1AuthMfaPostData = {
     body: Otp;
@@ -2426,7 +2468,8 @@ export type ValidateMfaApiV1AuthMfaPostErrors = {
     422: HttpValidationError;
 };
 
-export type ValidateMfaApiV1AuthMfaPostError = ValidateMfaApiV1AuthMfaPostErrors[keyof ValidateMfaApiV1AuthMfaPostErrors];
+export type ValidateMfaApiV1AuthMfaPostError =
+    ValidateMfaApiV1AuthMfaPostErrors[keyof ValidateMfaApiV1AuthMfaPostErrors];
 
 export type ValidateMfaApiV1AuthMfaPostResponses = {
     /**
@@ -2435,7 +2478,8 @@ export type ValidateMfaApiV1AuthMfaPostResponses = {
     200: Token;
 };
 
-export type ValidateMfaApiV1AuthMfaPostResponse = ValidateMfaApiV1AuthMfaPostResponses[keyof ValidateMfaApiV1AuthMfaPostResponses];
+export type ValidateMfaApiV1AuthMfaPostResponse =
+    ValidateMfaApiV1AuthMfaPostResponses[keyof ValidateMfaApiV1AuthMfaPostResponses];
 
 export type GetProvidersApiV1AuthProvidersGetData = {
     body?: never;
@@ -2453,7 +2497,8 @@ export type GetProvidersApiV1AuthProvidersGetResponses = {
     200: Array<ExternalAuthProvider>;
 };
 
-export type GetProvidersApiV1AuthProvidersGetResponse = GetProvidersApiV1AuthProvidersGetResponses[keyof GetProvidersApiV1AuthProvidersGetResponses];
+export type GetProvidersApiV1AuthProvidersGetResponse =
+    GetProvidersApiV1AuthProvidersGetResponses[keyof GetProvidersApiV1AuthProvidersGetResponses];
 
 export type GetMotdApiV1AuthMotdGetData = {
     body?: never;
@@ -2469,7 +2514,8 @@ export type GetMotdApiV1AuthMotdGetResponses = {
     200: MessageResponse;
 };
 
-export type GetMotdApiV1AuthMotdGetResponse = GetMotdApiV1AuthMotdGetResponses[keyof GetMotdApiV1AuthMotdGetResponses];
+export type GetMotdApiV1AuthMotdGetResponse =
+    GetMotdApiV1AuthMotdGetResponses[keyof GetMotdApiV1AuthMotdGetResponses];
 
 export type GetAclsApiV1AclGetData = {
     body?: never;
@@ -2487,7 +2533,8 @@ export type GetAclsApiV1AclGetResponses = {
     200: Array<AclRead>;
 };
 
-export type GetAclsApiV1AclGetResponse = GetAclsApiV1AclGetResponses[keyof GetAclsApiV1AclGetResponses];
+export type GetAclsApiV1AclGetResponse =
+    GetAclsApiV1AclGetResponses[keyof GetAclsApiV1AclGetResponses];
 
 export type CreateAclApiV1AclPostData = {
     body: AclBase;
@@ -2503,7 +2550,8 @@ export type CreateAclApiV1AclPostErrors = {
     422: HttpValidationError;
 };
 
-export type CreateAclApiV1AclPostError = CreateAclApiV1AclPostErrors[keyof CreateAclApiV1AclPostErrors];
+export type CreateAclApiV1AclPostError =
+    CreateAclApiV1AclPostErrors[keyof CreateAclApiV1AclPostErrors];
 
 export type CreateAclApiV1AclPostResponses = {
     /**
@@ -2512,7 +2560,8 @@ export type CreateAclApiV1AclPostResponses = {
     200: AclRead;
 };
 
-export type CreateAclApiV1AclPostResponse = CreateAclApiV1AclPostResponses[keyof CreateAclApiV1AclPostResponses];
+export type CreateAclApiV1AclPostResponse =
+    CreateAclApiV1AclPostResponses[keyof CreateAclApiV1AclPostResponses];
 
 export type DeleteAclApiV1AclAclIdDeleteData = {
     body?: never;
@@ -2533,7 +2582,8 @@ export type DeleteAclApiV1AclAclIdDeleteErrors = {
     422: HttpValidationError;
 };
 
-export type DeleteAclApiV1AclAclIdDeleteError = DeleteAclApiV1AclAclIdDeleteErrors[keyof DeleteAclApiV1AclAclIdDeleteErrors];
+export type DeleteAclApiV1AclAclIdDeleteError =
+    DeleteAclApiV1AclAclIdDeleteErrors[keyof DeleteAclApiV1AclAclIdDeleteErrors];
 
 export type DeleteAclApiV1AclAclIdDeleteResponses = {
     /**
@@ -2542,7 +2592,8 @@ export type DeleteAclApiV1AclAclIdDeleteResponses = {
     200: MessageResponse;
 };
 
-export type DeleteAclApiV1AclAclIdDeleteResponse = DeleteAclApiV1AclAclIdDeleteResponses[keyof DeleteAclApiV1AclAclIdDeleteResponses];
+export type DeleteAclApiV1AclAclIdDeleteResponse =
+    DeleteAclApiV1AclAclIdDeleteResponses[keyof DeleteAclApiV1AclAclIdDeleteResponses];
 
 export type GetAclApiV1AclAclIdGetData = {
     body?: never;
@@ -2563,7 +2614,8 @@ export type GetAclApiV1AclAclIdGetErrors = {
     422: HttpValidationError;
 };
 
-export type GetAclApiV1AclAclIdGetError = GetAclApiV1AclAclIdGetErrors[keyof GetAclApiV1AclAclIdGetErrors];
+export type GetAclApiV1AclAclIdGetError =
+    GetAclApiV1AclAclIdGetErrors[keyof GetAclApiV1AclAclIdGetErrors];
 
 export type GetAclApiV1AclAclIdGetResponses = {
     /**
@@ -2572,7 +2624,8 @@ export type GetAclApiV1AclAclIdGetResponses = {
     200: AclRead;
 };
 
-export type GetAclApiV1AclAclIdGetResponse = GetAclApiV1AclAclIdGetResponses[keyof GetAclApiV1AclAclIdGetResponses];
+export type GetAclApiV1AclAclIdGetResponse =
+    GetAclApiV1AclAclIdGetResponses[keyof GetAclApiV1AclAclIdGetResponses];
 
 export type UpdateAclApiV1AclAclIdPutData = {
     body: AclBase;
@@ -2593,7 +2646,8 @@ export type UpdateAclApiV1AclAclIdPutErrors = {
     422: HttpValidationError;
 };
 
-export type UpdateAclApiV1AclAclIdPutError = UpdateAclApiV1AclAclIdPutErrors[keyof UpdateAclApiV1AclAclIdPutErrors];
+export type UpdateAclApiV1AclAclIdPutError =
+    UpdateAclApiV1AclAclIdPutErrors[keyof UpdateAclApiV1AclAclIdPutErrors];
 
 export type UpdateAclApiV1AclAclIdPutResponses = {
     /**
@@ -2602,7 +2656,8 @@ export type UpdateAclApiV1AclAclIdPutResponses = {
     200: AclRead;
 };
 
-export type UpdateAclApiV1AclAclIdPutResponse = UpdateAclApiV1AclAclIdPutResponses[keyof UpdateAclApiV1AclAclIdPutResponses];
+export type UpdateAclApiV1AclAclIdPutResponse =
+    UpdateAclApiV1AclAclIdPutResponses[keyof UpdateAclApiV1AclAclIdPutResponses];
 
 export type GetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetData = {
     body?: never;
@@ -2623,7 +2678,8 @@ export type GetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetErrors = {
     422: HttpValidationError;
 };
 
-export type GetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetError = GetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetErrors[keyof GetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetErrors];
+export type GetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetError =
+    GetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetErrors[keyof GetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetErrors];
 
 export type GetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetResponses = {
     /**
@@ -2634,7 +2690,8 @@ export type GetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetResponses = {
     200: Array<AclRead>;
 };
 
-export type GetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetResponse = GetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetResponses[keyof GetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetResponses];
+export type GetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetResponse =
+    GetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetResponses[keyof GetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetResponses];
 
 export type GetAclsByUserApiV1AclUserUserIdGetData = {
     body?: never;
@@ -2655,7 +2712,8 @@ export type GetAclsByUserApiV1AclUserUserIdGetErrors = {
     422: HttpValidationError;
 };
 
-export type GetAclsByUserApiV1AclUserUserIdGetError = GetAclsByUserApiV1AclUserUserIdGetErrors[keyof GetAclsByUserApiV1AclUserUserIdGetErrors];
+export type GetAclsByUserApiV1AclUserUserIdGetError =
+    GetAclsByUserApiV1AclUserUserIdGetErrors[keyof GetAclsByUserApiV1AclUserUserIdGetErrors];
 
 export type GetAclsByUserApiV1AclUserUserIdGetResponses = {
     /**
@@ -2666,7 +2724,8 @@ export type GetAclsByUserApiV1AclUserUserIdGetResponses = {
     200: Array<AclRead>;
 };
 
-export type GetAclsByUserApiV1AclUserUserIdGetResponse = GetAclsByUserApiV1AclUserUserIdGetResponses[keyof GetAclsByUserApiV1AclUserUserIdGetResponses];
+export type GetAclsByUserApiV1AclUserUserIdGetResponse =
+    GetAclsByUserApiV1AclUserUserIdGetResponses[keyof GetAclsByUserApiV1AclUserUserIdGetResponses];
 
 export type GetActivityTemplatesApiV1ActivityTemplateGetData = {
     body?: never;
@@ -2707,7 +2766,13 @@ export type GetActivityTemplatesApiV1ActivityTemplateGetData = {
         /**
          * Sort By
          */
-        sort_by?: 'name' | 'mitre_tactic' | 'mitre_technique' | 'provider' | 'priority' | null;
+        sort_by?:
+            | 'name'
+            | 'mitre_tactic'
+            | 'mitre_technique'
+            | 'provider'
+            | 'priority'
+            | null;
     };
     url: '/api/v1/activity_template/';
 };
@@ -2719,7 +2784,8 @@ export type GetActivityTemplatesApiV1ActivityTemplateGetErrors = {
     422: HttpValidationError;
 };
 
-export type GetActivityTemplatesApiV1ActivityTemplateGetError = GetActivityTemplatesApiV1ActivityTemplateGetErrors[keyof GetActivityTemplatesApiV1ActivityTemplateGetErrors];
+export type GetActivityTemplatesApiV1ActivityTemplateGetError =
+    GetActivityTemplatesApiV1ActivityTemplateGetErrors[keyof GetActivityTemplatesApiV1ActivityTemplateGetErrors];
 
 export type GetActivityTemplatesApiV1ActivityTemplateGetResponses = {
     /**
@@ -2728,37 +2794,43 @@ export type GetActivityTemplatesApiV1ActivityTemplateGetResponses = {
     200: PaginatedResponseActivityTemplateRead;
 };
 
-export type GetActivityTemplatesApiV1ActivityTemplateGetResponse = GetActivityTemplatesApiV1ActivityTemplateGetResponses[keyof GetActivityTemplatesApiV1ActivityTemplateGetResponses];
+export type GetActivityTemplatesApiV1ActivityTemplateGetResponse =
+    GetActivityTemplatesApiV1ActivityTemplateGetResponses[keyof GetActivityTemplatesApiV1ActivityTemplateGetResponses];
 
-export type GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetData = {
-    body?: never;
-    path: {
-        /**
-         * Activity Template Id
-         */
-        activity_template_id: string;
+export type GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Activity Template Id
+             */
+            activity_template_id: string;
+        };
+        query?: never;
+        url: '/api/v1/activity_template/{activity_template_id}';
     };
-    query?: never;
-    url: '/api/v1/activity_template/{activity_template_id}';
-};
 
-export type GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
 
-export type GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetError = GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetErrors[keyof GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetErrors];
+export type GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetError =
+    GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetErrors[keyof GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetErrors];
 
-export type GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: ActivityTemplateRead;
-};
+export type GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: ActivityTemplateRead;
+    };
 
-export type GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetResponse = GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetResponses[keyof GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetResponses];
+export type GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetResponse =
+    GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetResponses[keyof GetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetResponses];
 
 export type GetActivityGroupTemplatesApiV1ActivityGroupTemplateGetData = {
     body?: never;
@@ -2795,7 +2867,8 @@ export type GetActivityGroupTemplatesApiV1ActivityGroupTemplateGetErrors = {
     422: HttpValidationError;
 };
 
-export type GetActivityGroupTemplatesApiV1ActivityGroupTemplateGetError = GetActivityGroupTemplatesApiV1ActivityGroupTemplateGetErrors[keyof GetActivityGroupTemplatesApiV1ActivityGroupTemplateGetErrors];
+export type GetActivityGroupTemplatesApiV1ActivityGroupTemplateGetError =
+    GetActivityGroupTemplatesApiV1ActivityGroupTemplateGetErrors[keyof GetActivityGroupTemplatesApiV1ActivityGroupTemplateGetErrors];
 
 export type GetActivityGroupTemplatesApiV1ActivityGroupTemplateGetResponses = {
     /**
@@ -2804,7 +2877,8 @@ export type GetActivityGroupTemplatesApiV1ActivityGroupTemplateGetResponses = {
     200: PaginatedResponseActivityGroupTemplateRead;
 };
 
-export type GetActivityGroupTemplatesApiV1ActivityGroupTemplateGetResponse = GetActivityGroupTemplatesApiV1ActivityGroupTemplateGetResponses[keyof GetActivityGroupTemplatesApiV1ActivityGroupTemplateGetResponses];
+export type GetActivityGroupTemplatesApiV1ActivityGroupTemplateGetResponse =
+    GetActivityGroupTemplatesApiV1ActivityGroupTemplateGetResponses[keyof GetActivityGroupTemplatesApiV1ActivityGroupTemplateGetResponses];
 
 export type GetCampaignTemplatesApiV1CampaignTemplateGetData = {
     body?: never;
@@ -2841,7 +2915,8 @@ export type GetCampaignTemplatesApiV1CampaignTemplateGetErrors = {
     422: HttpValidationError;
 };
 
-export type GetCampaignTemplatesApiV1CampaignTemplateGetError = GetCampaignTemplatesApiV1CampaignTemplateGetErrors[keyof GetCampaignTemplatesApiV1CampaignTemplateGetErrors];
+export type GetCampaignTemplatesApiV1CampaignTemplateGetError =
+    GetCampaignTemplatesApiV1CampaignTemplateGetErrors[keyof GetCampaignTemplatesApiV1CampaignTemplateGetErrors];
 
 export type GetCampaignTemplatesApiV1CampaignTemplateGetResponses = {
     /**
@@ -2850,37 +2925,43 @@ export type GetCampaignTemplatesApiV1CampaignTemplateGetResponses = {
     200: PaginatedResponseCampaignTemplateRead;
 };
 
-export type GetCampaignTemplatesApiV1CampaignTemplateGetResponse = GetCampaignTemplatesApiV1CampaignTemplateGetResponses[keyof GetCampaignTemplatesApiV1CampaignTemplateGetResponses];
+export type GetCampaignTemplatesApiV1CampaignTemplateGetResponse =
+    GetCampaignTemplatesApiV1CampaignTemplateGetResponses[keyof GetCampaignTemplatesApiV1CampaignTemplateGetResponses];
 
-export type GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetData = {
-    body?: never;
-    path: {
-        /**
-         * Campaign Template Id
-         */
-        campaign_template_id: string;
+export type GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Campaign Template Id
+             */
+            campaign_template_id: string;
+        };
+        query?: never;
+        url: '/api/v1/campaign_template/{campaign_template_id}';
     };
-    query?: never;
-    url: '/api/v1/campaign_template/{campaign_template_id}';
-};
 
-export type GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
 
-export type GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetError = GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetErrors[keyof GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetErrors];
+export type GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetError =
+    GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetErrors[keyof GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetErrors];
 
-export type GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: CampaignTemplateRead;
-};
+export type GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: CampaignTemplateRead;
+    };
 
-export type GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetResponse = GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetResponses[keyof GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetResponses];
+export type GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetResponse =
+    GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetResponses[keyof GetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetResponses];
 
 export type GetEvaluationTemplatesApiV1EvaluationTemplateGetData = {
     body?: never;
@@ -2925,7 +3006,8 @@ export type GetEvaluationTemplatesApiV1EvaluationTemplateGetErrors = {
     422: HttpValidationError;
 };
 
-export type GetEvaluationTemplatesApiV1EvaluationTemplateGetError = GetEvaluationTemplatesApiV1EvaluationTemplateGetErrors[keyof GetEvaluationTemplatesApiV1EvaluationTemplateGetErrors];
+export type GetEvaluationTemplatesApiV1EvaluationTemplateGetError =
+    GetEvaluationTemplatesApiV1EvaluationTemplateGetErrors[keyof GetEvaluationTemplatesApiV1EvaluationTemplateGetErrors];
 
 export type GetEvaluationTemplatesApiV1EvaluationTemplateGetResponses = {
     /**
@@ -2934,37 +3016,43 @@ export type GetEvaluationTemplatesApiV1EvaluationTemplateGetResponses = {
     200: PaginatedResponseEvaluationTemplateRead;
 };
 
-export type GetEvaluationTemplatesApiV1EvaluationTemplateGetResponse = GetEvaluationTemplatesApiV1EvaluationTemplateGetResponses[keyof GetEvaluationTemplatesApiV1EvaluationTemplateGetResponses];
+export type GetEvaluationTemplatesApiV1EvaluationTemplateGetResponse =
+    GetEvaluationTemplatesApiV1EvaluationTemplateGetResponses[keyof GetEvaluationTemplatesApiV1EvaluationTemplateGetResponses];
 
-export type GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetData = {
-    body?: never;
-    path: {
-        /**
-         * Evaluation Template Id
-         */
-        evaluation_template_id: string;
+export type GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Evaluation Template Id
+             */
+            evaluation_template_id: string;
+        };
+        query?: never;
+        url: '/api/v1/evaluation_template/{evaluation_template_id}';
     };
-    query?: never;
-    url: '/api/v1/evaluation_template/{evaluation_template_id}';
-};
 
-export type GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
 
-export type GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetError = GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetErrors[keyof GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetErrors];
+export type GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetError =
+    GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetErrors[keyof GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetErrors];
 
-export type GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: EvaluationTemplateRead;
-};
+export type GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: EvaluationTemplateRead;
+    };
 
-export type GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetResponse = GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetResponses[keyof GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetResponses];
+export type GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetResponse =
+    GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetResponses[keyof GetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetResponses];
 
 export type GetReportTemplatesApiV1ReportTemplateGetData = {
     body?: never;
@@ -2997,7 +3085,8 @@ export type GetReportTemplatesApiV1ReportTemplateGetErrors = {
     422: HttpValidationError;
 };
 
-export type GetReportTemplatesApiV1ReportTemplateGetError = GetReportTemplatesApiV1ReportTemplateGetErrors[keyof GetReportTemplatesApiV1ReportTemplateGetErrors];
+export type GetReportTemplatesApiV1ReportTemplateGetError =
+    GetReportTemplatesApiV1ReportTemplateGetErrors[keyof GetReportTemplatesApiV1ReportTemplateGetErrors];
 
 export type GetReportTemplatesApiV1ReportTemplateGetResponses = {
     /**
@@ -3008,7 +3097,8 @@ export type GetReportTemplatesApiV1ReportTemplateGetResponses = {
     200: Array<ReportTemplateRead>;
 };
 
-export type GetReportTemplatesApiV1ReportTemplateGetResponse = GetReportTemplatesApiV1ReportTemplateGetResponses[keyof GetReportTemplatesApiV1ReportTemplateGetResponses];
+export type GetReportTemplatesApiV1ReportTemplateGetResponse =
+    GetReportTemplatesApiV1ReportTemplateGetResponses[keyof GetReportTemplatesApiV1ReportTemplateGetResponses];
 
 export type GetKnowledgeBaseArticlesApiV1KnowledgeBaseGetData = {
     body?: never;
@@ -3049,7 +3139,8 @@ export type GetKnowledgeBaseArticlesApiV1KnowledgeBaseGetErrors = {
     422: HttpValidationError;
 };
 
-export type GetKnowledgeBaseArticlesApiV1KnowledgeBaseGetError = GetKnowledgeBaseArticlesApiV1KnowledgeBaseGetErrors[keyof GetKnowledgeBaseArticlesApiV1KnowledgeBaseGetErrors];
+export type GetKnowledgeBaseArticlesApiV1KnowledgeBaseGetError =
+    GetKnowledgeBaseArticlesApiV1KnowledgeBaseGetErrors[keyof GetKnowledgeBaseArticlesApiV1KnowledgeBaseGetErrors];
 
 export type GetKnowledgeBaseArticlesApiV1KnowledgeBaseGetResponses = {
     /**
@@ -3058,7 +3149,8 @@ export type GetKnowledgeBaseArticlesApiV1KnowledgeBaseGetResponses = {
     200: PaginatedResponseKnowledgeBaseRead;
 };
 
-export type GetKnowledgeBaseArticlesApiV1KnowledgeBaseGetResponse = GetKnowledgeBaseArticlesApiV1KnowledgeBaseGetResponses[keyof GetKnowledgeBaseArticlesApiV1KnowledgeBaseGetResponses];
+export type GetKnowledgeBaseArticlesApiV1KnowledgeBaseGetResponse =
+    GetKnowledgeBaseArticlesApiV1KnowledgeBaseGetResponses[keyof GetKnowledgeBaseArticlesApiV1KnowledgeBaseGetResponses];
 
 export type ReadTacticsApiV1MitreTacticsGetData = {
     body?: never;
@@ -3091,7 +3183,8 @@ export type ReadTacticsApiV1MitreTacticsGetErrors = {
     422: HttpValidationError;
 };
 
-export type ReadTacticsApiV1MitreTacticsGetError = ReadTacticsApiV1MitreTacticsGetErrors[keyof ReadTacticsApiV1MitreTacticsGetErrors];
+export type ReadTacticsApiV1MitreTacticsGetError =
+    ReadTacticsApiV1MitreTacticsGetErrors[keyof ReadTacticsApiV1MitreTacticsGetErrors];
 
 export type ReadTacticsApiV1MitreTacticsGetResponses = {
     /**
@@ -3102,7 +3195,8 @@ export type ReadTacticsApiV1MitreTacticsGetResponses = {
     200: Array<TacticBase>;
 };
 
-export type ReadTacticsApiV1MitreTacticsGetResponse = ReadTacticsApiV1MitreTacticsGetResponses[keyof ReadTacticsApiV1MitreTacticsGetResponses];
+export type ReadTacticsApiV1MitreTacticsGetResponse =
+    ReadTacticsApiV1MitreTacticsGetResponses[keyof ReadTacticsApiV1MitreTacticsGetResponses];
 
 export type ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetData = {
     body?: never;
@@ -3128,25 +3222,29 @@ export type ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetData = {
     url: '/api/v1/mitre/tactics-with-techniques';
 };
 
-export type ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
 
-export type ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetError = ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetErrors[keyof ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetErrors];
+export type ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetError =
+    ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetErrors[keyof ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetErrors];
 
-export type ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetResponses = {
-    /**
-     * Response Read Tactics With Techniques Api V1 Mitre Tactics With Techniques Get
-     *
-     * Successful Response
-     */
-    200: Array<TacticWithTechniques>;
-};
+export type ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetResponses =
+    {
+        /**
+         * Response Read Tactics With Techniques Api V1 Mitre Tactics With Techniques Get
+         *
+         * Successful Response
+         */
+        200: Array<TacticWithTechniques>;
+    };
 
-export type ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetResponse = ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetResponses[keyof ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetResponses];
+export type ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetResponse =
+    ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetResponses[keyof ReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetResponses];
 
 export type ReadTechniquesApiV1MitreTechniquesGetData = {
     body?: never;
@@ -3179,7 +3277,8 @@ export type ReadTechniquesApiV1MitreTechniquesGetErrors = {
     422: HttpValidationError;
 };
 
-export type ReadTechniquesApiV1MitreTechniquesGetError = ReadTechniquesApiV1MitreTechniquesGetErrors[keyof ReadTechniquesApiV1MitreTechniquesGetErrors];
+export type ReadTechniquesApiV1MitreTechniquesGetError =
+    ReadTechniquesApiV1MitreTechniquesGetErrors[keyof ReadTechniquesApiV1MitreTechniquesGetErrors];
 
 export type ReadTechniquesApiV1MitreTechniquesGetResponses = {
     /**
@@ -3190,7 +3289,8 @@ export type ReadTechniquesApiV1MitreTechniquesGetResponses = {
     200: Array<TechniqueBase>;
 };
 
-export type ReadTechniquesApiV1MitreTechniquesGetResponse = ReadTechniquesApiV1MitreTechniquesGetResponses[keyof ReadTechniquesApiV1MitreTechniquesGetResponses];
+export type ReadTechniquesApiV1MitreTechniquesGetResponse =
+    ReadTechniquesApiV1MitreTechniquesGetResponses[keyof ReadTechniquesApiV1MitreTechniquesGetResponses];
 
 export type ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetData = {
     body?: never;
@@ -3216,25 +3316,29 @@ export type ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetData = {
     url: '/api/v1/mitre/techniques-with-tactics';
 };
 
-export type ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
 
-export type ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetError = ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetErrors[keyof ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetErrors];
+export type ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetError =
+    ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetErrors[keyof ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetErrors];
 
-export type ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetResponses = {
-    /**
-     * Response Read Techniques With Tactics Api V1 Mitre Techniques With Tactics Get
-     *
-     * Successful Response
-     */
-    200: Array<TechniqueWithTactics>;
-};
+export type ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetResponses =
+    {
+        /**
+         * Response Read Techniques With Tactics Api V1 Mitre Techniques With Tactics Get
+         *
+         * Successful Response
+         */
+        200: Array<TechniqueWithTactics>;
+    };
 
-export type ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetResponse = ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetResponses[keyof ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetResponses];
+export type ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetResponse =
+    ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetResponses[keyof ReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetResponses];
 
 export type ReadUsersApiV1AdminUsersGetData = {
     body?: never;
@@ -3283,7 +3387,8 @@ export type ReadUsersApiV1AdminUsersGetErrors = {
     422: HttpValidationError;
 };
 
-export type ReadUsersApiV1AdminUsersGetError = ReadUsersApiV1AdminUsersGetErrors[keyof ReadUsersApiV1AdminUsersGetErrors];
+export type ReadUsersApiV1AdminUsersGetError =
+    ReadUsersApiV1AdminUsersGetErrors[keyof ReadUsersApiV1AdminUsersGetErrors];
 
 export type ReadUsersApiV1AdminUsersGetResponses = {
     /**
@@ -3292,7 +3397,8 @@ export type ReadUsersApiV1AdminUsersGetResponses = {
     200: PaginatedResponseUserRead;
 };
 
-export type ReadUsersApiV1AdminUsersGetResponse = ReadUsersApiV1AdminUsersGetResponses[keyof ReadUsersApiV1AdminUsersGetResponses];
+export type ReadUsersApiV1AdminUsersGetResponse =
+    ReadUsersApiV1AdminUsersGetResponses[keyof ReadUsersApiV1AdminUsersGetResponses];
 
 export type DeleteUserApiV1AdminUsersUserIdDeleteData = {
     body?: never;
@@ -3313,7 +3419,8 @@ export type DeleteUserApiV1AdminUsersUserIdDeleteErrors = {
     422: HttpValidationError;
 };
 
-export type DeleteUserApiV1AdminUsersUserIdDeleteError = DeleteUserApiV1AdminUsersUserIdDeleteErrors[keyof DeleteUserApiV1AdminUsersUserIdDeleteErrors];
+export type DeleteUserApiV1AdminUsersUserIdDeleteError =
+    DeleteUserApiV1AdminUsersUserIdDeleteErrors[keyof DeleteUserApiV1AdminUsersUserIdDeleteErrors];
 
 export type DeleteUserApiV1AdminUsersUserIdDeleteResponses = {
     /**
@@ -3322,7 +3429,8 @@ export type DeleteUserApiV1AdminUsersUserIdDeleteResponses = {
     200: MessageResponse;
 };
 
-export type DeleteUserApiV1AdminUsersUserIdDeleteResponse = DeleteUserApiV1AdminUsersUserIdDeleteResponses[keyof DeleteUserApiV1AdminUsersUserIdDeleteResponses];
+export type DeleteUserApiV1AdminUsersUserIdDeleteResponse =
+    DeleteUserApiV1AdminUsersUserIdDeleteResponses[keyof DeleteUserApiV1AdminUsersUserIdDeleteResponses];
 
 export type ReadUserApiV1AdminUsersUserIdGetData = {
     body?: never;
@@ -3343,7 +3451,8 @@ export type ReadUserApiV1AdminUsersUserIdGetErrors = {
     422: HttpValidationError;
 };
 
-export type ReadUserApiV1AdminUsersUserIdGetError = ReadUserApiV1AdminUsersUserIdGetErrors[keyof ReadUserApiV1AdminUsersUserIdGetErrors];
+export type ReadUserApiV1AdminUsersUserIdGetError =
+    ReadUserApiV1AdminUsersUserIdGetErrors[keyof ReadUserApiV1AdminUsersUserIdGetErrors];
 
 export type ReadUserApiV1AdminUsersUserIdGetResponses = {
     /**
@@ -3352,7 +3461,8 @@ export type ReadUserApiV1AdminUsersUserIdGetResponses = {
     200: UserRead;
 };
 
-export type ReadUserApiV1AdminUsersUserIdGetResponse = ReadUserApiV1AdminUsersUserIdGetResponses[keyof ReadUserApiV1AdminUsersUserIdGetResponses];
+export type ReadUserApiV1AdminUsersUserIdGetResponse =
+    ReadUserApiV1AdminUsersUserIdGetResponses[keyof ReadUserApiV1AdminUsersUserIdGetResponses];
 
 export type UpdateUserApiV1AdminUsersUserIdPutData = {
     body: UserBase;
@@ -3373,7 +3483,8 @@ export type UpdateUserApiV1AdminUsersUserIdPutErrors = {
     422: HttpValidationError;
 };
 
-export type UpdateUserApiV1AdminUsersUserIdPutError = UpdateUserApiV1AdminUsersUserIdPutErrors[keyof UpdateUserApiV1AdminUsersUserIdPutErrors];
+export type UpdateUserApiV1AdminUsersUserIdPutError =
+    UpdateUserApiV1AdminUsersUserIdPutErrors[keyof UpdateUserApiV1AdminUsersUserIdPutErrors];
 
 export type UpdateUserApiV1AdminUsersUserIdPutResponses = {
     /**
@@ -3382,7 +3493,8 @@ export type UpdateUserApiV1AdminUsersUserIdPutResponses = {
     200: UserRead;
 };
 
-export type UpdateUserApiV1AdminUsersUserIdPutResponse = UpdateUserApiV1AdminUsersUserIdPutResponses[keyof UpdateUserApiV1AdminUsersUserIdPutResponses];
+export type UpdateUserApiV1AdminUsersUserIdPutResponse =
+    UpdateUserApiV1AdminUsersUserIdPutResponses[keyof UpdateUserApiV1AdminUsersUserIdPutResponses];
 
 export type CreateUserApiV1AdminUsersPostData = {
     body: UserCreate;
@@ -3398,7 +3510,8 @@ export type CreateUserApiV1AdminUsersPostErrors = {
     422: HttpValidationError;
 };
 
-export type CreateUserApiV1AdminUsersPostError = CreateUserApiV1AdminUsersPostErrors[keyof CreateUserApiV1AdminUsersPostErrors];
+export type CreateUserApiV1AdminUsersPostError =
+    CreateUserApiV1AdminUsersPostErrors[keyof CreateUserApiV1AdminUsersPostErrors];
 
 export type CreateUserApiV1AdminUsersPostResponses = {
     /**
@@ -3407,7 +3520,8 @@ export type CreateUserApiV1AdminUsersPostResponses = {
     200: UserRead;
 };
 
-export type CreateUserApiV1AdminUsersPostResponse = CreateUserApiV1AdminUsersPostResponses[keyof CreateUserApiV1AdminUsersPostResponses];
+export type CreateUserApiV1AdminUsersPostResponse =
+    CreateUserApiV1AdminUsersPostResponses[keyof CreateUserApiV1AdminUsersPostResponses];
 
 export type ResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostData = {
     body: UserPasswordReset;
@@ -3428,7 +3542,8 @@ export type ResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostErrors = {
     422: HttpValidationError;
 };
 
-export type ResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostError = ResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostErrors[keyof ResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostErrors];
+export type ResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostError =
+    ResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostErrors[keyof ResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostErrors];
 
 export type ResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostResponses = {
     /**
@@ -3437,7 +3552,8 @@ export type ResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostResponses = {
     200: MessageResponse;
 };
 
-export type ResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostResponse = ResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostResponses[keyof ResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostResponses];
+export type ResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostResponse =
+    ResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostResponses[keyof ResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostResponses];
 
 export type ResetUserMfaApiV1AdminUsersUserIdResetMfaPostData = {
     body?: never;
@@ -3458,7 +3574,8 @@ export type ResetUserMfaApiV1AdminUsersUserIdResetMfaPostErrors = {
     422: HttpValidationError;
 };
 
-export type ResetUserMfaApiV1AdminUsersUserIdResetMfaPostError = ResetUserMfaApiV1AdminUsersUserIdResetMfaPostErrors[keyof ResetUserMfaApiV1AdminUsersUserIdResetMfaPostErrors];
+export type ResetUserMfaApiV1AdminUsersUserIdResetMfaPostError =
+    ResetUserMfaApiV1AdminUsersUserIdResetMfaPostErrors[keyof ResetUserMfaApiV1AdminUsersUserIdResetMfaPostErrors];
 
 export type ResetUserMfaApiV1AdminUsersUserIdResetMfaPostResponses = {
     /**
@@ -3467,7 +3584,8 @@ export type ResetUserMfaApiV1AdminUsersUserIdResetMfaPostResponses = {
     200: MessageResponse;
 };
 
-export type ResetUserMfaApiV1AdminUsersUserIdResetMfaPostResponse = ResetUserMfaApiV1AdminUsersUserIdResetMfaPostResponses[keyof ResetUserMfaApiV1AdminUsersUserIdResetMfaPostResponses];
+export type ResetUserMfaApiV1AdminUsersUserIdResetMfaPostResponse =
+    ResetUserMfaApiV1AdminUsersUserIdResetMfaPostResponses[keyof ResetUserMfaApiV1AdminUsersUserIdResetMfaPostResponses];
 
 export type ImportMitreTechniquesAndTacticsApiV1AdminSeedMitrePostData = {
     body?: never;
@@ -3483,7 +3601,8 @@ export type ImportMitreTechniquesAndTacticsApiV1AdminSeedMitrePostResponses = {
     200: MessageResponse;
 };
 
-export type ImportMitreTechniquesAndTacticsApiV1AdminSeedMitrePostResponse = ImportMitreTechniquesAndTacticsApiV1AdminSeedMitrePostResponses[keyof ImportMitreTechniquesAndTacticsApiV1AdminSeedMitrePostResponses];
+export type ImportMitreTechniquesAndTacticsApiV1AdminSeedMitrePostResponse =
+    ImportMitreTechniquesAndTacticsApiV1AdminSeedMitrePostResponses[keyof ImportMitreTechniquesAndTacticsApiV1AdminSeedMitrePostResponses];
 
 export type ImportCustomDataApiV1AdminSeedCustomPostData = {
     body?: never;
@@ -3499,7 +3618,8 @@ export type ImportCustomDataApiV1AdminSeedCustomPostResponses = {
     200: MessageResponse;
 };
 
-export type ImportCustomDataApiV1AdminSeedCustomPostResponse = ImportCustomDataApiV1AdminSeedCustomPostResponses[keyof ImportCustomDataApiV1AdminSeedCustomPostResponses];
+export type ImportCustomDataApiV1AdminSeedCustomPostResponse =
+    ImportCustomDataApiV1AdminSeedCustomPostResponses[keyof ImportCustomDataApiV1AdminSeedCustomPostResponses];
 
 export type ImportAtomicRedTeamActivityTemplatesApiV1AdminSeedArtPostData = {
     body?: never;
@@ -3508,14 +3628,16 @@ export type ImportAtomicRedTeamActivityTemplatesApiV1AdminSeedArtPostData = {
     url: '/api/v1/admin/seed/ART';
 };
 
-export type ImportAtomicRedTeamActivityTemplatesApiV1AdminSeedArtPostResponses = {
-    /**
-     * Successful Response
-     */
-    200: MessageResponse;
-};
+export type ImportAtomicRedTeamActivityTemplatesApiV1AdminSeedArtPostResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: MessageResponse;
+    };
 
-export type ImportAtomicRedTeamActivityTemplatesApiV1AdminSeedArtPostResponse = ImportAtomicRedTeamActivityTemplatesApiV1AdminSeedArtPostResponses[keyof ImportAtomicRedTeamActivityTemplatesApiV1AdminSeedArtPostResponses];
+export type ImportAtomicRedTeamActivityTemplatesApiV1AdminSeedArtPostResponse =
+    ImportAtomicRedTeamActivityTemplatesApiV1AdminSeedArtPostResponses[keyof ImportAtomicRedTeamActivityTemplatesApiV1AdminSeedArtPostResponses];
 
 export type GetConfigurationApiV1AdminConfigurationGetData = {
     body?: never;
@@ -3531,7 +3653,8 @@ export type GetConfigurationApiV1AdminConfigurationGetResponses = {
     200: Configuration;
 };
 
-export type GetConfigurationApiV1AdminConfigurationGetResponse = GetConfigurationApiV1AdminConfigurationGetResponses[keyof GetConfigurationApiV1AdminConfigurationGetResponses];
+export type GetConfigurationApiV1AdminConfigurationGetResponse =
+    GetConfigurationApiV1AdminConfigurationGetResponses[keyof GetConfigurationApiV1AdminConfigurationGetResponses];
 
 export type ReadUserSelfApiV1UserMeGetData = {
     body?: never;
@@ -3547,7 +3670,8 @@ export type ReadUserSelfApiV1UserMeGetResponses = {
     200: UserReadAcl;
 };
 
-export type ReadUserSelfApiV1UserMeGetResponse = ReadUserSelfApiV1UserMeGetResponses[keyof ReadUserSelfApiV1UserMeGetResponses];
+export type ReadUserSelfApiV1UserMeGetResponse =
+    ReadUserSelfApiV1UserMeGetResponses[keyof ReadUserSelfApiV1UserMeGetResponses];
 
 export type UpdateUserPasswordSelfApiV1UserMePasswordPutData = {
     body: UserPasswordUpdate;
@@ -3563,7 +3687,8 @@ export type UpdateUserPasswordSelfApiV1UserMePasswordPutErrors = {
     422: HttpValidationError;
 };
 
-export type UpdateUserPasswordSelfApiV1UserMePasswordPutError = UpdateUserPasswordSelfApiV1UserMePasswordPutErrors[keyof UpdateUserPasswordSelfApiV1UserMePasswordPutErrors];
+export type UpdateUserPasswordSelfApiV1UserMePasswordPutError =
+    UpdateUserPasswordSelfApiV1UserMePasswordPutErrors[keyof UpdateUserPasswordSelfApiV1UserMePasswordPutErrors];
 
 export type UpdateUserPasswordSelfApiV1UserMePasswordPutResponses = {
     /**
@@ -3572,7 +3697,8 @@ export type UpdateUserPasswordSelfApiV1UserMePasswordPutResponses = {
     200: MessageResponse;
 };
 
-export type UpdateUserPasswordSelfApiV1UserMePasswordPutResponse = UpdateUserPasswordSelfApiV1UserMePasswordPutResponses[keyof UpdateUserPasswordSelfApiV1UserMePasswordPutResponses];
+export type UpdateUserPasswordSelfApiV1UserMePasswordPutResponse =
+    UpdateUserPasswordSelfApiV1UserMePasswordPutResponses[keyof UpdateUserPasswordSelfApiV1UserMePasswordPutResponses];
 
 export type ResetUserMfaSelfApiV1UserMeMfaPutData = {
     body: UserPasswordMfaReset;
@@ -3588,7 +3714,8 @@ export type ResetUserMfaSelfApiV1UserMeMfaPutErrors = {
     422: HttpValidationError;
 };
 
-export type ResetUserMfaSelfApiV1UserMeMfaPutError = ResetUserMfaSelfApiV1UserMeMfaPutErrors[keyof ResetUserMfaSelfApiV1UserMeMfaPutErrors];
+export type ResetUserMfaSelfApiV1UserMeMfaPutError =
+    ResetUserMfaSelfApiV1UserMeMfaPutErrors[keyof ResetUserMfaSelfApiV1UserMeMfaPutErrors];
 
 export type ResetUserMfaSelfApiV1UserMeMfaPutResponses = {
     /**
@@ -3597,7 +3724,8 @@ export type ResetUserMfaSelfApiV1UserMeMfaPutResponses = {
     200: MessageResponse;
 };
 
-export type ResetUserMfaSelfApiV1UserMeMfaPutResponse = ResetUserMfaSelfApiV1UserMeMfaPutResponses[keyof ResetUserMfaSelfApiV1UserMeMfaPutResponses];
+export type ResetUserMfaSelfApiV1UserMeMfaPutResponse =
+    ResetUserMfaSelfApiV1UserMeMfaPutResponses[keyof ResetUserMfaSelfApiV1UserMeMfaPutResponses];
 
 export type GetAssessmentsApiV1AssessmentGetData = {
     body?: never;
@@ -3638,7 +3766,8 @@ export type GetAssessmentsApiV1AssessmentGetErrors = {
     422: HttpValidationError;
 };
 
-export type GetAssessmentsApiV1AssessmentGetError = GetAssessmentsApiV1AssessmentGetErrors[keyof GetAssessmentsApiV1AssessmentGetErrors];
+export type GetAssessmentsApiV1AssessmentGetError =
+    GetAssessmentsApiV1AssessmentGetErrors[keyof GetAssessmentsApiV1AssessmentGetErrors];
 
 export type GetAssessmentsApiV1AssessmentGetResponses = {
     /**
@@ -3647,7 +3776,8 @@ export type GetAssessmentsApiV1AssessmentGetResponses = {
     200: PaginatedResponseAssessmentRead;
 };
 
-export type GetAssessmentsApiV1AssessmentGetResponse = GetAssessmentsApiV1AssessmentGetResponses[keyof GetAssessmentsApiV1AssessmentGetResponses];
+export type GetAssessmentsApiV1AssessmentGetResponse =
+    GetAssessmentsApiV1AssessmentGetResponses[keyof GetAssessmentsApiV1AssessmentGetResponses];
 
 export type CreateAssessmentApiV1AssessmentPostData = {
     body: AssessmentBase;
@@ -3663,7 +3793,8 @@ export type CreateAssessmentApiV1AssessmentPostErrors = {
     422: HttpValidationError;
 };
 
-export type CreateAssessmentApiV1AssessmentPostError = CreateAssessmentApiV1AssessmentPostErrors[keyof CreateAssessmentApiV1AssessmentPostErrors];
+export type CreateAssessmentApiV1AssessmentPostError =
+    CreateAssessmentApiV1AssessmentPostErrors[keyof CreateAssessmentApiV1AssessmentPostErrors];
 
 export type CreateAssessmentApiV1AssessmentPostResponses = {
     /**
@@ -3672,7 +3803,8 @@ export type CreateAssessmentApiV1AssessmentPostResponses = {
     200: AssessmentRead;
 };
 
-export type CreateAssessmentApiV1AssessmentPostResponse = CreateAssessmentApiV1AssessmentPostResponses[keyof CreateAssessmentApiV1AssessmentPostResponses];
+export type CreateAssessmentApiV1AssessmentPostResponse =
+    CreateAssessmentApiV1AssessmentPostResponses[keyof CreateAssessmentApiV1AssessmentPostResponses];
 
 export type DeleteAssessmentApiV1AssessmentAssessmentIdDeleteData = {
     body?: never;
@@ -3693,7 +3825,8 @@ export type DeleteAssessmentApiV1AssessmentAssessmentIdDeleteErrors = {
     422: HttpValidationError;
 };
 
-export type DeleteAssessmentApiV1AssessmentAssessmentIdDeleteError = DeleteAssessmentApiV1AssessmentAssessmentIdDeleteErrors[keyof DeleteAssessmentApiV1AssessmentAssessmentIdDeleteErrors];
+export type DeleteAssessmentApiV1AssessmentAssessmentIdDeleteError =
+    DeleteAssessmentApiV1AssessmentAssessmentIdDeleteErrors[keyof DeleteAssessmentApiV1AssessmentAssessmentIdDeleteErrors];
 
 export type DeleteAssessmentApiV1AssessmentAssessmentIdDeleteResponses = {
     /**
@@ -3702,7 +3835,8 @@ export type DeleteAssessmentApiV1AssessmentAssessmentIdDeleteResponses = {
     200: MessageResponse;
 };
 
-export type DeleteAssessmentApiV1AssessmentAssessmentIdDeleteResponse = DeleteAssessmentApiV1AssessmentAssessmentIdDeleteResponses[keyof DeleteAssessmentApiV1AssessmentAssessmentIdDeleteResponses];
+export type DeleteAssessmentApiV1AssessmentAssessmentIdDeleteResponse =
+    DeleteAssessmentApiV1AssessmentAssessmentIdDeleteResponses[keyof DeleteAssessmentApiV1AssessmentAssessmentIdDeleteResponses];
 
 export type GetAssessmentApiV1AssessmentAssessmentIdGetData = {
     body?: never;
@@ -3723,7 +3857,8 @@ export type GetAssessmentApiV1AssessmentAssessmentIdGetErrors = {
     422: HttpValidationError;
 };
 
-export type GetAssessmentApiV1AssessmentAssessmentIdGetError = GetAssessmentApiV1AssessmentAssessmentIdGetErrors[keyof GetAssessmentApiV1AssessmentAssessmentIdGetErrors];
+export type GetAssessmentApiV1AssessmentAssessmentIdGetError =
+    GetAssessmentApiV1AssessmentAssessmentIdGetErrors[keyof GetAssessmentApiV1AssessmentAssessmentIdGetErrors];
 
 export type GetAssessmentApiV1AssessmentAssessmentIdGetResponses = {
     /**
@@ -3732,7 +3867,8 @@ export type GetAssessmentApiV1AssessmentAssessmentIdGetResponses = {
     200: AssessmentRead;
 };
 
-export type GetAssessmentApiV1AssessmentAssessmentIdGetResponse = GetAssessmentApiV1AssessmentAssessmentIdGetResponses[keyof GetAssessmentApiV1AssessmentAssessmentIdGetResponses];
+export type GetAssessmentApiV1AssessmentAssessmentIdGetResponse =
+    GetAssessmentApiV1AssessmentAssessmentIdGetResponses[keyof GetAssessmentApiV1AssessmentAssessmentIdGetResponses];
 
 export type UpdateAssessmentApiV1AssessmentAssessmentIdPutData = {
     body: AssessmentBase;
@@ -3753,7 +3889,8 @@ export type UpdateAssessmentApiV1AssessmentAssessmentIdPutErrors = {
     422: HttpValidationError;
 };
 
-export type UpdateAssessmentApiV1AssessmentAssessmentIdPutError = UpdateAssessmentApiV1AssessmentAssessmentIdPutErrors[keyof UpdateAssessmentApiV1AssessmentAssessmentIdPutErrors];
+export type UpdateAssessmentApiV1AssessmentAssessmentIdPutError =
+    UpdateAssessmentApiV1AssessmentAssessmentIdPutErrors[keyof UpdateAssessmentApiV1AssessmentAssessmentIdPutErrors];
 
 export type UpdateAssessmentApiV1AssessmentAssessmentIdPutResponses = {
     /**
@@ -3762,7 +3899,8 @@ export type UpdateAssessmentApiV1AssessmentAssessmentIdPutResponses = {
     200: AssessmentRead;
 };
 
-export type UpdateAssessmentApiV1AssessmentAssessmentIdPutResponse = UpdateAssessmentApiV1AssessmentAssessmentIdPutResponses[keyof UpdateAssessmentApiV1AssessmentAssessmentIdPutResponses];
+export type UpdateAssessmentApiV1AssessmentAssessmentIdPutResponse =
+    UpdateAssessmentApiV1AssessmentAssessmentIdPutResponses[keyof UpdateAssessmentApiV1AssessmentAssessmentIdPutResponses];
 
 export type ImportAssessmentApiV1AssessmentImportPostData = {
     body: BodyImportAssessmentApiV1AssessmentImportPost;
@@ -3778,7 +3916,8 @@ export type ImportAssessmentApiV1AssessmentImportPostErrors = {
     422: HttpValidationError;
 };
 
-export type ImportAssessmentApiV1AssessmentImportPostError = ImportAssessmentApiV1AssessmentImportPostErrors[keyof ImportAssessmentApiV1AssessmentImportPostErrors];
+export type ImportAssessmentApiV1AssessmentImportPostError =
+    ImportAssessmentApiV1AssessmentImportPostErrors[keyof ImportAssessmentApiV1AssessmentImportPostErrors];
 
 export type ImportAssessmentApiV1AssessmentImportPostResponses = {
     /**
@@ -3787,355 +3926,406 @@ export type ImportAssessmentApiV1AssessmentImportPostResponses = {
     200: ImportResponse;
 };
 
-export type ImportAssessmentApiV1AssessmentImportPostResponse = ImportAssessmentApiV1AssessmentImportPostResponses[keyof ImportAssessmentApiV1AssessmentImportPostResponses];
+export type ImportAssessmentApiV1AssessmentImportPostResponse =
+    ImportAssessmentApiV1AssessmentImportPostResponses[keyof ImportAssessmentApiV1AssessmentImportPostResponses];
 
-export type UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutData = {
-    /**
-     * Dynamic Evaluation Questions
-     */
-    body: Array<DynamicEvaluationQuestionAssign>;
-    path: {
+export type UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutData =
+    {
         /**
-         * Assessment Id
+         * Dynamic Evaluation Questions
          */
-        assessment_id: string;
+        body: Array<DynamicEvaluationQuestionAssign>;
+        path: {
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessment/{assessment_id}/default_evaluation_templates';
     };
-    query?: never;
-    url: '/api/v1/assessment/{assessment_id}/default_evaluation_templates';
-};
 
-export type UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutError = UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutErrors[keyof UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutErrors];
-
-export type UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutResponses = {
-    /**
-     * Successful Response
-     */
-    200: AssessmentRead;
-};
-
-export type UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutResponse = UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutResponses[keyof UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutResponses];
-
-export type GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetData = {
-    body?: never;
-    path: {
+export type UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutErrors =
+    {
         /**
-         * Assessment Id
+         * Validation Error
          */
-        assessment_id: string;
+        422: HttpValidationError;
     };
-    query?: {
+
+export type UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutError =
+    UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutErrors[keyof UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutErrors];
+
+export type UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutResponses =
+    {
         /**
-         * Name
+         * Successful Response
          */
-        name?: string | null;
-        /**
-         * Activity Group Position
-         */
-        activity_group_position?: number | null;
-        /**
-         * Sort By
-         */
-        sort_by?: 'name' | 'activity_group_position' | null;
-        /**
-         * Sort Order
-         */
-        sort_order?: 'asc' | 'desc' | null;
+        200: AssessmentRead;
     };
-    url: '/api/v1/assessments/{assessment_id}/activity_group/';
-};
 
-export type GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutResponse =
+    UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutResponses[keyof UpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutResponses];
 
-export type GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetError = GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetErrors[keyof GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetErrors];
-
-export type GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetResponses = {
-    /**
-     * Response Get Activity Groups Api V1 Assessments  Assessment Id  Activity Group  Get
-     *
-     * Successful Response
-     */
-    200: Array<ActivityGroupRead>;
-};
-
-export type GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetResponse = GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetResponses[keyof GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetResponses];
-
-export type CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostData = {
-    body: ActivityGroupBase;
-    path: {
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+export type GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: {
+            /**
+             * Name
+             */
+            name?: string | null;
+            /**
+             * Activity Group Position
+             */
+            activity_group_position?: number | null;
+            /**
+             * Sort By
+             */
+            sort_by?: 'name' | 'activity_group_position' | null;
+            /**
+             * Sort Order
+             */
+            sort_order?: 'asc' | 'desc' | null;
+        };
+        url: '/api/v1/assessments/{assessment_id}/activity_group/';
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity_group/';
-};
 
-export type CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostError = CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostErrors[keyof CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostErrors];
-
-export type CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostResponses = {
-    /**
-     * Successful Response
-     */
-    200: ActivityGroupRead;
-};
-
-export type CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostResponse = CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostResponses[keyof CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostResponses];
-
-export type GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetData = {
-    body?: never;
-    path: {
+export type GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetErrors =
+    {
         /**
-         * Activity Group Id
+         * Validation Error
          */
-        activity_group_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+        422: HttpValidationError;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity_group/{activity_group_id}';
-};
 
-export type GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetError =
+    GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetErrors[keyof GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetErrors];
 
-export type GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetError = GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetErrors[keyof GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetErrors];
-
-export type GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: ActivityGroupRead;
-};
-
-export type GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetResponse = GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetResponses[keyof GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetResponses];
-
-export type UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutData = {
-    body: ActivityGroupBase;
-    path: {
+export type GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetResponses =
+    {
         /**
-         * Activity Group Id
+         * Response Get Activity Groups Api V1 Assessments  Assessment Id  Activity Group  Get
+         *
+         * Successful Response
          */
-        activity_group_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+        200: Array<ActivityGroupRead>;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity_group/{activity_group_id}';
-};
 
-export type UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetResponse =
+    GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetResponses[keyof GetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetResponses];
 
-export type UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutError = UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutErrors[keyof UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutErrors];
-
-export type UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutResponses = {
-    /**
-     * Successful Response
-     */
-    200: ActivityGroupRead;
-};
-
-export type UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutResponse = UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutResponses[keyof UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutResponses];
-
-export type GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetData = {
-    body?: never;
-    path: {
-        /**
-         * Activity Group Id
-         */
-        activity_group_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+export type CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostData =
+    {
+        body: ActivityGroupBase;
+        path: {
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity_group/';
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity_group/{activity_group_id}/activities';
-};
 
-export type GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetError = GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetErrors[keyof GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetErrors];
-
-export type GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetResponses = {
-    /**
-     * Response Get Activity Group Activities Api V1 Assessments  Assessment Id  Activity Group  Activity Group Id  Activities Get
-     *
-     * Successful Response
-     */
-    200: Array<ActivityRead>;
-};
-
-export type GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetResponse = GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetResponses[keyof GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetResponses];
-
-export type ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutData = {
-    body: ActivityGroupReorder;
-    path: {
+export type CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostErrors =
+    {
         /**
-         * Assessment Id
+         * Validation Error
          */
-        assessment_id: string;
+        422: HttpValidationError;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity_group/reorder';
-};
 
-export type ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostError =
+    CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostErrors[keyof CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostErrors];
 
-export type ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutError = ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutErrors[keyof ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutErrors];
-
-export type ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutResponses = {
-    /**
-     * Successful Response
-     */
-    200: MessageResponse;
-};
-
-export type ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutResponse = ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutResponses[keyof ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutResponses];
-
-export type ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutData = {
-    body?: never;
-    path: {
+export type CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostResponses =
+    {
         /**
-         * Activity Group Id
+         * Successful Response
          */
-        activity_group_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+        200: ActivityGroupRead;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity_group/{activity_group_id}/delete';
-};
 
-export type ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostResponse =
+    CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostResponses[keyof CreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostResponses];
 
-export type ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutError = ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutErrors[keyof ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutErrors];
-
-export type ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutResponses = {
-    /**
-     * Successful Response
-     */
-    200: MessageResponse;
-};
-
-export type ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutResponse = ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutResponses[keyof ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutResponses];
-
-export type ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutData = {
-    body?: never;
-    path: {
-        /**
-         * Activity Group Id
-         */
-        activity_group_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+export type GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Activity Group Id
+             */
+            activity_group_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity_group/{activity_group_id}';
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity_group/{activity_group_id}/visible';
-};
 
-export type ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutError = ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutErrors[keyof ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutErrors];
-
-export type ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutResponses = {
-    /**
-     * Successful Response
-     */
-    200: MessageResponse;
-};
-
-export type ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutResponse = ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutResponses[keyof ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutResponses];
-
-export type ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutData = {
-    body: ActivityReorder;
-    path: {
+export type GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetErrors =
+    {
         /**
-         * Activity Group Id
+         * Validation Error
          */
-        activity_group_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+        422: HttpValidationError;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity_group/{activity_group_id}/reorder';
-};
 
-export type ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetError =
+    GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetErrors[keyof GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetErrors];
 
-export type ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutError = ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutErrors[keyof ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutErrors];
+export type GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: ActivityGroupRead;
+    };
 
-export type ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutResponses = {
-    /**
-     * Successful Response
-     */
-    200: MessageResponse;
-};
+export type GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetResponse =
+    GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetResponses[keyof GetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetResponses];
 
-export type ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutResponse = ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutResponses[keyof ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutResponses];
+export type UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutData =
+    {
+        body: ActivityGroupBase;
+        path: {
+            /**
+             * Activity Group Id
+             */
+            activity_group_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity_group/{activity_group_id}';
+    };
+
+export type UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutError =
+    UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutErrors[keyof UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutErrors];
+
+export type UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: ActivityGroupRead;
+    };
+
+export type UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutResponse =
+    UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutResponses[keyof UpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutResponses];
+
+export type GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Activity Group Id
+             */
+            activity_group_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity_group/{activity_group_id}/activities';
+    };
+
+export type GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetError =
+    GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetErrors[keyof GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetErrors];
+
+export type GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetResponses =
+    {
+        /**
+         * Response Get Activity Group Activities Api V1 Assessments  Assessment Id  Activity Group  Activity Group Id  Activities Get
+         *
+         * Successful Response
+         */
+        200: Array<ActivityRead>;
+    };
+
+export type GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetResponse =
+    GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetResponses[keyof GetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetResponses];
+
+export type ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutData =
+    {
+        body: ActivityGroupReorder;
+        path: {
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity_group/reorder';
+    };
+
+export type ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutError =
+    ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutErrors[keyof ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutErrors];
+
+export type ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: MessageResponse;
+    };
+
+export type ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutResponse =
+    ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutResponses[keyof ReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutResponses];
+
+export type ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Activity Group Id
+             */
+            activity_group_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity_group/{activity_group_id}/delete';
+    };
+
+export type ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutError =
+    ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutErrors[keyof ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutErrors];
+
+export type ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: MessageResponse;
+    };
+
+export type ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutResponse =
+    ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutResponses[keyof ToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutResponses];
+
+export type ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Activity Group Id
+             */
+            activity_group_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity_group/{activity_group_id}/visible';
+    };
+
+export type ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutError =
+    ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutErrors[keyof ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutErrors];
+
+export type ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: MessageResponse;
+    };
+
+export type ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutResponse =
+    ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutResponses[keyof ToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutResponses];
+
+export type ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutData =
+    {
+        body: ActivityReorder;
+        path: {
+            /**
+             * Activity Group Id
+             */
+            activity_group_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity_group/{activity_group_id}/reorder';
+    };
+
+export type ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutError =
+    ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutErrors[keyof ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutErrors];
+
+export type ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: MessageResponse;
+    };
+
+export type ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutResponse =
+    ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutResponses[keyof ReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutResponses];
 
 export type GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetData = {
     body?: never;
@@ -4197,7 +4387,22 @@ export type GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetData = {
         /**
          * Sort By
          */
-        sort_by?: 'name' | 'activity_position' | 'mitre_tactic' | 'mitre_technique' | 'priority' | 'state' | 'visible' | 'created_at' | 'updated_at' | 'activity_group.name' | 'activity_coverage_score' | 'activity_start_time' | 'activity_end_time' | 'tags' | null;
+        sort_by?:
+            | 'name'
+            | 'activity_position'
+            | 'mitre_tactic'
+            | 'mitre_technique'
+            | 'priority'
+            | 'state'
+            | 'visible'
+            | 'created_at'
+            | 'updated_at'
+            | 'activity_group.name'
+            | 'activity_coverage_score'
+            | 'activity_start_time'
+            | 'activity_end_time'
+            | 'tags'
+            | null;
     };
     url: '/api/v1/assessments/{assessment_id}/activity/';
 };
@@ -4209,7 +4414,8 @@ export type GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetErrors = {
     422: HttpValidationError;
 };
 
-export type GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetError = GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetErrors[keyof GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetErrors];
+export type GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetError =
+    GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetErrors[keyof GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetErrors];
 
 export type GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponses = {
     /**
@@ -4218,7 +4424,8 @@ export type GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponses = {
     200: PaginatedResponseActivityRead;
 };
 
-export type GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponse = GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponses[keyof GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponses];
+export type GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponse =
+    GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponses[keyof GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponses];
 
 export type CreateActivityApiV1AssessmentsAssessmentIdActivityPostData = {
     body: ActivityBase;
@@ -4239,7 +4446,8 @@ export type CreateActivityApiV1AssessmentsAssessmentIdActivityPostErrors = {
     422: HttpValidationError;
 };
 
-export type CreateActivityApiV1AssessmentsAssessmentIdActivityPostError = CreateActivityApiV1AssessmentsAssessmentIdActivityPostErrors[keyof CreateActivityApiV1AssessmentsAssessmentIdActivityPostErrors];
+export type CreateActivityApiV1AssessmentsAssessmentIdActivityPostError =
+    CreateActivityApiV1AssessmentsAssessmentIdActivityPostErrors[keyof CreateActivityApiV1AssessmentsAssessmentIdActivityPostErrors];
 
 export type CreateActivityApiV1AssessmentsAssessmentIdActivityPostResponses = {
     /**
@@ -4248,586 +4456,666 @@ export type CreateActivityApiV1AssessmentsAssessmentIdActivityPostResponses = {
     200: ActivityRead;
 };
 
-export type CreateActivityApiV1AssessmentsAssessmentIdActivityPostResponse = CreateActivityApiV1AssessmentsAssessmentIdActivityPostResponses[keyof CreateActivityApiV1AssessmentsAssessmentIdActivityPostResponses];
+export type CreateActivityApiV1AssessmentsAssessmentIdActivityPostResponse =
+    CreateActivityApiV1AssessmentsAssessmentIdActivityPostResponses[keyof CreateActivityApiV1AssessmentsAssessmentIdActivityPostResponses];
 
-export type GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetData = {
-    body?: never;
-    path: {
-        /**
-         * Activity Id
-         */
-        activity_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+export type GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Activity Id
+             */
+            activity_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}';
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}';
-};
 
-export type GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetError = GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetErrors[keyof GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetErrors];
-
-export type GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: ActivityRead;
-};
-
-export type GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetResponse = GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetResponses[keyof GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetResponses];
-
-export type UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutData = {
-    body: ActivityUpdate;
-    path: {
+export type GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetErrors =
+    {
         /**
-         * Activity Id
+         * Validation Error
          */
-        activity_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+        422: HttpValidationError;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}';
-};
 
-export type UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetError =
+    GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetErrors[keyof GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetErrors];
 
-export type UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutError = UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutErrors[keyof UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutErrors];
-
-export type UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutResponses = {
-    /**
-     * Successful Response
-     */
-    200: ActivityRead;
-};
-
-export type UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutResponse = UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutResponses[keyof UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutResponses];
-
-export type ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutData = {
-    body?: never;
-    path: {
+export type GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetResponses =
+    {
         /**
-         * Activity Id
+         * Successful Response
          */
-        activity_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+        200: ActivityRead;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/delete';
-};
 
-export type ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetResponse =
+    GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetResponses[keyof GetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetResponses];
 
-export type ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutError = ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutErrors[keyof ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutErrors];
-
-export type ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutResponses = {
-    /**
-     * Successful Response
-     */
-    200: MessageResponse;
-};
-
-export type ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutResponse = ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutResponses[keyof ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutResponses];
-
-export type CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutData = {
-    body?: never;
-    path: {
-        /**
-         * Activity Id
-         */
-        activity_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+export type UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutData =
+    {
+        body: ActivityUpdate;
+        path: {
+            /**
+             * Activity Id
+             */
+            activity_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}';
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/clone';
-};
 
-export type CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutError = CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutErrors[keyof CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutErrors];
-
-export type CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutResponses = {
-    /**
-     * Successful Response
-     */
-    200: ActivityRead;
-};
-
-export type CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutResponse = CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutResponses[keyof CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutResponses];
-
-export type AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutData = {
-    body: ActivityTagsUpdate;
-    path: {
+export type UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutErrors =
+    {
         /**
-         * Activity Id
+         * Validation Error
          */
-        activity_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+        422: HttpValidationError;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/tags';
-};
 
-export type AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutError =
+    UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutErrors[keyof UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutErrors];
 
-export type AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutError = AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutErrors[keyof AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutErrors];
-
-export type AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutResponses = {
-    /**
-     * Successful Response
-     */
-    200: ActivityRead;
-};
-
-export type AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutResponse = AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutResponses[keyof AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutResponses];
-
-export type AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutData = {
-    body: ActivityGroupUpdate;
-    path: {
+export type UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutResponses =
+    {
         /**
-         * Activity Id
+         * Successful Response
          */
-        activity_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+        200: ActivityRead;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/activity_group';
-};
 
-export type AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutResponse =
+    UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutResponses[keyof UpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutResponses];
 
-export type AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutError = AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutErrors[keyof AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutErrors];
-
-export type AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutResponses = {
-    /**
-     * Successful Response
-     */
-    200: ActivityRead;
-};
-
-export type AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutResponse = AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutResponses[keyof AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutResponses];
-
-export type AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutData = {
-    body: ActivityAssetUpdate;
-    path: {
-        /**
-         * Activity Id
-         */
-        activity_id: string;
-        role: ActivityAssetRole;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+export type ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Activity Id
+             */
+            activity_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/delete';
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/assets/{role}';
-};
 
-export type AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutError = AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutErrors[keyof AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutErrors];
-
-export type AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponses = {
-    /**
-     * Successful Response
-     */
-    200: MessageResponse;
-};
-
-export type AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponse = AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponses[keyof AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponses];
-
-export type ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutData = {
-    body?: never;
-    path: {
+export type ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutErrors =
+    {
         /**
-         * Activity Id
+         * Validation Error
          */
-        activity_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+        422: HttpValidationError;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/visible';
-};
 
-export type ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutError =
+    ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutErrors[keyof ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutErrors];
 
-export type ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutError = ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutErrors[keyof ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutErrors];
-
-export type ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutResponses = {
-    /**
-     * Successful Response
-     */
-    200: MessageResponse;
-};
-
-export type ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutResponse = ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutResponses[keyof ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutResponses];
-
-export type AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutData = {
-    /**
-     * Dynamic Evaluation Questions
-     */
-    body: Array<DynamicEvaluationQuestionAssign>;
-    path: {
+export type ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutResponses =
+    {
         /**
-         * Activity Id
+         * Successful Response
          */
-        activity_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+        200: MessageResponse;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/dynamic_evaluation_questions';
-};
 
-export type AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutResponse =
+    ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutResponses[keyof ToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutResponses];
 
-export type AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutError = AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutErrors[keyof AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutErrors];
-
-export type AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutResponses = {
-    /**
-     * Successful Response
-     */
-    200: ActivityRead;
-};
-
-export type AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutResponse = AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutResponses[keyof AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutResponses];
-
-export type GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetData = {
-    body?: never;
-    path: {
-        /**
-         * Activity Id
-         */
-        activity_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+export type CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Activity Id
+             */
+            activity_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/clone';
     };
-    query?: {
+
+export type CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutErrors =
+    {
         /**
-         * Filename
+         * Validation Error
          */
-        filename?: string | null;
-        /**
-         * Category
-         */
-        category?: FileCategory | null;
-        /**
-         * Sort By
-         */
-        sort_by?: 'filename' | 'created_at' | null;
+        422: HttpValidationError;
     };
-    url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/files';
-};
 
-export type GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutError =
+    CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutErrors[keyof CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutErrors];
 
-export type GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetError = GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetErrors[keyof GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetErrors];
-
-export type GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetResponses = {
-    /**
-     * Response Get Activity Files Api V1 Assessments  Assessment Id  Activity  Activity Id  Files Get
-     *
-     * Successful Response
-     */
-    200: Array<FileRead>;
-};
-
-export type GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetResponse = GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetResponses[keyof GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetResponses];
-
-export type DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteData = {
-    body?: never;
-    path: {
+export type CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutResponses =
+    {
         /**
-         * File Id
+         * Successful Response
          */
-        file_id: string;
-        /**
-         * Activity Id
-         */
-        activity_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+        200: ActivityRead;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/files/{file_id}';
-};
 
-export type DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutResponse =
+    CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutResponses[keyof CloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutResponses];
 
-export type DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteError = DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteErrors[keyof DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteErrors];
-
-export type DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteResponses = {
-    /**
-     * Successful Response
-     */
-    200: MessageResponse;
-};
-
-export type DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteResponse = DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteResponses[keyof DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteResponses];
-
-export type GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetData = {
-    body?: never;
-    path: {
-        /**
-         * Activity Id
-         */
-        activity_id: string;
-        /**
-         * File Id
-         */
-        file_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+export type AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutData =
+    {
+        body: ActivityTagsUpdate;
+        path: {
+            /**
+             * Activity Id
+             */
+            activity_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/tags';
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/files/{file_id}';
-};
 
-export type GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetError = GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetErrors[keyof GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetErrors];
-
-export type GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: FileRead;
-};
-
-export type GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetResponse = GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetResponses[keyof GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetResponses];
-
-export type DownloadActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDownloadGetData = {
-    body?: never;
-    path: {
+export type AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutErrors =
+    {
         /**
-         * Activity Id
+         * Validation Error
          */
-        activity_id: string;
-        /**
-         * File Id
-         */
-        file_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+        422: HttpValidationError;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/files/{file_id}/download';
-};
 
-export type DownloadActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDownloadGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutError =
+    AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutErrors[keyof AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutErrors];
 
-export type DownloadActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDownloadGetError = DownloadActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDownloadGetErrors[keyof DownloadActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDownloadGetErrors];
-
-export type DownloadActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDownloadGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: unknown;
-};
-
-export type UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostData = {
-    body: BodyUploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPost;
-    path: {
+export type AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutResponses =
+    {
         /**
-         * Activity Id
+         * Successful Response
          */
-        activity_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+        200: ActivityRead;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/upload';
-};
 
-export type UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutResponse =
+    AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutResponses[keyof AssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutResponses];
 
-export type UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostError = UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostErrors[keyof UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostErrors];
-
-export type UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostResponses = {
-    /**
-     * Successful Response
-     */
-    200: FileUploadResponse;
-};
-
-export type UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostResponse = UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostResponses[keyof UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostResponses];
-
-export type GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetData = {
-    body?: never;
-    path: {
-        /**
-         * Activity Id
-         */
-        activity_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+export type AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutData =
+    {
+        body: ActivityGroupUpdate;
+        path: {
+            /**
+             * Activity Id
+             */
+            activity_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/activity_group';
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/version';
-};
 
-export type GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetError = GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetErrors[keyof GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetErrors];
-
-export type GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetResponses = {
-    /**
-     * Response Get Activity History List Api V1 Assessments  Assessment Id  Activity  Activity Id  Version Get
-     *
-     * Successful Response
-     */
-    200: Array<ActivityHistoryRead>;
-};
-
-export type GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetResponse = GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetResponses[keyof GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetResponses];
-
-export type GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetData = {
-    body?: never;
-    path: {
+export type AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutErrors =
+    {
         /**
-         * Activity Id
+         * Validation Error
          */
-        activity_id: string;
-        /**
-         * Version Id
-         */
-        version_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+        422: HttpValidationError;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/version/{version_id}';
-};
 
-export type GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutError =
+    AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutErrors[keyof AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutErrors];
 
-export type GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetError = GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetErrors[keyof GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetErrors];
+export type AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: ActivityRead;
+    };
 
-export type GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: ActivityHistoryRead;
-};
+export type AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutResponse =
+    AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutResponses[keyof AssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutResponses];
 
-export type GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetResponse = GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetResponses[keyof GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetResponses];
+export type AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutData =
+    {
+        body: ActivityAssetUpdate;
+        path: {
+            /**
+             * Activity Id
+             */
+            activity_id: string;
+            role: ActivityAssetRole;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/assets/{role}';
+    };
+
+export type AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutError =
+    AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutErrors[keyof AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutErrors];
+
+export type AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: MessageResponse;
+    };
+
+export type AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponse =
+    AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponses[keyof AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponses];
+
+export type ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Activity Id
+             */
+            activity_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/visible';
+    };
+
+export type ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutError =
+    ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutErrors[keyof ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutErrors];
+
+export type ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: MessageResponse;
+    };
+
+export type ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutResponse =
+    ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutResponses[keyof ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutResponses];
+
+export type AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutData =
+    {
+        /**
+         * Dynamic Evaluation Questions
+         */
+        body: Array<DynamicEvaluationQuestionAssign>;
+        path: {
+            /**
+             * Activity Id
+             */
+            activity_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/dynamic_evaluation_questions';
+    };
+
+export type AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutError =
+    AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutErrors[keyof AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutErrors];
+
+export type AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: ActivityRead;
+    };
+
+export type AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutResponse =
+    AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutResponses[keyof AssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutResponses];
+
+export type GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Activity Id
+             */
+            activity_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: {
+            /**
+             * Filename
+             */
+            filename?: string | null;
+            /**
+             * Category
+             */
+            category?: FileCategory | null;
+            /**
+             * Sort By
+             */
+            sort_by?: 'filename' | 'created_at' | null;
+        };
+        url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/files';
+    };
+
+export type GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetError =
+    GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetErrors[keyof GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetErrors];
+
+export type GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetResponses =
+    {
+        /**
+         * Response Get Activity Files Api V1 Assessments  Assessment Id  Activity  Activity Id  Files Get
+         *
+         * Successful Response
+         */
+        200: Array<FileRead>;
+    };
+
+export type GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetResponse =
+    GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetResponses[keyof GetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetResponses];
+
+export type DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteData =
+    {
+        body?: never;
+        path: {
+            /**
+             * File Id
+             */
+            file_id: string;
+            /**
+             * Activity Id
+             */
+            activity_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/files/{file_id}';
+    };
+
+export type DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteError =
+    DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteErrors[keyof DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteErrors];
+
+export type DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: MessageResponse;
+    };
+
+export type DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteResponse =
+    DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteResponses[keyof DeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteResponses];
+
+export type GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Activity Id
+             */
+            activity_id: string;
+            /**
+             * File Id
+             */
+            file_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/files/{file_id}';
+    };
+
+export type GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetError =
+    GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetErrors[keyof GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetErrors];
+
+export type GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: FileRead;
+    };
+
+export type GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetResponse =
+    GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetResponses[keyof GetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetResponses];
+
+export type DownloadActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDownloadGetData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Activity Id
+             */
+            activity_id: string;
+            /**
+             * File Id
+             */
+            file_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/files/{file_id}/download';
+    };
+
+export type DownloadActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDownloadGetErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type DownloadActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDownloadGetError =
+    DownloadActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDownloadGetErrors[keyof DownloadActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDownloadGetErrors];
+
+export type DownloadActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDownloadGetResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: unknown;
+    };
+
+export type UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostData =
+    {
+        body: BodyUploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPost;
+        path: {
+            /**
+             * Activity Id
+             */
+            activity_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/upload';
+    };
+
+export type UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostError =
+    UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostErrors[keyof UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostErrors];
+
+export type UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: FileUploadResponse;
+    };
+
+export type UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostResponse =
+    UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostResponses[keyof UploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostResponses];
+
+export type GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Activity Id
+             */
+            activity_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/version';
+    };
+
+export type GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetError =
+    GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetErrors[keyof GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetErrors];
+
+export type GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetResponses =
+    {
+        /**
+         * Response Get Activity History List Api V1 Assessments  Assessment Id  Activity  Activity Id  Version Get
+         *
+         * Successful Response
+         */
+        200: Array<ActivityHistoryRead>;
+    };
+
+export type GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetResponse =
+    GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetResponses[keyof GetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetResponses];
+
+export type GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Activity Id
+             */
+            activity_id: string;
+            /**
+             * Version Id
+             */
+            version_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/activity/{activity_id}/version/{version_id}';
+    };
+
+export type GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetError =
+    GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetErrors[keyof GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetErrors];
+
+export type GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: ActivityHistoryRead;
+    };
+
+export type GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetResponse =
+    GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetResponses[keyof GetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetResponses];
 
 export type GetAssetsApiV1AssessmentsAssessmentIdAssetGetData = {
     body?: never;
@@ -4873,7 +5161,8 @@ export type GetAssetsApiV1AssessmentsAssessmentIdAssetGetErrors = {
     422: HttpValidationError;
 };
 
-export type GetAssetsApiV1AssessmentsAssessmentIdAssetGetError = GetAssetsApiV1AssessmentsAssessmentIdAssetGetErrors[keyof GetAssetsApiV1AssessmentsAssessmentIdAssetGetErrors];
+export type GetAssetsApiV1AssessmentsAssessmentIdAssetGetError =
+    GetAssetsApiV1AssessmentsAssessmentIdAssetGetErrors[keyof GetAssetsApiV1AssessmentsAssessmentIdAssetGetErrors];
 
 export type GetAssetsApiV1AssessmentsAssessmentIdAssetGetResponses = {
     /**
@@ -4882,7 +5171,8 @@ export type GetAssetsApiV1AssessmentsAssessmentIdAssetGetResponses = {
     200: PaginatedResponseAssetRead;
 };
 
-export type GetAssetsApiV1AssessmentsAssessmentIdAssetGetResponse = GetAssetsApiV1AssessmentsAssessmentIdAssetGetResponses[keyof GetAssetsApiV1AssessmentsAssessmentIdAssetGetResponses];
+export type GetAssetsApiV1AssessmentsAssessmentIdAssetGetResponse =
+    GetAssetsApiV1AssessmentsAssessmentIdAssetGetResponses[keyof GetAssetsApiV1AssessmentsAssessmentIdAssetGetResponses];
 
 export type CreateAssetApiV1AssessmentsAssessmentIdAssetPostData = {
     body: AssetBase;
@@ -4903,7 +5193,8 @@ export type CreateAssetApiV1AssessmentsAssessmentIdAssetPostErrors = {
     422: HttpValidationError;
 };
 
-export type CreateAssetApiV1AssessmentsAssessmentIdAssetPostError = CreateAssetApiV1AssessmentsAssessmentIdAssetPostErrors[keyof CreateAssetApiV1AssessmentsAssessmentIdAssetPostErrors];
+export type CreateAssetApiV1AssessmentsAssessmentIdAssetPostError =
+    CreateAssetApiV1AssessmentsAssessmentIdAssetPostErrors[keyof CreateAssetApiV1AssessmentsAssessmentIdAssetPostErrors];
 
 export type CreateAssetApiV1AssessmentsAssessmentIdAssetPostResponses = {
     /**
@@ -4912,7 +5203,8 @@ export type CreateAssetApiV1AssessmentsAssessmentIdAssetPostResponses = {
     200: AssetRead;
 };
 
-export type CreateAssetApiV1AssessmentsAssessmentIdAssetPostResponse = CreateAssetApiV1AssessmentsAssessmentIdAssetPostResponses[keyof CreateAssetApiV1AssessmentsAssessmentIdAssetPostResponses];
+export type CreateAssetApiV1AssessmentsAssessmentIdAssetPostResponse =
+    CreateAssetApiV1AssessmentsAssessmentIdAssetPostResponses[keyof CreateAssetApiV1AssessmentsAssessmentIdAssetPostResponses];
 
 export type GetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetData = {
     body?: never;
@@ -4937,7 +5229,8 @@ export type GetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetErrors = {
     422: HttpValidationError;
 };
 
-export type GetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetError = GetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetErrors[keyof GetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetErrors];
+export type GetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetError =
+    GetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetErrors[keyof GetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetErrors];
 
 export type GetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetResponses = {
     /**
@@ -4946,7 +5239,8 @@ export type GetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetResponses = {
     200: AssetRead;
 };
 
-export type GetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetResponse = GetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetResponses[keyof GetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetResponses];
+export type GetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetResponse =
+    GetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetResponses[keyof GetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetResponses];
 
 export type UpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutData = {
     body: AssetBase;
@@ -4971,7 +5265,8 @@ export type UpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutErrors = {
     422: HttpValidationError;
 };
 
-export type UpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutError = UpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutErrors[keyof UpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutErrors];
+export type UpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutError =
+    UpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutErrors[keyof UpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutErrors];
 
 export type UpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutResponses = {
     /**
@@ -4980,41 +5275,47 @@ export type UpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutResponses = {
     200: AssetRead;
 };
 
-export type UpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutResponse = UpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutResponses[keyof UpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutResponses];
+export type UpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutResponse =
+    UpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutResponses[keyof UpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutResponses];
 
-export type ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutData = {
-    body?: never;
-    path: {
-        /**
-         * Asset Id
-         */
-        asset_id: string;
-        /**
-         * Assessment Id
-         */
-        assessment_id: string;
+export type ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Asset Id
+             */
+            asset_id: string;
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/asset/{asset_id}/delete';
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/asset/{asset_id}/delete';
-};
 
-export type ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
 
-export type ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutError = ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutErrors[keyof ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutErrors];
+export type ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutError =
+    ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutErrors[keyof ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutErrors];
 
-export type ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutResponses = {
-    /**
-     * Successful Response
-     */
-    200: MessageResponse;
-};
+export type ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: MessageResponse;
+    };
 
-export type ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutResponse = ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutResponses[keyof ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutResponses];
+export type ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutResponse =
+    ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutResponses[keyof ToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutResponses];
 
 export type GetTagsApiV1AssessmentsAssessmentIdTagGetData = {
     body?: never;
@@ -5060,7 +5361,8 @@ export type GetTagsApiV1AssessmentsAssessmentIdTagGetErrors = {
     422: HttpValidationError;
 };
 
-export type GetTagsApiV1AssessmentsAssessmentIdTagGetError = GetTagsApiV1AssessmentsAssessmentIdTagGetErrors[keyof GetTagsApiV1AssessmentsAssessmentIdTagGetErrors];
+export type GetTagsApiV1AssessmentsAssessmentIdTagGetError =
+    GetTagsApiV1AssessmentsAssessmentIdTagGetErrors[keyof GetTagsApiV1AssessmentsAssessmentIdTagGetErrors];
 
 export type GetTagsApiV1AssessmentsAssessmentIdTagGetResponses = {
     /**
@@ -5069,7 +5371,8 @@ export type GetTagsApiV1AssessmentsAssessmentIdTagGetResponses = {
     200: PaginatedResponseTagRead;
 };
 
-export type GetTagsApiV1AssessmentsAssessmentIdTagGetResponse = GetTagsApiV1AssessmentsAssessmentIdTagGetResponses[keyof GetTagsApiV1AssessmentsAssessmentIdTagGetResponses];
+export type GetTagsApiV1AssessmentsAssessmentIdTagGetResponse =
+    GetTagsApiV1AssessmentsAssessmentIdTagGetResponses[keyof GetTagsApiV1AssessmentsAssessmentIdTagGetResponses];
 
 export type CreateTagApiV1AssessmentsAssessmentIdTagPostData = {
     body: TagBase;
@@ -5090,7 +5393,8 @@ export type CreateTagApiV1AssessmentsAssessmentIdTagPostErrors = {
     422: HttpValidationError;
 };
 
-export type CreateTagApiV1AssessmentsAssessmentIdTagPostError = CreateTagApiV1AssessmentsAssessmentIdTagPostErrors[keyof CreateTagApiV1AssessmentsAssessmentIdTagPostErrors];
+export type CreateTagApiV1AssessmentsAssessmentIdTagPostError =
+    CreateTagApiV1AssessmentsAssessmentIdTagPostErrors[keyof CreateTagApiV1AssessmentsAssessmentIdTagPostErrors];
 
 export type CreateTagApiV1AssessmentsAssessmentIdTagPostResponses = {
     /**
@@ -5099,7 +5403,8 @@ export type CreateTagApiV1AssessmentsAssessmentIdTagPostResponses = {
     200: TagRead;
 };
 
-export type CreateTagApiV1AssessmentsAssessmentIdTagPostResponse = CreateTagApiV1AssessmentsAssessmentIdTagPostResponses[keyof CreateTagApiV1AssessmentsAssessmentIdTagPostResponses];
+export type CreateTagApiV1AssessmentsAssessmentIdTagPostResponse =
+    CreateTagApiV1AssessmentsAssessmentIdTagPostResponses[keyof CreateTagApiV1AssessmentsAssessmentIdTagPostResponses];
 
 export type GetTagApiV1AssessmentsAssessmentIdTagTagIdGetData = {
     body?: never;
@@ -5124,7 +5429,8 @@ export type GetTagApiV1AssessmentsAssessmentIdTagTagIdGetErrors = {
     422: HttpValidationError;
 };
 
-export type GetTagApiV1AssessmentsAssessmentIdTagTagIdGetError = GetTagApiV1AssessmentsAssessmentIdTagTagIdGetErrors[keyof GetTagApiV1AssessmentsAssessmentIdTagTagIdGetErrors];
+export type GetTagApiV1AssessmentsAssessmentIdTagTagIdGetError =
+    GetTagApiV1AssessmentsAssessmentIdTagTagIdGetErrors[keyof GetTagApiV1AssessmentsAssessmentIdTagTagIdGetErrors];
 
 export type GetTagApiV1AssessmentsAssessmentIdTagTagIdGetResponses = {
     /**
@@ -5133,7 +5439,8 @@ export type GetTagApiV1AssessmentsAssessmentIdTagTagIdGetResponses = {
     200: TagRead;
 };
 
-export type GetTagApiV1AssessmentsAssessmentIdTagTagIdGetResponse = GetTagApiV1AssessmentsAssessmentIdTagTagIdGetResponses[keyof GetTagApiV1AssessmentsAssessmentIdTagTagIdGetResponses];
+export type GetTagApiV1AssessmentsAssessmentIdTagTagIdGetResponse =
+    GetTagApiV1AssessmentsAssessmentIdTagTagIdGetResponses[keyof GetTagApiV1AssessmentsAssessmentIdTagTagIdGetResponses];
 
 export type UpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutData = {
     body: TagBase;
@@ -5158,7 +5465,8 @@ export type UpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutErrors = {
     422: HttpValidationError;
 };
 
-export type UpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutError = UpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutErrors[keyof UpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutErrors];
+export type UpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutError =
+    UpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutErrors[keyof UpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutErrors];
 
 export type UpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutResponses = {
     /**
@@ -5167,7 +5475,8 @@ export type UpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutResponses = {
     200: TagRead;
 };
 
-export type UpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutResponse = UpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutResponses[keyof UpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutResponses];
+export type UpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutResponse =
+    UpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutResponses[keyof UpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutResponses];
 
 export type ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutData = {
     body?: never;
@@ -5185,269 +5494,310 @@ export type ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutData = {
     url: '/api/v1/assessments/{assessment_id}/tag/{tag_id}/delete';
 };
 
-export type ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutError = ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutErrors[keyof ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutErrors];
-
-export type ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutResponses = {
-    /**
-     * Successful Response
-     */
-    200: MessageResponse;
-};
-
-export type ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutResponse = ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutResponses[keyof ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutResponses];
-
-export type ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostData = {
-    /**
-     * Activity Template Ids
-     */
-    body: Array<string>;
-    path: {
+export type ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutErrors =
+    {
         /**
-         * Assessment Id
+         * Validation Error
          */
-        assessment_id: string;
+        422: HttpValidationError;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/imports/activity_templates';
-};
 
-export type ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutError =
+    ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutErrors[keyof ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutErrors];
 
-export type ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostError = ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostErrors[keyof ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostErrors];
-
-export type ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostResponses = {
-    /**
-     * Successful Response
-     */
-    200: MessageResponse;
-};
-
-export type ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostResponse = ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostResponses[keyof ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostResponses];
-
-export type ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostData = {
-    /**
-     * Activity Group Template Ids
-     */
-    body: Array<string>;
-    path: {
+export type ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutResponses =
+    {
         /**
-         * Assessment Id
+         * Successful Response
          */
-        assessment_id: string;
+        200: MessageResponse;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/imports/activity_group_templates';
-};
 
-export type ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutResponse =
+    ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutResponses[keyof ToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutResponses];
 
-export type ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostError = ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostErrors[keyof ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostErrors];
-
-export type ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostResponses = {
-    /**
-     * Successful Response
-     */
-    200: MessageResponse;
-};
-
-export type ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostResponse = ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostResponses[keyof ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostResponses];
-
-export type ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostData = {
-    body?: never;
-    path: {
+export type ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostData =
+    {
         /**
-         * Assessment Id
+         * Activity Template Ids
          */
-        assessment_id: string;
+        body: Array<string>;
+        path: {
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/imports/activity_templates';
     };
-    query: {
+
+export type ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostErrors =
+    {
         /**
-         * Campaign Template Id
+         * Validation Error
          */
-        campaign_template_id: string;
+        422: HttpValidationError;
     };
-    url: '/api/v1/assessments/{assessment_id}/imports/campaign_template';
-};
 
-export type ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostError =
+    ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostErrors[keyof ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostErrors];
 
-export type ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostError = ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostErrors[keyof ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostErrors];
-
-export type ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostResponses = {
-    /**
-     * Successful Response
-     */
-    200: MessageResponse;
-};
-
-export type ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostResponse = ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostResponses[keyof ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostResponses];
-
-export type GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostData = {
-    body: ReportContextRequest;
-    path: {
+export type ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostResponses =
+    {
         /**
-         * Assessment Id
+         * Successful Response
          */
-        assessment_id: string;
+        200: MessageResponse;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/export/report/context';
-};
 
-export type GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostResponse =
+    ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostResponses[keyof ImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostResponses];
 
-export type GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostError = GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostErrors[keyof GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostErrors];
-
-export type GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostResponses = {
-    /**
-     * Response Get Report Context Api V1 Assessments  Assessment Id  Export Report Context Post
-     *
-     * Successful Response
-     */
-    200: {
-        [key: string]: unknown;
-    };
-};
-
-export type GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostResponse = GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostResponses[keyof GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostResponses];
-
-export type GenerateReportApiV1AssessmentsAssessmentIdExportReportGeneratePostData = {
-    body: ReportGenerateRequest;
-    path: {
+export type ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostData =
+    {
         /**
-         * Assessment Id
+         * Activity Group Template Ids
          */
-        assessment_id: string;
+        body: Array<string>;
+        path: {
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/imports/activity_group_templates';
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/export/report/generate';
-};
 
-export type GenerateReportApiV1AssessmentsAssessmentIdExportReportGeneratePostErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type GenerateReportApiV1AssessmentsAssessmentIdExportReportGeneratePostError = GenerateReportApiV1AssessmentsAssessmentIdExportReportGeneratePostErrors[keyof GenerateReportApiV1AssessmentsAssessmentIdExportReportGeneratePostErrors];
-
-export type GenerateReportApiV1AssessmentsAssessmentIdExportReportGeneratePostResponses = {
-    /**
-     * Successful Response
-     */
-    200: unknown;
-};
-
-export type GenerateMitreAttackNavigatorLayerApiV1AssessmentsAssessmentIdExportMitrePostData = {
-    body?: never;
-    path: {
+export type ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostErrors =
+    {
         /**
-         * Assessment Id
+         * Validation Error
          */
-        assessment_id: string;
+        422: HttpValidationError;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/export/mitre';
-};
 
-export type GenerateMitreAttackNavigatorLayerApiV1AssessmentsAssessmentIdExportMitrePostErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostError =
+    ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostErrors[keyof ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostErrors];
 
-export type GenerateMitreAttackNavigatorLayerApiV1AssessmentsAssessmentIdExportMitrePostError = GenerateMitreAttackNavigatorLayerApiV1AssessmentsAssessmentIdExportMitrePostErrors[keyof GenerateMitreAttackNavigatorLayerApiV1AssessmentsAssessmentIdExportMitrePostErrors];
-
-export type GenerateMitreAttackNavigatorLayerApiV1AssessmentsAssessmentIdExportMitrePostResponses = {
-    /**
-     * Successful Response
-     */
-    200: unknown;
-};
-
-export type ExportAssessmentApiV1AssessmentsAssessmentIdExportAssessmentPostData = {
-    body?: never;
-    path: {
+export type ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostResponses =
+    {
         /**
-         * Assessment Id
+         * Successful Response
          */
-        assessment_id: string;
+        200: MessageResponse;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/export/assessment';
-};
 
-export type ExportAssessmentApiV1AssessmentsAssessmentIdExportAssessmentPostErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostResponse =
+    ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostResponses[keyof ImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostResponses];
 
-export type ExportAssessmentApiV1AssessmentsAssessmentIdExportAssessmentPostError = ExportAssessmentApiV1AssessmentsAssessmentIdExportAssessmentPostErrors[keyof ExportAssessmentApiV1AssessmentsAssessmentIdExportAssessmentPostErrors];
+export type ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query: {
+            /**
+             * Campaign Template Id
+             */
+            campaign_template_id: string;
+        };
+        url: '/api/v1/assessments/{assessment_id}/imports/campaign_template';
+    };
 
-export type ExportAssessmentApiV1AssessmentsAssessmentIdExportAssessmentPostResponses = {
-    /**
-     * Successful Response
-     */
-    200: unknown;
-};
-
-export type GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetData = {
-    body?: never;
-    path: {
+export type ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostErrors =
+    {
         /**
-         * Assessment Id
+         * Validation Error
          */
-        assessment_id: string;
+        422: HttpValidationError;
     };
-    query?: never;
-    url: '/api/v1/assessments/{assessment_id}/statistics/';
-};
 
-export type GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
+export type ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostError =
+    ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostErrors[keyof ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostErrors];
 
-export type GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetError = GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetErrors[keyof GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetErrors];
+export type ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: MessageResponse;
+    };
 
-export type GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: AssessmentStatisticsResponse;
-};
+export type ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostResponse =
+    ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostResponses[keyof ImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostResponses];
 
-export type GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetResponse = GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetResponses[keyof GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetResponses];
+export type GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostData =
+    {
+        body: ReportContextRequest;
+        path: {
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/export/report/context';
+    };
+
+export type GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostError =
+    GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostErrors[keyof GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostErrors];
+
+export type GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostResponses =
+    {
+        /**
+         * Response Get Report Context Api V1 Assessments  Assessment Id  Export Report Context Post
+         *
+         * Successful Response
+         */
+        200: {
+            [key: string]: unknown;
+        };
+    };
+
+export type GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostResponse =
+    GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostResponses[keyof GetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostResponses];
+
+export type GenerateReportApiV1AssessmentsAssessmentIdExportReportGeneratePostData =
+    {
+        body: ReportGenerateRequest;
+        path: {
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/export/report/generate';
+    };
+
+export type GenerateReportApiV1AssessmentsAssessmentIdExportReportGeneratePostErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type GenerateReportApiV1AssessmentsAssessmentIdExportReportGeneratePostError =
+    GenerateReportApiV1AssessmentsAssessmentIdExportReportGeneratePostErrors[keyof GenerateReportApiV1AssessmentsAssessmentIdExportReportGeneratePostErrors];
+
+export type GenerateReportApiV1AssessmentsAssessmentIdExportReportGeneratePostResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: unknown;
+    };
+
+export type GenerateMitreAttackNavigatorLayerApiV1AssessmentsAssessmentIdExportMitrePostData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/export/mitre';
+    };
+
+export type GenerateMitreAttackNavigatorLayerApiV1AssessmentsAssessmentIdExportMitrePostErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type GenerateMitreAttackNavigatorLayerApiV1AssessmentsAssessmentIdExportMitrePostError =
+    GenerateMitreAttackNavigatorLayerApiV1AssessmentsAssessmentIdExportMitrePostErrors[keyof GenerateMitreAttackNavigatorLayerApiV1AssessmentsAssessmentIdExportMitrePostErrors];
+
+export type GenerateMitreAttackNavigatorLayerApiV1AssessmentsAssessmentIdExportMitrePostResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: unknown;
+    };
+
+export type ExportAssessmentApiV1AssessmentsAssessmentIdExportAssessmentPostData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/export/assessment';
+    };
+
+export type ExportAssessmentApiV1AssessmentsAssessmentIdExportAssessmentPostErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type ExportAssessmentApiV1AssessmentsAssessmentIdExportAssessmentPostError =
+    ExportAssessmentApiV1AssessmentsAssessmentIdExportAssessmentPostErrors[keyof ExportAssessmentApiV1AssessmentsAssessmentIdExportAssessmentPostErrors];
+
+export type ExportAssessmentApiV1AssessmentsAssessmentIdExportAssessmentPostResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: unknown;
+    };
+
+export type GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetData =
+    {
+        body?: never;
+        path: {
+            /**
+             * Assessment Id
+             */
+            assessment_id: string;
+        };
+        query?: never;
+        url: '/api/v1/assessments/{assessment_id}/statistics/';
+    };
+
+export type GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetErrors =
+    {
+        /**
+         * Validation Error
+         */
+        422: HttpValidationError;
+    };
+
+export type GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetError =
+    GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetErrors[keyof GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetErrors];
+
+export type GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetResponses =
+    {
+        /**
+         * Successful Response
+         */
+        200: AssessmentStatisticsResponse;
+    };
+
+export type GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetResponse =
+    GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetResponses[keyof GetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetResponses];

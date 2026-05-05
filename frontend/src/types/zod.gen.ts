@@ -7,11 +7,7 @@ import * as z from 'zod';
  *
  * Possible acl roles
  */
-export const zAclRole = z.enum([
-    'red',
-    'blue',
-    'spectator'
-]);
+export const zAclRole = z.enum(['red', 'blue', 'spectator']);
 
 /**
  * AclBase
@@ -21,7 +17,7 @@ export const zAclRole = z.enum([
 export const zAclBase = z.object({
     assessment_role: zAclRole.optional().default('spectator'),
     user_id: z.uuid(),
-    assessment_id: z.uuid()
+    assessment_id: z.uuid(),
 });
 
 /**
@@ -33,7 +29,7 @@ export const zAclRead = z.object({
     assessment_role: zAclRole.optional().default('spectator'),
     user_id: z.uuid(),
     assessment_id: z.uuid(),
-    id: z.uuid()
+    id: z.uuid(),
 });
 
 /**
@@ -48,7 +44,7 @@ export const zActivityAssetRole = z.enum([
     'log_source',
     'prevention_source',
     'alert_source',
-    'stakeholder_notification_source'
+    'stakeholder_notification_source',
 ]);
 
 /**
@@ -57,7 +53,7 @@ export const zActivityAssetRole = z.enum([
  * Schema for updating activity assets
  */
 export const zActivityAssetUpdate = z.object({
-    asset_ids: z.array(z.uuid())
+    asset_ids: z.array(z.uuid()),
 });
 
 /**
@@ -68,7 +64,7 @@ export const zActivityAssetUpdate = z.object({
 export const zActivityBase = z.object({
     name: z.string(),
     mitre_tactic: z.string(),
-    mitre_technique: z.string()
+    mitre_technique: z.string(),
 });
 
 /**
@@ -78,7 +74,7 @@ export const zActivityBase = z.object({
  */
 export const zActivityGroupBase = z.object({
     name: z.string(),
-    visible: z.boolean().optional().default(false)
+    visible: z.boolean().optional().default(false),
 });
 
 /**
@@ -92,7 +88,7 @@ export const zActivityGroupRead = z.object({
     id: z.uuid(),
     deleted: z.boolean(),
     is_default: z.boolean(),
-    activity_group_position: z.int()
+    activity_group_position: z.int(),
 });
 
 /**
@@ -101,7 +97,7 @@ export const zActivityGroupRead = z.object({
  * Schema for reordering activities within a activity group
  */
 export const zActivityGroupReorder = z.object({
-    activity_group_ids: z.array(z.uuid())
+    activity_group_ids: z.array(z.uuid()),
 });
 
 /**
@@ -113,7 +109,7 @@ export const zActivityGroupTemplateRead = z.object({
     id: z.uuid(),
     name: z.string(),
     description: z.string().nullish(),
-    activity_template_ids: z.array(z.uuid()).optional().default([])
+    activity_template_ids: z.array(z.uuid()).optional().default([]),
 });
 
 /**
@@ -122,7 +118,7 @@ export const zActivityGroupTemplateRead = z.object({
  * Schema for assigning/updating an activity's group
  */
 export const zActivityGroupUpdate = z.object({
-    activity_group_id: z.uuid().nullish()
+    activity_group_id: z.uuid().nullish(),
 });
 
 /**
@@ -130,12 +126,7 @@ export const zActivityGroupUpdate = z.object({
  *
  * Possible activity priority levels
  */
-export const zActivityPriority = z.enum([
-    'Low',
-    'Medium',
-    'High',
-    'Critical'
-]);
+export const zActivityPriority = z.enum(['Low', 'Medium', 'High', 'Critical']);
 
 /**
  * ActivityReorder
@@ -143,7 +134,7 @@ export const zActivityPriority = z.enum([
  * Schema for reordering activities within a activity group
  */
 export const zActivityReorder = z.object({
-    activity_ids: z.array(z.uuid())
+    activity_ids: z.array(z.uuid()),
 });
 
 /**
@@ -156,7 +147,7 @@ export const zActivitySeverity = z.enum([
     'Low',
     'Medium',
     'High',
-    'Critical'
+    'Critical',
 ]);
 
 /**
@@ -172,7 +163,7 @@ export const zActivityState = z.enum([
     'In Progress',
     'In Evaluation',
     'Completed',
-    'Cancelled'
+    'Cancelled',
 ]);
 
 /**
@@ -181,7 +172,7 @@ export const zActivityState = z.enum([
  * Schema for updating activity tags
  */
 export const zActivityTagsUpdate = z.object({
-    tag_ids: z.array(z.uuid()).optional().default([])
+    tag_ids: z.array(z.uuid()).optional().default([]),
 });
 
 /**
@@ -205,7 +196,7 @@ export const zActivityTemplateRead = z.object({
     priority: zActivityPriority.nullish(),
     provider: z.string(),
     linked_knowledge_base_articles: z.array(z.string()).nullish(),
-    id: z.uuid()
+    id: z.uuid(),
 });
 
 /**
@@ -223,7 +214,7 @@ export const zAssessmentType = z.enum(['PurpleTeam', 'RedTeam']);
 export const zAssessmentBase = z.object({
     name: z.string().min(1),
     description: z.string().min(1),
-    assessment_type: zAssessmentType.optional().default('PurpleTeam')
+    assessment_type: zAssessmentType.optional().default('PurpleTeam'),
 });
 
 /**
@@ -236,10 +227,9 @@ export const zAssessmentRead = z.object({
     description: z.string().min(1),
     assessment_type: zAssessmentType.optional().default('PurpleTeam'),
     id: z.uuid(),
-    default_evaluation_templates: z.array(z.record(z.string(), z.union([
-        z.string(),
-        z.int()
-    ])))
+    default_evaluation_templates: z.array(
+        z.record(z.string(), z.union([z.string(), z.int()])),
+    ),
 });
 
 /**
@@ -250,7 +240,7 @@ export const zAssessmentRead = z.object({
 export const zAssetBase = z.object({
     name: z.string(),
     icon: z.string().nullish(),
-    properties: z.record(z.string(), z.unknown()).nullish()
+    properties: z.record(z.string(), z.unknown()).nullish(),
 });
 
 /**
@@ -263,34 +253,38 @@ export const zAssetRead = z.object({
     icon: z.string().nullish(),
     properties: z.record(z.string(), z.unknown()).nullish(),
     id: z.uuid(),
-    deleted: z.boolean()
+    deleted: z.boolean(),
 });
 
 /**
  * Body_import_assessment_api_v1_assessment_import_post
  */
 export const zBodyImportAssessmentApiV1AssessmentImportPost = z.object({
-    file: z.string()
+    file: z.string(),
 });
 
 /**
  * Body_login_api_v1_auth_token_post
  */
 export const zBodyLoginApiV1AuthTokenPost = z.object({
-    grant_type: z.string().regex(/^password$/).nullish(),
+    grant_type: z
+        .string()
+        .regex(/^password$/)
+        .nullish(),
     username: z.string(),
     password: z.string(),
     scope: z.string().optional().default(''),
     client_id: z.string().nullish(),
-    client_secret: z.string().nullish()
+    client_secret: z.string().nullish(),
 });
 
 /**
  * Body_upload_file_api_v1_assessments__assessment_id__activity__activity_id__upload_post
  */
-export const zBodyUploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPost = z.object({
-    file: z.string()
-});
+export const zBodyUploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPost =
+    z.object({
+        file: z.string(),
+    });
 
 /**
  * CampaignTemplateItemRead
@@ -302,7 +296,7 @@ export const zCampaignTemplateItemRead = z.object({
     position: z.int(),
     item_type: z.string(),
     activity_group_template_id: z.uuid().nullish(),
-    activity_template_id: z.uuid().nullish()
+    activity_template_id: z.uuid().nullish(),
 });
 
 /**
@@ -314,7 +308,7 @@ export const zCampaignTemplateRead = z.object({
     id: z.uuid(),
     name: z.string(),
     description: z.string().nullish(),
-    items: z.array(zCampaignTemplateItemRead).optional().default([])
+    items: z.array(zCampaignTemplateItemRead).optional().default([]),
 });
 
 /**
@@ -324,17 +318,13 @@ export const zCampaignTemplateRead = z.object({
  */
 export const zDynamicEvaluationQuestionAssign = z.object({
     evaluation_template_id: z.uuid(),
-    position: z.int().optional().default(0)
+    position: z.int().optional().default(0),
 });
 
 /**
  * EvaluationResult
  */
-export const zEvaluationResult = z.enum([
-    'pass',
-    'fail',
-    'n/a'
-]);
+export const zEvaluationResult = z.enum(['pass', 'fail', 'n/a']);
 
 /**
  * ActivityEvaluationDynamicQuestionsRead
@@ -346,7 +336,7 @@ export const zActivityEvaluationDynamicQuestionsRead = z.object({
     data: z.string().optional().default(''),
     evaluation_result: zEvaluationResult.optional().default('n/a'),
     position: z.int().optional().default(0),
-    id: z.uuid()
+    id: z.uuid(),
 });
 
 /**
@@ -357,7 +347,7 @@ export const zActivityEvaluationDynamicQuestionsRead = z.object({
 export const zActivityEvaluationDynamicQuestionsUpdate = z.object({
     evaluation_template_id: z.uuid(),
     data: z.string().nullish(),
-    evaluation_result: zEvaluationResult.nullish()
+    evaluation_result: zEvaluationResult.nullish(),
 });
 
 /**
@@ -369,19 +359,32 @@ export const zActivityEvaluationRead = z.object({
     logged_evaluation: zEvaluationResult.optional().default('n/a'),
     alerted_evaluation: zEvaluationResult.optional().default('n/a'),
     prevented_evaluation: zEvaluationResult.optional().default('n/a'),
-    stakeholder_notified_evaluation: zEvaluationResult.optional().default('n/a'),
+    stakeholder_notified_evaluation: zEvaluationResult
+        .optional()
+        .default('n/a'),
     activity_coverage_score: z.int().optional().default(0),
     event_to_alert_data: z.string().optional().default(''),
-    event_to_alert_evaluation_result: zEvaluationResult.optional().default('n/a'),
+    event_to_alert_evaluation_result: zEvaluationResult
+        .optional()
+        .default('n/a'),
     alert_to_stakeholder_data: z.string().optional().default(''),
-    alert_to_stakeholder_evaluation_result: zEvaluationResult.optional().default('n/a'),
+    alert_to_stakeholder_evaluation_result: zEvaluationResult
+        .optional()
+        .default('n/a'),
     alert_severity_data: z.string().optional().default(''),
-    alert_severity_evaluation_result: zEvaluationResult.optional().default('n/a'),
+    alert_severity_evaluation_result: zEvaluationResult
+        .optional()
+        .default('n/a'),
     stakeholder_notification_severity_data: z.string().optional().default(''),
-    stakeholder_notification_severity_evaluation_result: zEvaluationResult.optional().default('n/a'),
-    dynamic_questions: z.array(zActivityEvaluationDynamicQuestionsRead).optional().default([]),
+    stakeholder_notification_severity_evaluation_result: zEvaluationResult
+        .optional()
+        .default('n/a'),
+    dynamic_questions: z
+        .array(zActivityEvaluationDynamicQuestionsRead)
+        .optional()
+        .default([]),
     id: z.uuid(),
-    activity_id: z.uuid()
+    activity_id: z.uuid(),
 });
 
 /**
@@ -393,17 +396,29 @@ export const zActivityEvaluationUpdate = z.object({
     logged_evaluation: zEvaluationResult.optional().default('n/a'),
     alerted_evaluation: zEvaluationResult.optional().default('n/a'),
     prevented_evaluation: zEvaluationResult.optional().default('n/a'),
-    stakeholder_notified_evaluation: zEvaluationResult.optional().default('n/a'),
+    stakeholder_notified_evaluation: zEvaluationResult
+        .optional()
+        .default('n/a'),
     activity_coverage_score: z.int().optional().default(0),
     event_to_alert_data: z.string().optional().default(''),
-    event_to_alert_evaluation_result: zEvaluationResult.optional().default('n/a'),
+    event_to_alert_evaluation_result: zEvaluationResult
+        .optional()
+        .default('n/a'),
     alert_to_stakeholder_data: z.string().optional().default(''),
-    alert_to_stakeholder_evaluation_result: zEvaluationResult.optional().default('n/a'),
+    alert_to_stakeholder_evaluation_result: zEvaluationResult
+        .optional()
+        .default('n/a'),
     alert_severity_data: z.string().optional().default(''),
-    alert_severity_evaluation_result: zEvaluationResult.optional().default('n/a'),
+    alert_severity_evaluation_result: zEvaluationResult
+        .optional()
+        .default('n/a'),
     stakeholder_notification_severity_data: z.string().optional().default(''),
-    stakeholder_notification_severity_evaluation_result: zEvaluationResult.optional().default('n/a'),
-    dynamic_questions: z.array(zActivityEvaluationDynamicQuestionsUpdate).nullish()
+    stakeholder_notification_severity_evaluation_result: zEvaluationResult
+        .optional()
+        .default('n/a'),
+    dynamic_questions: z
+        .array(zActivityEvaluationDynamicQuestionsUpdate)
+        .nullish(),
 });
 
 /**
@@ -455,7 +470,7 @@ export const zActivityUpdate = z.object({
     alert_notes: z.string().nullish(),
     prevent_notes: z.string().nullish(),
     stakeholder_notification_notes: z.string().nullish(),
-    evaluation: zActivityEvaluationUpdate.nullish()
+    evaluation: zActivityEvaluationUpdate.nullish(),
 });
 
 /**
@@ -467,7 +482,7 @@ export const zEvaluationTemplateRead = z.object({
     name: z.string().optional().default(''),
     evaluation_criteria: z.string().optional().default(''),
     description: z.string().nullish(),
-    id: z.uuid()
+    id: z.uuid(),
 });
 
 /**
@@ -484,7 +499,7 @@ export const zExternalAuthConfig = z.object({
     scope: z.string(),
     username_claim: z.string(),
     client_id: z.string(),
-    trusted_email_domains: z.array(z.string())
+    trusted_email_domains: z.array(z.string()),
 });
 
 /**
@@ -493,13 +508,7 @@ export const zExternalAuthConfig = z.object({
  * Configuration model for RAPTR
  */
 export const zConfiguration = z.object({
-    LOG_LEVEL: z.enum([
-        'DEBUG',
-        'INFO',
-        'WARNING',
-        'ERROR',
-        'CRITICAL'
-    ]),
+    LOG_LEVEL: z.enum(['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']),
     APPLICATION_NAME: z.string(),
     FASTAPI_DOCUMENTATION: z.boolean(),
     ADMIN_EMAIL: z.string(),
@@ -524,7 +533,7 @@ export const zConfiguration = z.object({
     CUSTOM_DATA_URL: z.string().nullable(),
     ATOMIC_RED_TEAM_URL: z.string(),
     WELCOME_MESSAGE: z.string().nullable(),
-    EXTERNAL_AUTH_CONFIGS: z.array(zExternalAuthConfig).nullable()
+    EXTERNAL_AUTH_CONFIGS: z.array(zExternalAuthConfig).nullable(),
 });
 
 /**
@@ -536,7 +545,7 @@ export const zExternalAuthProvider = z.object({
     name: z.string(),
     authority: z.string(),
     client_id: z.string(),
-    scope: z.string()
+    scope: z.string(),
 });
 
 /**
@@ -555,7 +564,7 @@ export const zFileType = z.enum([
     'image/png',
     'image/jpeg',
     'image/jpg',
-    'text/plain'
+    'text/plain',
 ]);
 
 /**
@@ -571,7 +580,7 @@ export const zFileRead = z.object({
     activity_id: z.uuid(),
     id: z.uuid(),
     created_at: z.iso.datetime(),
-    created_by: z.uuid()
+    created_by: z.uuid(),
 });
 
 /**
@@ -582,7 +591,7 @@ export const zFileRead = z.object({
 export const zFileUploadResponse = z.object({
     message: z.string(),
     url: z.string(),
-    file_id: z.uuid()
+    file_id: z.uuid(),
 });
 
 /**
@@ -591,7 +600,7 @@ export const zFileUploadResponse = z.object({
 export const zImportResponse = z.object({
     assessment_id: z.uuid(),
     message: z.string(),
-    warnings: z.array(z.string()).optional().default([])
+    warnings: z.array(z.string()).optional().default([]),
 });
 
 /**
@@ -603,7 +612,7 @@ export const zKnowledgeBaseRead = z.object({
     name: z.string(),
     mitre_technique_id: z.string().nullish(),
     content: z.unknown().nullish(),
-    id: z.uuid()
+    id: z.uuid(),
 });
 
 /**
@@ -613,7 +622,7 @@ export const zKnowledgeBaseRead = z.object({
  */
 export const zMfaSetupResponse = z.object({
     provisioning_uri: z.string(),
-    message: z.string()
+    message: z.string(),
 });
 
 /**
@@ -622,7 +631,7 @@ export const zMfaSetupResponse = z.object({
 export const zMeanTimeMetricsItem = z.object({
     priority: z.string(),
     mean_time_to_detect_seconds: z.number().nullable(),
-    mean_time_to_respond_seconds: z.number().nullable()
+    mean_time_to_respond_seconds: z.number().nullable(),
 });
 
 /**
@@ -631,7 +640,7 @@ export const zMeanTimeMetricsItem = z.object({
  * Standard message response
  */
 export const zMessageResponse = z.object({
-    message: z.string()
+    message: z.string(),
 });
 
 /**
@@ -647,7 +656,7 @@ export const zMitreOverallTacticScoreItem = z.object({
     expected_alerted_score: z.number().nullable(),
     alerted_score: z.number().nullable(),
     expected_stakeholder_notified_score: z.number().nullable(),
-    stakeholder_notified_score: z.number().nullable()
+    stakeholder_notified_score: z.number().nullable(),
 });
 
 /**
@@ -663,7 +672,7 @@ export const zMitreTechniqueScoreItem = z.object({
     expected_alerted_score: z.number().nullable(),
     alerted_score: z.number().nullable(),
     expected_stakeholder_notified_score: z.number().nullable(),
-    stakeholder_notified_score: z.number().nullable()
+    stakeholder_notified_score: z.number().nullable(),
 });
 
 /**
@@ -671,7 +680,7 @@ export const zMitreTechniqueScoreItem = z.object({
  */
 export const zMitreTacticScoreItem = z.object({
     tactic: z.string(),
-    techniques: z.array(zMitreTechniqueScoreItem)
+    techniques: z.array(zMitreTechniqueScoreItem),
 });
 
 /**
@@ -680,7 +689,10 @@ export const zMitreTacticScoreItem = z.object({
  * OTP Schema
  */
 export const zOtp = z.object({
-    otp: z.string().length(6).regex(/^\d{6}$/)
+    otp: z
+        .string()
+        .length(6)
+        .regex(/^\d{6}$/),
 });
 
 /**
@@ -691,7 +703,7 @@ export const zPaginatedResponseActivityGroupTemplateRead = z.object({
     total: z.int(),
     page: z.int(),
     size: z.int(),
-    pages: z.int()
+    pages: z.int(),
 });
 
 /**
@@ -702,7 +714,7 @@ export const zPaginatedResponseActivityTemplateRead = z.object({
     total: z.int(),
     page: z.int(),
     size: z.int(),
-    pages: z.int()
+    pages: z.int(),
 });
 
 /**
@@ -713,7 +725,7 @@ export const zPaginatedResponseAssessmentRead = z.object({
     total: z.int(),
     page: z.int(),
     size: z.int(),
-    pages: z.int()
+    pages: z.int(),
 });
 
 /**
@@ -724,7 +736,7 @@ export const zPaginatedResponseAssetRead = z.object({
     total: z.int(),
     page: z.int(),
     size: z.int(),
-    pages: z.int()
+    pages: z.int(),
 });
 
 /**
@@ -735,7 +747,7 @@ export const zPaginatedResponseCampaignTemplateRead = z.object({
     total: z.int(),
     page: z.int(),
     size: z.int(),
-    pages: z.int()
+    pages: z.int(),
 });
 
 /**
@@ -746,7 +758,7 @@ export const zPaginatedResponseEvaluationTemplateRead = z.object({
     total: z.int(),
     page: z.int(),
     size: z.int(),
-    pages: z.int()
+    pages: z.int(),
 });
 
 /**
@@ -757,7 +769,7 @@ export const zPaginatedResponseKnowledgeBaseRead = z.object({
     total: z.int(),
     page: z.int(),
     size: z.int(),
-    pages: z.int()
+    pages: z.int(),
 });
 
 /**
@@ -765,7 +777,7 @@ export const zPaginatedResponseKnowledgeBaseRead = z.object({
  */
 export const zPriorityAverageScoreItem = z.object({
     priority: z.string(),
-    average_score: z.number().nullable()
+    average_score: z.number().nullable(),
 });
 
 /**
@@ -773,7 +785,7 @@ export const zPriorityAverageScoreItem = z.object({
  */
 export const zPriorityBreakdownItem = z.object({
     priority: z.string(),
-    count: z.int()
+    count: z.int(),
 });
 
 /**
@@ -782,16 +794,19 @@ export const zPriorityBreakdownItem = z.object({
  * Schema for report context (data layer) request
  */
 export const zReportContextRequest = z.object({
-    sort_by: z.enum([
-        'activity_position',
-        'name',
-        'mitre_tactic',
-        'priority',
-        'state',
-        'start_time',
-        'coverage_score'
-    ]).optional().default('activity_position'),
-    sort_order: z.enum(['asc', 'desc']).optional().default('asc')
+    sort_by: z
+        .enum([
+            'activity_position',
+            'name',
+            'mitre_tactic',
+            'priority',
+            'state',
+            'start_time',
+            'coverage_score',
+        ])
+        .optional()
+        .default('activity_position'),
+    sort_order: z.enum(['asc', 'desc']).optional().default('asc'),
 });
 
 /**
@@ -800,17 +815,20 @@ export const zReportContextRequest = z.object({
  * Schema for report generation request
  */
 export const zReportGenerateRequest = z.object({
-    sort_by: z.enum([
-        'activity_position',
-        'name',
-        'mitre_tactic',
-        'priority',
-        'state',
-        'start_time',
-        'coverage_score'
-    ]).optional().default('activity_position'),
+    sort_by: z
+        .enum([
+            'activity_position',
+            'name',
+            'mitre_tactic',
+            'priority',
+            'state',
+            'start_time',
+            'coverage_score',
+        ])
+        .optional()
+        .default('activity_position'),
     sort_order: z.enum(['asc', 'desc']).optional().default('asc'),
-    template_id: z.uuid()
+    template_id: z.uuid(),
 });
 
 /**
@@ -828,7 +846,7 @@ export const zReportTemplateFormat = z.enum(['html', 'docx']);
 export const zReportTemplateRead = z.object({
     filename: z.string(),
     format: zReportTemplateFormat,
-    id: z.uuid()
+    id: z.uuid(),
 });
 
 /**
@@ -841,7 +859,7 @@ export const zSeverityAccuracyItem = z.object({
     actual_medium: z.int(),
     actual_high: z.int(),
     actual_critical: z.int(),
-    actual_none: z.int()
+    actual_none: z.int(),
 });
 
 /**
@@ -849,7 +867,7 @@ export const zSeverityAccuracyItem = z.object({
  */
 export const zStateDistributionItem = z.object({
     state: z.string(),
-    count: z.int()
+    count: z.int(),
 });
 
 /**
@@ -863,7 +881,7 @@ export const zAssessmentStatisticsResponse = z.object({
     mitre_overall_tactic_scores: z.array(zMitreOverallTacticScoreItem),
     mitre_tactic_scores: z.array(zMitreTacticScoreItem),
     mean_time_metrics: z.array(zMeanTimeMetricsItem),
-    severity_accuracy: z.array(zSeverityAccuracyItem)
+    severity_accuracy: z.array(zSeverityAccuracyItem),
 });
 
 /**
@@ -875,7 +893,7 @@ export const zTacticBase = z.object({
     id: z.uuid(),
     mitre_id: z.string(),
     name: z.string(),
-    url: z.string().nullish()
+    url: z.string().nullish(),
 });
 
 /**
@@ -885,7 +903,7 @@ export const zTacticBase = z.object({
  */
 export const zTagBase = z.object({
     name: z.string(),
-    color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/)
+    color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/),
 });
 
 /**
@@ -897,7 +915,7 @@ export const zTagRead = z.object({
     name: z.string(),
     color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/),
     id: z.uuid(),
-    deleted: z.boolean()
+    deleted: z.boolean(),
 });
 
 /**
@@ -933,7 +951,10 @@ export const zActivityRead = z.object({
     log_sources: z.array(zAssetRead).optional().default([]),
     prevention_sources: z.array(zAssetRead).optional().default([]),
     alert_sources: z.array(zAssetRead).optional().default([]),
-    stakeholder_notification_sources: z.array(zAssetRead).optional().default([]),
+    stakeholder_notification_sources: z
+        .array(zAssetRead)
+        .optional()
+        .default([]),
     logged: z.boolean().nullish(),
     log_time: z.iso.datetime().nullish(),
     prevented: z.boolean().nullish(),
@@ -954,7 +975,7 @@ export const zActivityRead = z.object({
     deleted: z.boolean(),
     activity_position: z.int().nullish(),
     activity_group: zActivityGroupRead.nullish(),
-    created_at: z.iso.datetime().nullish()
+    created_at: z.iso.datetime().nullish(),
 });
 
 /**
@@ -965,7 +986,7 @@ export const zPaginatedResponseActivityRead = z.object({
     total: z.int(),
     page: z.int(),
     size: z.int(),
-    pages: z.int()
+    pages: z.int(),
 });
 
 /**
@@ -976,7 +997,7 @@ export const zPaginatedResponseTagRead = z.object({
     total: z.int(),
     page: z.int(),
     size: z.int(),
-    pages: z.int()
+    pages: z.int(),
 });
 
 /**
@@ -988,7 +1009,7 @@ export const zTechniqueBase = z.object({
     id: z.uuid(),
     mitre_id: z.string(),
     name: z.string(),
-    url: z.string().nullish()
+    url: z.string().nullish(),
 });
 
 /**
@@ -1001,7 +1022,7 @@ export const zTacticWithTechniques = z.object({
     mitre_id: z.string(),
     name: z.string(),
     url: z.string().nullish(),
-    techniques: z.array(zTechniqueBase)
+    techniques: z.array(zTechniqueBase),
 });
 
 /**
@@ -1014,7 +1035,7 @@ export const zTechniqueWithTactics = z.object({
     mitre_id: z.string(),
     name: z.string(),
     url: z.string().nullish(),
-    tactics: z.array(zTacticBase)
+    tactics: z.array(zTacticBase),
 });
 
 /**
@@ -1025,7 +1046,7 @@ export const zTechniqueWithTactics = z.object({
 export const zToken = z.object({
     access_token: z.string(),
     token_type: z.string(),
-    next_url: z.string()
+    next_url: z.string(),
 });
 
 /**
@@ -1034,7 +1055,7 @@ export const zToken = z.object({
  * Properties to receive via API on user password MFA reset
  */
 export const zUserPasswordMfaReset = z.object({
-    password: z.string()
+    password: z.string(),
 });
 
 /**
@@ -1043,7 +1064,7 @@ export const zUserPasswordMfaReset = z.object({
  * Properties to receive via API on user password reset
  */
 export const zUserPasswordReset = z.object({
-    new_password: z.string()
+    new_password: z.string(),
 });
 
 /**
@@ -1053,7 +1074,7 @@ export const zUserPasswordReset = z.object({
  */
 export const zUserPasswordUpdate = z.object({
     new_password: z.string(),
-    old_password: z.string()
+    old_password: z.string(),
 });
 
 /**
@@ -1071,7 +1092,7 @@ export const zUserRole = z.enum(['admin', 'user']);
 export const zUserBase = z.object({
     email: z.email(),
     role: zUserRole,
-    disabled: z.boolean()
+    disabled: z.boolean(),
 });
 
 /**
@@ -1086,7 +1107,7 @@ export const zActivityHistoryRead = z.object({
     saved_by_id: z.uuid().nullable(),
     snapshot: z.record(z.string(), z.unknown()),
     id: z.uuid(),
-    saved_by: zUserBase.nullish()
+    saved_by: zUserBase.nullish(),
 });
 
 /**
@@ -1098,7 +1119,7 @@ export const zUserCreate = z.object({
     email: z.email(),
     role: zUserRole,
     disabled: z.boolean(),
-    password: z.string()
+    password: z.string(),
 });
 
 /**
@@ -1113,7 +1134,7 @@ export const zUserRead = z.object({
     id: z.uuid(),
     mfa_verified: z.boolean(),
     last_login_at: z.iso.datetime().nullable(),
-    last_logout_at: z.iso.datetime().nullable()
+    last_logout_at: z.iso.datetime().nullable(),
 });
 
 /**
@@ -1124,7 +1145,7 @@ export const zPaginatedResponseUserRead = z.object({
     total: z.int(),
     page: z.int(),
     size: z.int(),
-    pages: z.int()
+    pages: z.int(),
 });
 
 /**
@@ -1140,7 +1161,7 @@ export const zUserReadAcl = z.object({
     mfa_verified: z.boolean(),
     last_login_at: z.iso.datetime().nullable(),
     last_logout_at: z.iso.datetime().nullable(),
-    acl: z.array(zAclBase).nullish().default([])
+    acl: z.array(zAclBase).nullish().default([]),
 });
 
 /**
@@ -1151,14 +1172,14 @@ export const zValidationError = z.object({
     msg: z.string(),
     type: z.string(),
     input: z.unknown().optional(),
-    ctx: z.record(z.string(), z.unknown()).optional()
+    ctx: z.record(z.string(), z.unknown()).optional(),
 });
 
 /**
  * HTTPValidationError
  */
 export const zHttpValidationError = z.object({
-    detail: z.array(zValidationError).optional()
+    detail: z.array(zValidationError).optional(),
 });
 
 /**
@@ -1202,7 +1223,9 @@ export const zValidateMfaApiV1AuthMfaPostResponse = zToken;
  *
  * Successful Response
  */
-export const zGetProvidersApiV1AuthProvidersGetResponse = z.array(zExternalAuthProvider);
+export const zGetProvidersApiV1AuthProvidersGetResponse = z.array(
+    zExternalAuthProvider,
+);
 
 /**
  * Successful Response
@@ -1224,7 +1247,7 @@ export const zCreateAclApiV1AclPostBody = zAclBase;
 export const zCreateAclApiV1AclPostResponse = zAclRead;
 
 export const zDeleteAclApiV1AclAclIdDeletePath = z.object({
-    acl_id: z.uuid()
+    acl_id: z.uuid(),
 });
 
 /**
@@ -1233,7 +1256,7 @@ export const zDeleteAclApiV1AclAclIdDeletePath = z.object({
 export const zDeleteAclApiV1AclAclIdDeleteResponse = zMessageResponse;
 
 export const zGetAclApiV1AclAclIdGetPath = z.object({
-    acl_id: z.uuid()
+    acl_id: z.uuid(),
 });
 
 /**
@@ -1244,7 +1267,7 @@ export const zGetAclApiV1AclAclIdGetResponse = zAclRead;
 export const zUpdateAclApiV1AclAclIdPutBody = zAclBase;
 
 export const zUpdateAclApiV1AclAclIdPutPath = z.object({
-    acl_id: z.uuid()
+    acl_id: z.uuid(),
 });
 
 /**
@@ -1252,19 +1275,21 @@ export const zUpdateAclApiV1AclAclIdPutPath = z.object({
  */
 export const zUpdateAclApiV1AclAclIdPutResponse = zAclRead;
 
-export const zGetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetPath = z.object({
-    assessment_id: z.uuid()
-});
+export const zGetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetPath =
+    z.object({
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Response Get Acls By Assessment Api V1 Acl Assessment  Assessment Id  Get
  *
  * Successful Response
  */
-export const zGetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetResponse = z.array(zAclRead);
+export const zGetAclsByAssessmentApiV1AclAssessmentAssessmentIdGetResponse =
+    z.array(zAclRead);
 
 export const zGetAclsByUserApiV1AclUserUserIdGetPath = z.object({
-    user_id: z.uuid()
+    user_id: z.uuid(),
 });
 
 /**
@@ -1283,63 +1308,73 @@ export const zGetActivityTemplatesApiV1ActivityTemplateGetQuery = z.object({
     mitre_technique: z.string().nullish(),
     provider: z.string().nullish(),
     priority: z.array(zActivityPriority).nullish(),
-    sort_by: z.enum([
-        'name',
-        'mitre_tactic',
-        'mitre_technique',
-        'provider',
-        'priority'
-    ]).nullish()
+    sort_by: z
+        .enum([
+            'name',
+            'mitre_tactic',
+            'mitre_technique',
+            'provider',
+            'priority',
+        ])
+        .nullish(),
 });
 
 /**
  * Successful Response
  */
-export const zGetActivityTemplatesApiV1ActivityTemplateGetResponse = zPaginatedResponseActivityTemplateRead;
+export const zGetActivityTemplatesApiV1ActivityTemplateGetResponse =
+    zPaginatedResponseActivityTemplateRead;
 
-export const zGetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetPath = z.object({
-    activity_template_id: z.uuid()
-});
-
-/**
- * Successful Response
- */
-export const zGetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetResponse = zActivityTemplateRead;
-
-export const zGetActivityGroupTemplatesApiV1ActivityGroupTemplateGetQuery = z.object({
-    offset: z.int().optional().default(0),
-    limit: z.int().optional().default(100),
-    sort_order: z.enum(['asc', 'desc']).nullish(),
-    name: z.string().nullish(),
-    sort_by: z.literal('name').nullish()
-});
+export const zGetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetPath =
+    z.object({
+        activity_template_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zGetActivityGroupTemplatesApiV1ActivityGroupTemplateGetResponse = zPaginatedResponseActivityGroupTemplateRead;
+export const zGetActivityTemplateApiV1ActivityTemplateActivityTemplateIdGetResponse =
+    zActivityTemplateRead;
+
+export const zGetActivityGroupTemplatesApiV1ActivityGroupTemplateGetQuery =
+    z.object({
+        offset: z.int().optional().default(0),
+        limit: z.int().optional().default(100),
+        sort_order: z.enum(['asc', 'desc']).nullish(),
+        name: z.string().nullish(),
+        sort_by: z.literal('name').nullish(),
+    });
+
+/**
+ * Successful Response
+ */
+export const zGetActivityGroupTemplatesApiV1ActivityGroupTemplateGetResponse =
+    zPaginatedResponseActivityGroupTemplateRead;
 
 export const zGetCampaignTemplatesApiV1CampaignTemplateGetQuery = z.object({
     offset: z.int().optional().default(0),
     limit: z.int().optional().default(100),
     sort_order: z.enum(['asc', 'desc']).nullish(),
     name: z.string().nullish(),
-    sort_by: z.literal('name').nullish()
+    sort_by: z.literal('name').nullish(),
 });
 
 /**
  * Successful Response
  */
-export const zGetCampaignTemplatesApiV1CampaignTemplateGetResponse = zPaginatedResponseCampaignTemplateRead;
+export const zGetCampaignTemplatesApiV1CampaignTemplateGetResponse =
+    zPaginatedResponseCampaignTemplateRead;
 
-export const zGetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetPath = z.object({
-    campaign_template_id: z.uuid()
-});
+export const zGetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetPath =
+    z.object({
+        campaign_template_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zGetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetResponse = zCampaignTemplateRead;
+export const zGetCampaignTemplateApiV1CampaignTemplateCampaignTemplateIdGetResponse =
+    zCampaignTemplateRead;
 
 export const zGetEvaluationTemplatesApiV1EvaluationTemplateGetQuery = z.object({
     offset: z.int().optional().default(0),
@@ -1348,28 +1383,31 @@ export const zGetEvaluationTemplatesApiV1EvaluationTemplateGetQuery = z.object({
     name: z.string().nullish(),
     evaluation_criteria: z.string().nullish(),
     description: z.string().nullish(),
-    sort_by: z.literal('name').nullish()
+    sort_by: z.literal('name').nullish(),
 });
 
 /**
  * Successful Response
  */
-export const zGetEvaluationTemplatesApiV1EvaluationTemplateGetResponse = zPaginatedResponseEvaluationTemplateRead;
+export const zGetEvaluationTemplatesApiV1EvaluationTemplateGetResponse =
+    zPaginatedResponseEvaluationTemplateRead;
 
-export const zGetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetPath = z.object({
-    evaluation_template_id: z.uuid()
-});
+export const zGetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetPath =
+    z.object({
+        evaluation_template_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zGetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetResponse = zEvaluationTemplateRead;
+export const zGetEvaluationTemplateByIdApiV1EvaluationTemplateEvaluationTemplateIdGetResponse =
+    zEvaluationTemplateRead;
 
 export const zGetReportTemplatesApiV1ReportTemplateGetQuery = z.object({
     filename: z.string().nullish(),
     format: zReportTemplateFormat.nullish(),
     sort_by: z.enum(['filename', 'format']).optional().default('filename'),
-    sort_order: z.enum(['asc', 'desc']).optional().default('asc')
+    sort_order: z.enum(['asc', 'desc']).optional().default('asc'),
 });
 
 /**
@@ -1377,7 +1415,8 @@ export const zGetReportTemplatesApiV1ReportTemplateGetQuery = z.object({
  *
  * Successful Response
  */
-export const zGetReportTemplatesApiV1ReportTemplateGetResponse = z.array(zReportTemplateRead);
+export const zGetReportTemplatesApiV1ReportTemplateGetResponse =
+    z.array(zReportTemplateRead);
 
 export const zGetKnowledgeBaseArticlesApiV1KnowledgeBaseGetQuery = z.object({
     offset: z.int().optional().default(0),
@@ -1385,19 +1424,20 @@ export const zGetKnowledgeBaseArticlesApiV1KnowledgeBaseGetQuery = z.object({
     sort_order: z.enum(['asc', 'desc']).nullish(),
     mitre_technique_id: z.string().nullish(),
     names: z.array(z.string()).nullish(),
-    sort_by: z.enum(['name', 'mitre_technique_id']).nullish()
+    sort_by: z.enum(['name', 'mitre_technique_id']).nullish(),
 });
 
 /**
  * Successful Response
  */
-export const zGetKnowledgeBaseArticlesApiV1KnowledgeBaseGetResponse = zPaginatedResponseKnowledgeBaseRead;
+export const zGetKnowledgeBaseArticlesApiV1KnowledgeBaseGetResponse =
+    zPaginatedResponseKnowledgeBaseRead;
 
 export const zReadTacticsApiV1MitreTacticsGetQuery = z.object({
     name: z.string().nullish(),
     mitre_id: z.string().nullish(),
     sort_by: z.enum(['name', 'mitre_id']).nullish(),
-    sort_order: z.enum(['asc', 'desc']).nullish()
+    sort_order: z.enum(['asc', 'desc']).nullish(),
 });
 
 /**
@@ -1407,25 +1447,27 @@ export const zReadTacticsApiV1MitreTacticsGetQuery = z.object({
  */
 export const zReadTacticsApiV1MitreTacticsGetResponse = z.array(zTacticBase);
 
-export const zReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetQuery = z.object({
-    name: z.string().nullish(),
-    mitre_id: z.string().nullish(),
-    sort_by: z.enum(['name', 'mitre_id']).nullish(),
-    sort_order: z.enum(['asc', 'desc']).nullish()
-});
+export const zReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetQuery =
+    z.object({
+        name: z.string().nullish(),
+        mitre_id: z.string().nullish(),
+        sort_by: z.enum(['name', 'mitre_id']).nullish(),
+        sort_order: z.enum(['asc', 'desc']).nullish(),
+    });
 
 /**
  * Response Read Tactics With Techniques Api V1 Mitre Tactics With Techniques Get
  *
  * Successful Response
  */
-export const zReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetResponse = z.array(zTacticWithTechniques);
+export const zReadTacticsWithTechniquesApiV1MitreTacticsWithTechniquesGetResponse =
+    z.array(zTacticWithTechniques);
 
 export const zReadTechniquesApiV1MitreTechniquesGetQuery = z.object({
     name: z.string().nullish(),
     mitre_id: z.string().nullish(),
     sort_by: z.enum(['name', 'mitre_id']).nullish(),
-    sort_order: z.enum(['asc', 'desc']).nullish()
+    sort_order: z.enum(['asc', 'desc']).nullish(),
 });
 
 /**
@@ -1433,21 +1475,24 @@ export const zReadTechniquesApiV1MitreTechniquesGetQuery = z.object({
  *
  * Successful Response
  */
-export const zReadTechniquesApiV1MitreTechniquesGetResponse = z.array(zTechniqueBase);
+export const zReadTechniquesApiV1MitreTechniquesGetResponse =
+    z.array(zTechniqueBase);
 
-export const zReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetQuery = z.object({
-    name: z.string().nullish(),
-    mitre_id: z.string().nullish(),
-    sort_by: z.enum(['name', 'mitre_id']).nullish(),
-    sort_order: z.enum(['asc', 'desc']).nullish()
-});
+export const zReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetQuery =
+    z.object({
+        name: z.string().nullish(),
+        mitre_id: z.string().nullish(),
+        sort_by: z.enum(['name', 'mitre_id']).nullish(),
+        sort_order: z.enum(['asc', 'desc']).nullish(),
+    });
 
 /**
  * Response Read Techniques With Tactics Api V1 Mitre Techniques With Tactics Get
  *
  * Successful Response
  */
-export const zReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetResponse = z.array(zTechniqueWithTactics);
+export const zReadTechniquesWithTacticsApiV1MitreTechniquesWithTacticsGetResponse =
+    z.array(zTechniqueWithTactics);
 
 export const zReadUsersApiV1AdminUsersGetQuery = z.object({
     offset: z.int().optional().default(0),
@@ -1457,12 +1502,7 @@ export const zReadUsersApiV1AdminUsersGetQuery = z.object({
     role: z.array(zUserRole).nullish(),
     disabled: z.array(z.boolean()).nullish(),
     mfa_verified: z.array(z.boolean()).nullish(),
-    sort_by: z.enum([
-        'email',
-        'role',
-        'disabled',
-        'mfa_verified'
-    ]).nullish()
+    sort_by: z.enum(['email', 'role', 'disabled', 'mfa_verified']).nullish(),
 });
 
 /**
@@ -1471,7 +1511,7 @@ export const zReadUsersApiV1AdminUsersGetQuery = z.object({
 export const zReadUsersApiV1AdminUsersGetResponse = zPaginatedResponseUserRead;
 
 export const zDeleteUserApiV1AdminUsersUserIdDeletePath = z.object({
-    user_id: z.uuid()
+    user_id: z.uuid(),
 });
 
 /**
@@ -1480,7 +1520,7 @@ export const zDeleteUserApiV1AdminUsersUserIdDeletePath = z.object({
 export const zDeleteUserApiV1AdminUsersUserIdDeleteResponse = zMessageResponse;
 
 export const zReadUserApiV1AdminUsersUserIdGetPath = z.object({
-    user_id: z.uuid()
+    user_id: z.uuid(),
 });
 
 /**
@@ -1491,7 +1531,7 @@ export const zReadUserApiV1AdminUsersUserIdGetResponse = zUserRead;
 export const zUpdateUserApiV1AdminUsersUserIdPutBody = zUserBase;
 
 export const zUpdateUserApiV1AdminUsersUserIdPutPath = z.object({
-    user_id: z.uuid()
+    user_id: z.uuid(),
 });
 
 /**
@@ -1506,57 +1546,67 @@ export const zCreateUserApiV1AdminUsersPostBody = zUserCreate;
  */
 export const zCreateUserApiV1AdminUsersPostResponse = zUserRead;
 
-export const zResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostBody = zUserPasswordReset;
+export const zResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostBody =
+    zUserPasswordReset;
 
-export const zResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostPath = z.object({
-    user_id: z.uuid()
-});
+export const zResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostPath =
+    z.object({
+        user_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostResponse = zMessageResponse;
+export const zResetUserPasswordApiV1AdminUsersUserIdResetPasswordPostResponse =
+    zMessageResponse;
 
 export const zResetUserMfaApiV1AdminUsersUserIdResetMfaPostPath = z.object({
-    user_id: z.uuid()
+    user_id: z.uuid(),
 });
 
 /**
  * Successful Response
  */
-export const zResetUserMfaApiV1AdminUsersUserIdResetMfaPostResponse = zMessageResponse;
+export const zResetUserMfaApiV1AdminUsersUserIdResetMfaPostResponse =
+    zMessageResponse;
 
 /**
  * Successful Response
  */
-export const zImportMitreTechniquesAndTacticsApiV1AdminSeedMitrePostResponse = zMessageResponse;
+export const zImportMitreTechniquesAndTacticsApiV1AdminSeedMitrePostResponse =
+    zMessageResponse;
 
 /**
  * Successful Response
  */
-export const zImportCustomDataApiV1AdminSeedCustomPostResponse = zMessageResponse;
+export const zImportCustomDataApiV1AdminSeedCustomPostResponse =
+    zMessageResponse;
 
 /**
  * Successful Response
  */
-export const zImportAtomicRedTeamActivityTemplatesApiV1AdminSeedArtPostResponse = zMessageResponse;
+export const zImportAtomicRedTeamActivityTemplatesApiV1AdminSeedArtPostResponse =
+    zMessageResponse;
 
 /**
  * Successful Response
  */
-export const zGetConfigurationApiV1AdminConfigurationGetResponse = zConfiguration;
+export const zGetConfigurationApiV1AdminConfigurationGetResponse =
+    zConfiguration;
 
 /**
  * Successful Response
  */
 export const zReadUserSelfApiV1UserMeGetResponse = zUserReadAcl;
 
-export const zUpdateUserPasswordSelfApiV1UserMePasswordPutBody = zUserPasswordUpdate;
+export const zUpdateUserPasswordSelfApiV1UserMePasswordPutBody =
+    zUserPasswordUpdate;
 
 /**
  * Successful Response
  */
-export const zUpdateUserPasswordSelfApiV1UserMePasswordPutResponse = zMessageResponse;
+export const zUpdateUserPasswordSelfApiV1UserMePasswordPutResponse =
+    zMessageResponse;
 
 export const zResetUserMfaSelfApiV1UserMeMfaPutBody = zUserPasswordMfaReset;
 
@@ -1571,17 +1621,14 @@ export const zGetAssessmentsApiV1AssessmentGetQuery = z.object({
     sort_order: z.enum(['asc', 'desc']).nullish(),
     name: z.string().nullish(),
     assessment_type: z.array(zAssessmentType).nullish(),
-    sort_by: z.enum([
-        'name',
-        'assessment_type',
-        'description'
-    ]).nullish()
+    sort_by: z.enum(['name', 'assessment_type', 'description']).nullish(),
 });
 
 /**
  * Successful Response
  */
-export const zGetAssessmentsApiV1AssessmentGetResponse = zPaginatedResponseAssessmentRead;
+export const zGetAssessmentsApiV1AssessmentGetResponse =
+    zPaginatedResponseAssessmentRead;
 
 export const zCreateAssessmentApiV1AssessmentPostBody = zAssessmentBase;
 
@@ -1591,399 +1638,477 @@ export const zCreateAssessmentApiV1AssessmentPostBody = zAssessmentBase;
 export const zCreateAssessmentApiV1AssessmentPostResponse = zAssessmentRead;
 
 export const zDeleteAssessmentApiV1AssessmentAssessmentIdDeletePath = z.object({
-    assessment_id: z.uuid()
+    assessment_id: z.uuid(),
 });
 
 /**
  * Successful Response
  */
-export const zDeleteAssessmentApiV1AssessmentAssessmentIdDeleteResponse = zMessageResponse;
+export const zDeleteAssessmentApiV1AssessmentAssessmentIdDeleteResponse =
+    zMessageResponse;
 
 export const zGetAssessmentApiV1AssessmentAssessmentIdGetPath = z.object({
-    assessment_id: z.uuid()
+    assessment_id: z.uuid(),
 });
 
 /**
  * Successful Response
  */
-export const zGetAssessmentApiV1AssessmentAssessmentIdGetResponse = zAssessmentRead;
+export const zGetAssessmentApiV1AssessmentAssessmentIdGetResponse =
+    zAssessmentRead;
 
-export const zUpdateAssessmentApiV1AssessmentAssessmentIdPutBody = zAssessmentBase;
+export const zUpdateAssessmentApiV1AssessmentAssessmentIdPutBody =
+    zAssessmentBase;
 
 export const zUpdateAssessmentApiV1AssessmentAssessmentIdPutPath = z.object({
-    assessment_id: z.uuid()
+    assessment_id: z.uuid(),
 });
 
 /**
  * Successful Response
  */
-export const zUpdateAssessmentApiV1AssessmentAssessmentIdPutResponse = zAssessmentRead;
+export const zUpdateAssessmentApiV1AssessmentAssessmentIdPutResponse =
+    zAssessmentRead;
 
-export const zImportAssessmentApiV1AssessmentImportPostBody = zBodyImportAssessmentApiV1AssessmentImportPost;
+export const zImportAssessmentApiV1AssessmentImportPostBody =
+    zBodyImportAssessmentApiV1AssessmentImportPost;
 
 /**
  * Successful Response
  */
-export const zImportAssessmentApiV1AssessmentImportPostResponse = zImportResponse;
+export const zImportAssessmentApiV1AssessmentImportPostResponse =
+    zImportResponse;
 
 /**
  * Dynamic Evaluation Questions
  */
-export const zUpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutBody = z.array(zDynamicEvaluationQuestionAssign);
+export const zUpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutBody =
+    z.array(zDynamicEvaluationQuestionAssign);
 
-export const zUpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutPath = z.object({
-    assessment_id: z.uuid()
-});
+export const zUpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutPath =
+    z.object({
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zUpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutResponse = zAssessmentRead;
+export const zUpdateAssessmentDefaultEvaluationTemplatesApiV1AssessmentAssessmentIdDefaultEvaluationTemplatesPutResponse =
+    zAssessmentRead;
 
-export const zGetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetPath = z.object({
-    assessment_id: z.uuid()
-});
+export const zGetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetPath =
+    z.object({
+        assessment_id: z.uuid(),
+    });
 
-export const zGetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetQuery = z.object({
-    name: z.string().nullish(),
-    activity_group_position: z.int().nullish(),
-    sort_by: z.enum(['name', 'activity_group_position']).nullish(),
-    sort_order: z.enum(['asc', 'desc']).nullish()
-});
+export const zGetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetQuery =
+    z.object({
+        name: z.string().nullish(),
+        activity_group_position: z.int().nullish(),
+        sort_by: z.enum(['name', 'activity_group_position']).nullish(),
+        sort_order: z.enum(['asc', 'desc']).nullish(),
+    });
 
 /**
  * Response Get Activity Groups Api V1 Assessments  Assessment Id  Activity Group  Get
  *
  * Successful Response
  */
-export const zGetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetResponse = z.array(zActivityGroupRead);
+export const zGetActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupGetResponse =
+    z.array(zActivityGroupRead);
 
-export const zCreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostBody = zActivityGroupBase;
+export const zCreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostBody =
+    zActivityGroupBase;
 
-export const zCreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostPath = z.object({
-    assessment_id: z.uuid()
-});
-
-/**
- * Successful Response
- */
-export const zCreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostResponse = zActivityGroupRead;
-
-export const zGetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetPath = z.object({
-    activity_group_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zCreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostPath =
+    z.object({
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zGetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetResponse = zActivityGroupRead;
+export const zCreateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupPostResponse =
+    zActivityGroupRead;
 
-export const zUpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutBody = zActivityGroupBase;
-
-export const zUpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutPath = z.object({
-    activity_group_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zGetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetPath =
+    z.object({
+        activity_group_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zUpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutResponse = zActivityGroupRead;
+export const zGetActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdGetResponse =
+    zActivityGroupRead;
 
-export const zGetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetPath = z.object({
-    activity_group_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zUpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutBody =
+    zActivityGroupBase;
+
+export const zUpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutPath =
+    z.object({
+        activity_group_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
+
+/**
+ * Successful Response
+ */
+export const zUpdateActivityGroupApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdPutResponse =
+    zActivityGroupRead;
+
+export const zGetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetPath =
+    z.object({
+        activity_group_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Response Get Activity Group Activities Api V1 Assessments  Assessment Id  Activity Group  Activity Group Id  Activities Get
  *
  * Successful Response
  */
-export const zGetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetResponse = z.array(zActivityRead);
+export const zGetActivityGroupActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdActivitiesGetResponse =
+    z.array(zActivityRead);
 
-export const zReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutBody = zActivityGroupReorder;
+export const zReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutBody =
+    zActivityGroupReorder;
 
-export const zReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutPath = z.object({
-    assessment_id: z.uuid()
-});
-
-/**
- * Successful Response
- */
-export const zReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutResponse = zMessageResponse;
-
-export const zToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutPath = z.object({
-    activity_group_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutPath =
+    z.object({
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutResponse = zMessageResponse;
+export const zReorderActivityGroupsApiV1AssessmentsAssessmentIdActivityGroupReorderPutResponse =
+    zMessageResponse;
 
-export const zToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutPath = z.object({
-    activity_group_id: z.uuid(),
-    assessment_id: z.uuid()
-});
-
-/**
- * Successful Response
- */
-export const zToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutResponse = zMessageResponse;
-
-export const zReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutBody = zActivityReorder;
-
-export const zReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutPath = z.object({
-    activity_group_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutPath =
+    z.object({
+        activity_group_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutResponse = zMessageResponse;
+export const zToggleActivityGroupDeleteApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdDeletePutResponse =
+    zMessageResponse;
 
-export const zGetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetPath = z.object({
-    assessment_id: z.uuid()
-});
-
-export const zGetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetQuery = z.object({
-    offset: z.int().optional().default(0),
-    limit: z.int().optional().default(100),
-    sort_order: z.enum(['asc', 'desc']).nullish(),
-    name: z.string().nullish(),
-    mitre_tactic: z.string().nullish(),
-    mitre_technique: z.string().nullish(),
-    priority: z.array(zActivityPriority).nullish(),
-    state: z.array(zActivityState).nullish(),
-    visible: z.boolean().nullish(),
-    deleted: z.boolean().nullish(),
-    tags: z.array(z.uuid()).nullish(),
-    activity_group_id: z.uuid().nullish(),
-    sort_by: z.enum([
-        'name',
-        'activity_position',
-        'mitre_tactic',
-        'mitre_technique',
-        'priority',
-        'state',
-        'visible',
-        'created_at',
-        'updated_at',
-        'activity_group.name',
-        'activity_coverage_score',
-        'activity_start_time',
-        'activity_end_time',
-        'tags'
-    ]).nullish()
-});
+export const zToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutPath =
+    z.object({
+        activity_group_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zGetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponse = zPaginatedResponseActivityRead;
+export const zToggleActivityGroupVisibleApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdVisiblePutResponse =
+    zMessageResponse;
 
-export const zCreateActivityApiV1AssessmentsAssessmentIdActivityPostBody = zActivityBase;
+export const zReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutBody =
+    zActivityReorder;
 
-export const zCreateActivityApiV1AssessmentsAssessmentIdActivityPostPath = z.object({
-    assessment_id: z.uuid()
-});
-
-/**
- * Successful Response
- */
-export const zCreateActivityApiV1AssessmentsAssessmentIdActivityPostResponse = zActivityRead;
-
-export const zGetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetPath = z.object({
-    activity_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutPath =
+    z.object({
+        activity_group_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zGetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetResponse = zActivityRead;
+export const zReorderActivitiesApiV1AssessmentsAssessmentIdActivityGroupActivityGroupIdReorderPutResponse =
+    zMessageResponse;
 
-export const zUpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutBody = zActivityUpdate;
+export const zGetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetPath =
+    z.object({
+        assessment_id: z.uuid(),
+    });
 
-export const zUpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutPath = z.object({
-    activity_id: z.uuid(),
-    assessment_id: z.uuid()
-});
-
-/**
- * Successful Response
- */
-export const zUpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutResponse = zActivityRead;
-
-export const zToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutPath = z.object({
-    activity_id: z.uuid(),
-    assessment_id: z.uuid()
-});
-
-/**
- * Successful Response
- */
-export const zToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutResponse = zMessageResponse;
-
-export const zCloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutPath = z.object({
-    activity_id: z.uuid(),
-    assessment_id: z.uuid()
-});
-
-/**
- * Successful Response
- */
-export const zCloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutResponse = zActivityRead;
-
-export const zAssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutBody = zActivityTagsUpdate;
-
-export const zAssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutPath = z.object({
-    activity_id: z.uuid(),
-    assessment_id: z.uuid()
-});
-
-/**
- * Successful Response
- */
-export const zAssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutResponse = zActivityRead;
-
-export const zAssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutBody = zActivityGroupUpdate;
-
-export const zAssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutPath = z.object({
-    activity_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zGetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetQuery =
+    z.object({
+        offset: z.int().optional().default(0),
+        limit: z.int().optional().default(100),
+        sort_order: z.enum(['asc', 'desc']).nullish(),
+        name: z.string().nullish(),
+        mitre_tactic: z.string().nullish(),
+        mitre_technique: z.string().nullish(),
+        priority: z.array(zActivityPriority).nullish(),
+        state: z.array(zActivityState).nullish(),
+        visible: z.boolean().nullish(),
+        deleted: z.boolean().nullish(),
+        tags: z.array(z.uuid()).nullish(),
+        activity_group_id: z.uuid().nullish(),
+        sort_by: z
+            .enum([
+                'name',
+                'activity_position',
+                'mitre_tactic',
+                'mitre_technique',
+                'priority',
+                'state',
+                'visible',
+                'created_at',
+                'updated_at',
+                'activity_group.name',
+                'activity_coverage_score',
+                'activity_start_time',
+                'activity_end_time',
+                'tags',
+            ])
+            .nullish(),
+    });
 
 /**
  * Successful Response
  */
-export const zAssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutResponse = zActivityRead;
+export const zGetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponse =
+    zPaginatedResponseActivityRead;
 
-export const zAssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutBody = zActivityAssetUpdate;
+export const zCreateActivityApiV1AssessmentsAssessmentIdActivityPostBody =
+    zActivityBase;
 
-export const zAssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutPath = z.object({
-    activity_id: z.uuid(),
-    role: zActivityAssetRole,
-    assessment_id: z.uuid()
-});
-
-/**
- * Successful Response
- */
-export const zAssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponse = zMessageResponse;
-
-export const zToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutPath = z.object({
-    activity_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zCreateActivityApiV1AssessmentsAssessmentIdActivityPostPath =
+    z.object({
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutResponse = zMessageResponse;
+export const zCreateActivityApiV1AssessmentsAssessmentIdActivityPostResponse =
+    zActivityRead;
+
+export const zGetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetPath =
+    z.object({
+        activity_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
+
+/**
+ * Successful Response
+ */
+export const zGetActivityByIdApiV1AssessmentsAssessmentIdActivityActivityIdGetResponse =
+    zActivityRead;
+
+export const zUpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutBody =
+    zActivityUpdate;
+
+export const zUpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutPath =
+    z.object({
+        activity_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
+
+/**
+ * Successful Response
+ */
+export const zUpdateActivityApiV1AssessmentsAssessmentIdActivityActivityIdPutResponse =
+    zActivityRead;
+
+export const zToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutPath =
+    z.object({
+        activity_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
+
+/**
+ * Successful Response
+ */
+export const zToggleDeleteActivityStateApiV1AssessmentsAssessmentIdActivityActivityIdDeletePutResponse =
+    zMessageResponse;
+
+export const zCloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutPath =
+    z.object({
+        activity_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
+
+/**
+ * Successful Response
+ */
+export const zCloneActivityApiV1AssessmentsAssessmentIdActivityActivityIdClonePutResponse =
+    zActivityRead;
+
+export const zAssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutBody =
+    zActivityTagsUpdate;
+
+export const zAssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutPath =
+    z.object({
+        activity_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
+
+/**
+ * Successful Response
+ */
+export const zAssignUpdateActivityTagsApiV1AssessmentsAssessmentIdActivityActivityIdTagsPutResponse =
+    zActivityRead;
+
+export const zAssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutBody =
+    zActivityGroupUpdate;
+
+export const zAssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutPath =
+    z.object({
+        activity_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
+
+/**
+ * Successful Response
+ */
+export const zAssignUpdateActivityToActivityGroupApiV1AssessmentsAssessmentIdActivityActivityIdActivityGroupPutResponse =
+    zActivityRead;
+
+export const zAssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutBody =
+    zActivityAssetUpdate;
+
+export const zAssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutPath =
+    z.object({
+        activity_id: z.uuid(),
+        role: zActivityAssetRole,
+        assessment_id: z.uuid(),
+    });
+
+/**
+ * Successful Response
+ */
+export const zAssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponse =
+    zMessageResponse;
+
+export const zToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutPath =
+    z.object({
+        activity_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
+
+/**
+ * Successful Response
+ */
+export const zToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutResponse =
+    zMessageResponse;
 
 /**
  * Dynamic Evaluation Questions
  */
-export const zAssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutBody = z.array(zDynamicEvaluationQuestionAssign);
+export const zAssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutBody =
+    z.array(zDynamicEvaluationQuestionAssign);
 
-export const zAssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutPath = z.object({
-    activity_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zAssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutPath =
+    z.object({
+        activity_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zAssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutResponse = zActivityRead;
+export const zAssignDynamicEvaluationQuestionsApiV1AssessmentsAssessmentIdActivityActivityIdDynamicEvaluationQuestionsPutResponse =
+    zActivityRead;
 
-export const zGetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetPath = z.object({
-    activity_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zGetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetPath =
+    z.object({
+        activity_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
 
-export const zGetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetQuery = z.object({
-    filename: z.string().nullish(),
-    category: zFileCategory.nullish(),
-    sort_by: z.enum(['filename', 'created_at']).nullish()
-});
+export const zGetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetQuery =
+    z.object({
+        filename: z.string().nullish(),
+        category: zFileCategory.nullish(),
+        sort_by: z.enum(['filename', 'created_at']).nullish(),
+    });
 
 /**
  * Response Get Activity Files Api V1 Assessments  Assessment Id  Activity  Activity Id  Files Get
  *
  * Successful Response
  */
-export const zGetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetResponse = z.array(zFileRead);
+export const zGetActivityFilesApiV1AssessmentsAssessmentIdActivityActivityIdFilesGetResponse =
+    z.array(zFileRead);
 
-export const zDeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeletePath = z.object({
-    file_id: z.uuid(),
-    activity_id: z.uuid(),
-    assessment_id: z.uuid()
-});
-
-/**
- * Successful Response
- */
-export const zDeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteResponse = zMessageResponse;
-
-export const zGetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetPath = z.object({
-    activity_id: z.uuid(),
-    file_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zDeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeletePath =
+    z.object({
+        file_id: z.uuid(),
+        activity_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zGetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetResponse = zFileRead;
+export const zDeleteActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDeleteResponse =
+    zMessageResponse;
 
-export const zDownloadActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDownloadGetPath = z.object({
-    activity_id: z.uuid(),
-    file_id: z.uuid(),
-    assessment_id: z.uuid()
-});
-
-export const zUploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostBody = zBodyUploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPost;
-
-export const zUploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostPath = z.object({
-    activity_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zGetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetPath =
+    z.object({
+        activity_id: z.uuid(),
+        file_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zUploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostResponse = zFileUploadResponse;
+export const zGetActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdGetResponse =
+    zFileRead;
 
-export const zGetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetPath = z.object({
-    activity_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zDownloadActivityFileApiV1AssessmentsAssessmentIdActivityActivityIdFilesFileIdDownloadGetPath =
+    z.object({
+        activity_id: z.uuid(),
+        file_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
+
+export const zUploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostBody =
+    zBodyUploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPost;
+
+export const zUploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostPath =
+    z.object({
+        activity_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
+
+/**
+ * Successful Response
+ */
+export const zUploadFileApiV1AssessmentsAssessmentIdActivityActivityIdUploadPostResponse =
+    zFileUploadResponse;
+
+export const zGetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetPath =
+    z.object({
+        activity_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Response Get Activity History List Api V1 Assessments  Assessment Id  Activity  Activity Id  Version Get
  *
  * Successful Response
  */
-export const zGetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetResponse = z.array(zActivityHistoryRead);
+export const zGetActivityHistoryListApiV1AssessmentsAssessmentIdActivityActivityIdVersionGetResponse =
+    z.array(zActivityHistoryRead);
 
-export const zGetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetPath = z.object({
-    activity_id: z.uuid(),
-    version_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zGetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetPath =
+    z.object({
+        activity_id: z.uuid(),
+        version_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zGetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetResponse = zActivityHistoryRead;
+export const zGetActivityHistoryVersionApiV1AssessmentsAssessmentIdActivityActivityIdVersionVersionIdGetResponse =
+    zActivityHistoryRead;
 
 export const zGetAssetsApiV1AssessmentsAssessmentIdAssetGetPath = z.object({
-    assessment_id: z.uuid()
+    assessment_id: z.uuid(),
 });
 
 export const zGetAssetsApiV1AssessmentsAssessmentIdAssetGetQuery = z.object({
@@ -1992,59 +2117,68 @@ export const zGetAssetsApiV1AssessmentsAssessmentIdAssetGetQuery = z.object({
     sort_order: z.enum(['asc', 'desc']).nullish(),
     name: z.string().nullish(),
     deleted: z.boolean().nullish(),
-    sort_by: z.enum(['name', 'deleted']).nullish()
+    sort_by: z.enum(['name', 'deleted']).nullish(),
 });
 
 /**
  * Successful Response
  */
-export const zGetAssetsApiV1AssessmentsAssessmentIdAssetGetResponse = zPaginatedResponseAssetRead;
+export const zGetAssetsApiV1AssessmentsAssessmentIdAssetGetResponse =
+    zPaginatedResponseAssetRead;
 
 export const zCreateAssetApiV1AssessmentsAssessmentIdAssetPostBody = zAssetBase;
 
 export const zCreateAssetApiV1AssessmentsAssessmentIdAssetPostPath = z.object({
-    assessment_id: z.uuid()
+    assessment_id: z.uuid(),
 });
 
 /**
  * Successful Response
  */
-export const zCreateAssetApiV1AssessmentsAssessmentIdAssetPostResponse = zAssetRead;
+export const zCreateAssetApiV1AssessmentsAssessmentIdAssetPostResponse =
+    zAssetRead;
 
-export const zGetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetPath = z.object({
-    asset_id: z.uuid(),
-    assessment_id: z.uuid()
-});
-
-/**
- * Successful Response
- */
-export const zGetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetResponse = zAssetRead;
-
-export const zUpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutBody = zAssetBase;
-
-export const zUpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutPath = z.object({
-    asset_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zGetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetPath =
+    z.object({
+        asset_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zUpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutResponse = zAssetRead;
+export const zGetAssetApiV1AssessmentsAssessmentIdAssetAssetIdGetResponse =
+    zAssetRead;
 
-export const zToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutPath = z.object({
-    asset_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zUpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutBody =
+    zAssetBase;
+
+export const zUpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutPath =
+    z.object({
+        asset_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutResponse = zMessageResponse;
+export const zUpdateAssetApiV1AssessmentsAssessmentIdAssetAssetIdPutResponse =
+    zAssetRead;
+
+export const zToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutPath =
+    z.object({
+        asset_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
+
+/**
+ * Successful Response
+ */
+export const zToggleAssetDeleteApiV1AssessmentsAssessmentIdAssetAssetIdDeletePutResponse =
+    zMessageResponse;
 
 export const zGetTagsApiV1AssessmentsAssessmentIdTagGetPath = z.object({
-    assessment_id: z.uuid()
+    assessment_id: z.uuid(),
 });
 
 export const zGetTagsApiV1AssessmentsAssessmentIdTagGetQuery = z.object({
@@ -2053,22 +2187,19 @@ export const zGetTagsApiV1AssessmentsAssessmentIdTagGetQuery = z.object({
     sort_order: z.enum(['asc', 'desc']).nullish(),
     name: z.string().nullish(),
     deleted: z.boolean().nullish(),
-    sort_by: z.enum([
-        'name',
-        'color',
-        'deleted'
-    ]).nullish()
+    sort_by: z.enum(['name', 'color', 'deleted']).nullish(),
 });
 
 /**
  * Successful Response
  */
-export const zGetTagsApiV1AssessmentsAssessmentIdTagGetResponse = zPaginatedResponseTagRead;
+export const zGetTagsApiV1AssessmentsAssessmentIdTagGetResponse =
+    zPaginatedResponseTagRead;
 
 export const zCreateTagApiV1AssessmentsAssessmentIdTagPostBody = zTagBase;
 
 export const zCreateTagApiV1AssessmentsAssessmentIdTagPostPath = z.object({
-    assessment_id: z.uuid()
+    assessment_id: z.uuid(),
 });
 
 /**
@@ -2078,7 +2209,7 @@ export const zCreateTagApiV1AssessmentsAssessmentIdTagPostResponse = zTagRead;
 
 export const zGetTagApiV1AssessmentsAssessmentIdTagTagIdGetPath = z.object({
     tag_id: z.uuid(),
-    assessment_id: z.uuid()
+    assessment_id: z.uuid(),
 });
 
 /**
@@ -2090,97 +2221,118 @@ export const zUpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutBody = zTagBase;
 
 export const zUpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutPath = z.object({
     tag_id: z.uuid(),
-    assessment_id: z.uuid()
+    assessment_id: z.uuid(),
 });
 
 /**
  * Successful Response
  */
-export const zUpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutResponse = zTagRead;
+export const zUpdateTagApiV1AssessmentsAssessmentIdTagTagIdPutResponse =
+    zTagRead;
 
-export const zToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutPath = z.object({
-    tag_id: z.uuid(),
-    assessment_id: z.uuid()
-});
+export const zToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutPath =
+    z.object({
+        tag_id: z.uuid(),
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutResponse = zMessageResponse;
+export const zToggleTagDeleteApiV1AssessmentsAssessmentIdTagTagIdDeletePutResponse =
+    zMessageResponse;
 
 /**
  * Activity Template Ids
  */
-export const zImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostBody = z.array(z.uuid());
+export const zImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostBody =
+    z.array(z.uuid());
 
-export const zImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostPath = z.object({
-    assessment_id: z.uuid()
-});
+export const zImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostPath =
+    z.object({
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostResponse = zMessageResponse;
+export const zImportFromActivityTemplatesApiV1AssessmentsAssessmentIdImportsActivityTemplatesPostResponse =
+    zMessageResponse;
 
 /**
  * Activity Group Template Ids
  */
-export const zImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostBody = z.array(z.uuid());
+export const zImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostBody =
+    z.array(z.uuid());
 
-export const zImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostPath = z.object({
-    assessment_id: z.uuid()
-});
-
-/**
- * Successful Response
- */
-export const zImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostResponse = zMessageResponse;
-
-export const zImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostPath = z.object({
-    assessment_id: z.uuid()
-});
-
-export const zImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostQuery = z.object({
-    campaign_template_id: z.uuid()
-});
+export const zImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostPath =
+    z.object({
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostResponse = zMessageResponse;
+export const zImportFromActivityGroupTemplatesApiV1AssessmentsAssessmentIdImportsActivityGroupTemplatesPostResponse =
+    zMessageResponse;
 
-export const zGetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostBody = zReportContextRequest;
+export const zImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostPath =
+    z.object({
+        assessment_id: z.uuid(),
+    });
 
-export const zGetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostPath = z.object({
-    assessment_id: z.uuid()
-});
+export const zImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostQuery =
+    z.object({
+        campaign_template_id: z.uuid(),
+    });
+
+/**
+ * Successful Response
+ */
+export const zImportFromCampaignTemplateApiV1AssessmentsAssessmentIdImportsCampaignTemplatePostResponse =
+    zMessageResponse;
+
+export const zGetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostBody =
+    zReportContextRequest;
+
+export const zGetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostPath =
+    z.object({
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Response Get Report Context Api V1 Assessments  Assessment Id  Export Report Context Post
  *
  * Successful Response
  */
-export const zGetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostResponse = z.record(z.string(), z.unknown());
+export const zGetReportContextApiV1AssessmentsAssessmentIdExportReportContextPostResponse =
+    z.record(z.string(), z.unknown());
 
-export const zGenerateReportApiV1AssessmentsAssessmentIdExportReportGeneratePostBody = zReportGenerateRequest;
+export const zGenerateReportApiV1AssessmentsAssessmentIdExportReportGeneratePostBody =
+    zReportGenerateRequest;
 
-export const zGenerateReportApiV1AssessmentsAssessmentIdExportReportGeneratePostPath = z.object({
-    assessment_id: z.uuid()
-});
+export const zGenerateReportApiV1AssessmentsAssessmentIdExportReportGeneratePostPath =
+    z.object({
+        assessment_id: z.uuid(),
+    });
 
-export const zGenerateMitreAttackNavigatorLayerApiV1AssessmentsAssessmentIdExportMitrePostPath = z.object({
-    assessment_id: z.uuid()
-});
+export const zGenerateMitreAttackNavigatorLayerApiV1AssessmentsAssessmentIdExportMitrePostPath =
+    z.object({
+        assessment_id: z.uuid(),
+    });
 
-export const zExportAssessmentApiV1AssessmentsAssessmentIdExportAssessmentPostPath = z.object({
-    assessment_id: z.uuid()
-});
+export const zExportAssessmentApiV1AssessmentsAssessmentIdExportAssessmentPostPath =
+    z.object({
+        assessment_id: z.uuid(),
+    });
 
-export const zGetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetPath = z.object({
-    assessment_id: z.uuid()
-});
+export const zGetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetPath =
+    z.object({
+        assessment_id: z.uuid(),
+    });
 
 /**
  * Successful Response
  */
-export const zGetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetResponse = zAssessmentStatisticsResponse;
+export const zGetAssessmentStatisticsEndpointApiV1AssessmentsAssessmentIdStatisticsGetResponse =
+    zAssessmentStatisticsResponse;

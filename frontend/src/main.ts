@@ -1,5 +1,5 @@
-import { configure } from 'vee-validate';
 import { createPinia } from 'pinia';
+import { configure } from 'vee-validate';
 import { createApp } from 'vue';
 import { z } from 'zod';
 import router from './router';

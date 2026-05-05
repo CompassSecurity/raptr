@@ -33,7 +33,11 @@ import {
 import { useMitre } from '@/composables/useMitre';
 import { tagService } from '@/services/tagService';
 import type { ActivityGroupRead, ActivityRead, TagRead } from '@/types/utils';
-import { zActivityPriority, zActivityState, zActivitySeverity } from '@/types/zod.gen';
+import {
+    zActivityPriority,
+    zActivityState,
+    zActivitySeverity,
+} from '@/types/zod.gen';
 
 const props = defineProps<{
     assessmentId: string;
