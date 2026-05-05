@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import {
-    ChevronDown,
-    Download,
-    Paperclip,
-    Trash2,
-    Upload,
-} from 'lucide-vue-next';
+import { ChevronDown, Download, Paperclip, Trash2, Upload } from '@lucide/vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import { Badge } from '@/components/ui/badge';

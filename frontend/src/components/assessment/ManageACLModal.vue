@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Loader2, Search } from 'lucide-vue-next';
+import { Loader2, Search } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import { Button } from '@/components/ui/button';
@@ -29,10 +29,7 @@ import {
 } from '@/components/ui/table';
 import { useAdminStore } from '@/stores/admin';
 import { useAssessmentListStore } from '@/stores/assessmentList';
-import type { components } from '@/types/schema';
-
-type AssessmentRead = components['schemas']['AssessmentRead'];
-type AclRead = components['schemas']['AclRead'];
+import type { AclRead, AssessmentRead } from '@/types/utils';
 
 const props = defineProps<{
     open: boolean;

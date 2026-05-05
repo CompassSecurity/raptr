@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { Calendar as CalendarIcon, Clock } from 'lucide-vue-next';
+import { Calendar as CalendarIcon, Clock } from '@lucide/vue';
 import {
   type DateValue,
   CalendarDate,

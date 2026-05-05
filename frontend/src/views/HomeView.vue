@@ -8,7 +8,7 @@ import {
     ShieldCheck,
     Trash2,
     Upload,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { h, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue-sonner';

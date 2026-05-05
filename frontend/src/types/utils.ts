@@ -2,7 +2,65 @@
  * TypeScript utility types
  */
 
-import type { components, operations } from './schema';
+import type { GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetData } from './types.gen';
+
+// Re-export all entity types from generated types
+export type {
+    AclBase,
+    AclRead,
+    AclRole,
+    ActivityBase,
+    ActivityEvaluationDynamicQuestionsRead,
+    ActivityEvaluationDynamicQuestionsUpdate,
+    ActivityEvaluationRead,
+    ActivityEvaluationUpdate,
+    ActivityGroupBase,
+    ActivityGroupRead,
+    ActivityGroupReorder,
+    ActivityGroupTemplateRead,
+    ActivityGroupUpdate,
+    ActivityHistoryRead,
+    ActivityPriority,
+    ActivityRead,
+    ActivityReorder,
+    ActivitySeverity,
+    ActivityState,
+    ActivityTemplateRead,
+    ActivityUpdate,
+    AssessmentBase,
+    AssessmentRead,
+    AssessmentType,
+    AssetBase,
+    AssetRead,
+    CampaignTemplateItemRead,
+    CampaignTemplateRead,
+    Configuration,
+    DynamicEvaluationQuestionAssign,
+    EvaluationTemplateRead,
+    ExternalAuthProvider,
+    FileCategory,
+    FileRead,
+    FileUploadResponse,
+    ImportResponse,
+    KnowledgeBaseRead,
+    MessageResponse,
+    ReportContextRequest,
+    ReportGenerateRequest,
+    ReportTemplateFormat,
+    ReportTemplateRead,
+    TacticBase,
+    TacticWithTechniques,
+    TagBase,
+    TagRead,
+    TechniqueBase,
+    UserBase,
+    UserCreate,
+    UserPasswordReset,
+    UserPasswordUpdate,
+    UserRead,
+    UserReadAcl,
+    UserRole,
+} from './types.gen';
 
 // Extract paginated response type
 export type PaginatedResponse<T> = {
@@ -36,86 +94,10 @@ export type PaginationState = {
     pages: number;
 };
 
-// Common entity types
-export type AssessmentRead = components['schemas']['AssessmentRead'];
-export type AssessmentBase = components['schemas']['AssessmentBase'];
-export type ActivityRead = components['schemas']['ActivityRead'];
-export type ActivityBase = components['schemas']['ActivityBase'];
-export type ActivityUpdate = components['schemas']['ActivityUpdate'];
-export type ActivityGroupRead = components['schemas']['ActivityGroupRead'];
-export type ActivityGroupBase = components['schemas']['ActivityGroupBase'];
-export type ActivityGroupUpdate = components['schemas']['ActivityGroupUpdate'];
-export type ActivityHistoryRead = components['schemas']['ActivityHistoryRead'];
-export type TagRead = components['schemas']['TagRead'];
-export type TagBase = components['schemas']['TagBase'];
-export type UserRead = components['schemas']['UserRead'];
-export type UserReadAcl = components['schemas']['UserReadAcl'];
-export type UserCreate = components['schemas']['UserCreate'];
-export type UserBase = components['schemas']['UserBase'];
-export type UserPasswordReset = components['schemas']['UserPasswordReset'];
-export type MessageResponse = components['schemas']['MessageResponse'];
-export type AclRead = components['schemas']['AclRead'];
-export type AclBase = components['schemas']['AclBase'];
-export type AclRole = components['schemas']['AclRole'];
-export type AssetRead = components['schemas']['AssetRead'];
-export type AssetBase = components['schemas']['AssetBase'];
-export type TacticBase = components['schemas']['TacticBase'];
-export type TechniqueBase = components['schemas']['TechniqueBase'];
-export type TacticWithTechniques =
-    components['schemas']['TacticWithTechniques'];
-export type ExternalAuthProvider =
-    components['schemas']['ExternalAuthProvider'];
-export type ActivityTemplateRead =
-    components['schemas']['ActivityTemplateRead'];
-export type ActivityGroupTemplateRead =
-    components['schemas']['ActivityGroupTemplateRead'];
-export type KnowledgeBaseRead = components['schemas']['KnowledgeBaseRead'];
-export type ActivityEvaluationUpdate =
-    components['schemas']['ActivityEvaluationUpdate'];
-export type ActivityEvaluationRead =
-    components['schemas']['ActivityEvaluationRead'];
-export type ActivityEvaluationDynamicQuestionsRead =
-    components['schemas']['ActivityEvaluationDynamicQuestionsRead'];
-export type ActivityEvaluationDynamicQuestionsUpdate =
-    components['schemas']['ActivityEvaluationDynamicQuestionsUpdate'];
-export type EvaluationTemplateRead =
-    components['schemas']['EvaluationTemplateRead'];
-export type DynamicEvaluationQuestionAssign =
-    components['schemas']['DynamicEvaluationQuestionAssign'];
-export type ActivityGroupReorder =
-    components['schemas']['ActivityGroupReorder'];
-export type ActivityReorder = components['schemas']['ActivityReorder'];
-export type FileRead = components['schemas']['FileRead'];
-export type FileUploadResponse = components['schemas']['FileUploadResponse'];
-export type FileCategory = components['schemas']['FileCategory'];
-export type ImportResponse = components['schemas']['ImportResponse'];
-
-// Campaign template types
-export type CampaignTemplateRead =
-    components['schemas']['CampaignTemplateRead'];
-export type CampaignTemplateItemRead =
-    components['schemas']['CampaignTemplateItemRead'];
-
-// Report types
-export type ReportTemplateRead = components['schemas']['ReportTemplateRead'];
-export type ReportTemplateFormat =
-    components['schemas']['ReportTemplateFormat'];
-export type ReportGenerateRequest =
-    components['schemas']['ReportGenerateRequest'];
-export type ReportContextRequest =
-    components['schemas']['ReportContextRequest'];
-
-// Enum types
-export type ActivityPriority = components['schemas']['ActivityPriority'];
-export type ActivityState = components['schemas']['ActivityState'];
-export type ActivitySeverity = components['schemas']['ActivitySeverity'];
-export type UserRole = components['schemas']['UserRole'];
-export type AssessmentType = components['schemas']['AssessmentType'];
-
 // Filter types
 export type ActivitySortField = NonNullable<
     NonNullable<
-        operations['get_all_activities_api_v1_assessments__assessment_id__activity__get']['parameters']['query']
+        GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetData['query']
     >['sort_by']
 >;
 

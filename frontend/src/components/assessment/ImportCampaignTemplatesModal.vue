@@ -5,7 +5,7 @@ import {
     type RowSelectionState,
     useVueTable,
 } from '@tanstack/vue-table';
-import { Loader2 } from 'lucide-vue-next';
+import { Loader2 } from '@lucide/vue';
 import { ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import { Button } from '@/components/ui/button';
@@ -79,7 +79,7 @@ const columns: ColumnDef<CampaignTemplateRead>[] = [
         id: 'item_count',
         header: 'Items',
         enableColumnFilter: false,
-        cell: ({ row }) => row.original.items.length,
+        cell: ({ row }) => (row.original.items ?? []).length,
     },
 ];
 
@@ -317,7 +317,7 @@ watch(
                     </template>
                     <!-- Item Count Cell -->
                     <template v-else-if="cell.column.id === 'item_count'">
-                      {{ row.original.items.length }}
+                      {{ (row.original.items ?? []).length }}
                     </template>
                     <!-- Regular Cells -->
                     <template v-else>

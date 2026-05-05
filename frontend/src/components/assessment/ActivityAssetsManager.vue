@@ -17,7 +17,7 @@ import {
     User,
     Users,
     X,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import ManageAssetsModal from '@/components/assessment/ManageAssetsModal.vue';
 import { Button } from '@/components/ui/button';

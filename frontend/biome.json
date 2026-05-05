@@ -9,8 +9,8 @@
         "includes": [
             "**",
             "!!**/dist",
-            "!!src/types/schema.ts",
-            "!!src/types/zod.ts",
+            "!!src/types/types.gen.ts",
+            "!!src/types/zod.gen.ts",
             "!!src/components/ui",
             "!!openapi.json",
             "!!src/style.css"

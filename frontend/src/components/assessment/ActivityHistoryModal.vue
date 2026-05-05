@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AlertCircle, History, Loader2 } from 'lucide-vue-next';
+import { AlertCircle, History, Loader2 } from '@lucide/vue';
 import { ref, watch } from 'vue';
 // We reuse the ActivityForm component in readonly mode to display the snapshot.
 import ActivityForm from '@/components/assessment/ActivityForm.vue';

@@ -255,9 +255,7 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import type { components } from '@/types/schema';
-
-type Configuration = components['schemas']['Configuration'];
+import type { Configuration } from '@/types/utils';
 
 import {
     AppWindow,
@@ -266,7 +264,7 @@ import {
     KeyRound,
     Settings,
     Shield,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import {
     Card,
     CardContent,

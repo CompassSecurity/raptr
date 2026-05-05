@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { Loader2 } from 'lucide-vue-next';
+import { Loader2 } from '@lucide/vue';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue-sonner';

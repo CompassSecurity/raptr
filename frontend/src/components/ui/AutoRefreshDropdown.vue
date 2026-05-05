@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
-import { RefreshCw, Check } from 'lucide-vue-next';
+import { RefreshCw, Check } from '@lucide/vue';
 import {
   DropdownMenu,
   DropdownMenuContent,
