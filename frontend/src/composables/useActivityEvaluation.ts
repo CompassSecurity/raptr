@@ -1,6 +1,7 @@
 import type { Ref } from 'vue';
 import { computed, watch } from 'vue';
 import type { ActivityEvaluationUpdate, ActivityRead } from '@/types/utils';
+import { parseServerDate } from '@/utils/dateFormatter';
 
 export type EvalResult = 'PASS' | 'FAIL' | 'N/A';
 
@@ -9,8 +10,8 @@ export function formatTimeDiff(
     toTime: string | Date | null | undefined,
 ): string {
     if (!fromTime || !toTime) return '';
-    const from = new Date(fromTime).getTime();
-    const to = new Date(toTime).getTime();
+    const from = parseServerDate(fromTime).getTime();
+    const to = parseServerDate(toTime).getTime();
     if (Number.isNaN(from) || Number.isNaN(to)) return '';
     const diffMs = to - from;
     if (diffMs < 0) return 'N/A (negative)';

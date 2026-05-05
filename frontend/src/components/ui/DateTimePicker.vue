@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { usePreferencesStore } from '@/stores/preferences';
-import { formatDateTime, formatDateTimeEditable, parseDateTimeInput } from '@/utils/dateFormatter';
+import { formatDateTime, formatDateTimeEditable, parseDateTimeInput, parseServerDate } from '@/utils/dateFormatter';
 
 const props = defineProps<{
   modelValue: string | null | undefined;
@@ -42,7 +42,7 @@ const timeValue = ref<string>('00:00'); // Always HH:mm 24h format for internal 
 
 // Helper: Parse UTC string to components in target timezone
 function parseToTimezone(utcIsoString: string, timezone?: string) {
-    const date = new Date(utcIsoString);
+    const date = parseServerDate(utcIsoString);
     if (isNaN(date.getTime())) return null;
 
     const opts: Intl.DateTimeFormatOptions = {
