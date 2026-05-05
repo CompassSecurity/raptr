@@ -494,8 +494,6 @@ export function formatFieldValue(
     if (typeof value === 'boolean') return value ? 'Yes' : 'No';
     if (typeof value === 'string') {
         if (value === '') return '(empty)';
-        // Truncate long text
-        if (value.length > 120) return `${value.substring(0, 120)}…`;
         return value;
     }
     if (Array.isArray(value)) {
@@ -508,7 +506,7 @@ export function formatFieldValue(
         return value.join(', ');
     }
     if (typeof value === 'object') {
-        return JSON.stringify(value).substring(0, 120);
+        return JSON.stringify(value, null, 2);
     }
     return String(value);
 }

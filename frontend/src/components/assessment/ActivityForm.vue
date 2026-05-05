@@ -130,6 +130,21 @@ const attachmentRefreshKey = ref(0);
 const formData = ref<Partial<ActivityRead>>({});
 const originalData = ref<Partial<ActivityRead>>({}); // Snapshot for 3-way merge
 
+// Dirty flag flips true only when the user edits the form.
+// Programmatic updates (initial load, server sync, conflict merge) bracket their
+// mutations with isProgrammaticUpdate so the watch below ignores them.
+const userDirty = ref(false);
+const isProgrammaticUpdate = ref(false);
+
+watch(
+    formData,
+    () => {
+        if (isProgrammaticUpdate.value) return;
+        userDirty.value = true;
+    },
+    { deep: true },
+);
+
 // Conflict resolution state
 const showConflictDialog = ref(false);
 const serverConflictVersion = ref<ActivityRead | null>(null);
@@ -158,83 +173,78 @@ const conflictDisplayLookups = computed(() => {
 watch(
     () => props.activity,
     (newVal) => {
-        if (newVal) {
-            // Smart Update: If we are already editing this activity, only update specific fields
-            // that might have changed externally (e.g. via modals) without overwriting user's unsaved text
-            if (formData.value.id === newVal.id) {
-                // Update dynamic questions
-                if (formData.value.evaluation && newVal.evaluation) {
-                    const newQuestions =
-                        newVal.evaluation.dynamic_questions || [];
-                    const currentQuestions =
-                        formData.value.evaluation.dynamic_questions || [];
+        if (!newVal) return;
 
-                    formData.value.evaluation.dynamic_questions =
-                        newQuestions.map((newQ: any) => {
-                            const existingQ = currentQuestions.find(
-                                (oldQ: any) =>
-                                    oldQ.evaluation_template_id ===
-                                    newQ.evaluation_template_id,
-                            );
-                            if (existingQ) {
-                                return {
-                                    ...newQ,
-                                    data: existingQ.data,
-                                    evaluation_result:
-                                        existingQ.evaluation_result,
-                                };
-                            }
-                            return newQ;
-                        });
-                }
+        isProgrammaticUpdate.value = true;
 
-                // Update KB articles
-                formData.value.linked_knowledge_base_articles = JSON.parse(
-                    JSON.stringify(newVal.linked_knowledge_base_articles || []),
+        const sameActivity = formData.value.id === newVal.id;
+
+        // Preserve in-flight user edits only when refreshing the same activity
+        // and the user has actually edited something. Otherwise replace formData
+        // wholesale so external changes (other users, server merges) show up.
+        if (sameActivity && userDirty.value) {
+            if (formData.value.evaluation && newVal.evaluation) {
+                const newQuestions = newVal.evaluation.dynamic_questions || [];
+                const currentQuestions =
+                    formData.value.evaluation.dynamic_questions || [];
+
+                formData.value.evaluation.dynamic_questions = newQuestions.map(
+                    (newQ: any) => {
+                        const existingQ = currentQuestions.find(
+                            (oldQ: any) =>
+                                oldQ.evaluation_template_id ===
+                                newQ.evaluation_template_id,
+                        );
+                        if (existingQ) {
+                            return {
+                                ...newQ,
+                                data: existingQ.data,
+                                evaluation_result: existingQ.evaluation_result,
+                            };
+                        }
+                        return newQ;
+                    },
                 );
-
-                // Always sync updated_at so the next save sends the correct version
-                formData.value.updated_at = newVal.updated_at;
-
-                // Refresh original snapshot so conflict detection compares against the latest saved state
-                // We must apply the same frontend defaults to originalData so hasUnsavedChanges doesn't trigger falsely
-                const newOriginal = JSON.parse(JSON.stringify(newVal));
-                newOriginal.logged = newOriginal.logged ?? false;
-                newOriginal.alerted = newOriginal.alerted ?? false;
-                newOriginal.prevented = newOriginal.prevented ?? false;
-                newOriginal.stakeholder_notification_created =
-                    newOriginal.stakeholder_notification_created ?? false;
-
-                originalData.value = newOriginal;
-                return;
             }
 
-            // Full Initialization (Switching activities or first load)
-            formData.value = JSON.parse(JSON.stringify(newVal));
+            formData.value.linked_knowledge_base_articles = JSON.parse(
+                JSON.stringify(newVal.linked_knowledge_base_articles || []),
+            );
+            formData.value.updated_at = newVal.updated_at;
 
-            // Ensure arrays are initialized
-            formData.value.sources = formData.value.sources || [];
-            formData.value.targets = formData.value.targets || [];
-            formData.value.tools = formData.value.tools || [];
-            formData.value.tags = formData.value.tags || [];
-            formData.value.alert_sources = formData.value.alert_sources || [];
-            formData.value.prevention_sources =
-                formData.value.prevention_sources || [];
-            formData.value.stakeholder_notification_sources =
-                formData.value.stakeholder_notification_sources || [];
-            formData.value.log_sources = formData.value.log_sources || [];
-            // Ensure booleans are properly initialized (API might send null)
-            formData.value.logged = formData.value.logged ?? false;
-            formData.value.alerted = formData.value.alerted ?? false;
-            formData.value.prevented = formData.value.prevented ?? false;
-            formData.value.stakeholder_notification_created =
-                formData.value.stakeholder_notification_created ?? false;
+            originalData.value = JSON.parse(JSON.stringify(newVal));
 
-            // Save original snapshot AFTER default values are applied, watchers run, and v-model normalizes
             nextTick(() => {
-                originalData.value = JSON.parse(JSON.stringify(formData.value));
+                isProgrammaticUpdate.value = false;
             });
+            return;
         }
+
+        // Full replacement: new activity, or same activity with no pending edits.
+        formData.value = JSON.parse(JSON.stringify(newVal));
+
+        formData.value.sources = formData.value.sources || [];
+        formData.value.targets = formData.value.targets || [];
+        formData.value.tools = formData.value.tools || [];
+        formData.value.tags = formData.value.tags || [];
+        formData.value.alert_sources = formData.value.alert_sources || [];
+        formData.value.prevention_sources =
+            formData.value.prevention_sources || [];
+        formData.value.stakeholder_notification_sources =
+            formData.value.stakeholder_notification_sources || [];
+        formData.value.log_sources = formData.value.log_sources || [];
+        formData.value.logged = formData.value.logged ?? false;
+        formData.value.alerted = formData.value.alerted ?? false;
+        formData.value.prevented = formData.value.prevented ?? false;
+        formData.value.stakeholder_notification_created =
+            formData.value.stakeholder_notification_created ?? false;
+
+        // Wait for child v-model normalizations to settle before clearing the flag.
+        nextTick(() => {
+            originalData.value = JSON.parse(JSON.stringify(formData.value));
+            userDirty.value = false;
+            isProgrammaticUpdate.value = false;
+        });
     },
     { immediate: true, deep: true },
 );
@@ -366,6 +376,7 @@ async function handleSave() {
             updatePayload as any,
         );
 
+        userDirty.value = false;
         toast.success('Activity updated successfully');
         emit('saved');
     } catch (error) {
@@ -463,14 +474,13 @@ async function handleConflictResolved(
 ) {
     showConflictDialog.value = false;
 
-    // Apply merged scalar fields to formData
+    isProgrammaticUpdate.value = true;
+
     for (const [key, value] of Object.entries(mergedData)) {
         (formData.value as Record<string, unknown>)[key] = value;
     }
-    // Update updated_at to the server's latest so the retry passes concurrency check
     formData.value.updated_at = newUpdatedAt;
 
-    // Update original snapshot to the server version so future saves work correctly
     if (serverConflictVersion.value) {
         originalData.value = JSON.parse(
             JSON.stringify(serverConflictVersion.value),
@@ -479,8 +489,9 @@ async function handleConflictResolved(
 
     // Wait for Vue watchers (tag name sync in ActivityGeneralInfo) to settle
     await nextTick();
+    isProgrammaticUpdate.value = false;
 
-    // Retry save with merged data
+    // Retry save with merged data — handleSave clears userDirty on success.
     await handleSave();
 }
 
@@ -504,105 +515,7 @@ async function handleCloneActivity() {
     }
 }
 
-// Unsaved changes detection
-const hasUnsavedChanges = computed(() => {
-    if (!formData.value.id || !originalData.value.id) return false;
-    if (formData.value.id !== originalData.value.id) return false;
-
-    // Fields to ignore when comparing (volatile / externally updated)
-    const ignoreKeys = new Set([
-        'updated_at',
-        'created_at',
-        'linked_knowledge_base_articles',
-    ]);
-
-    const ignoreEvalKeys = new Set([
-        'logged_evaluation',
-        'alerted_evaluation',
-        'prevented_evaluation',
-        'stakeholder_notified_evaluation',
-        'activity_coverage_score',
-    ]);
-
-    const cleanAndSort = (obj: any, isRoot = false, isEval = false): any => {
-        if (Array.isArray(obj)) {
-            const arr = obj
-                .map((v) => cleanAndSort(v, false, false))
-                .filter((v) => v !== null && v !== undefined && v !== '');
-            return arr.length > 0 ? arr : undefined;
-        }
-        if (obj !== null && typeof obj === 'object') {
-            const sortedKeys = Object.keys(obj).sort();
-            const result: Record<string, any> = {};
-            for (const key of sortedKeys) {
-                if (isRoot && ignoreKeys.has(key)) continue;
-                if (isEval && ignoreEvalKeys.has(key)) continue;
-
-                let val = cleanAndSort(
-                    obj[key],
-                    false,
-                    isRoot && key === 'evaluation',
-                );
-
-                // Ignore auto-calculated strings entirely as they are purely derived
-                if (
-                    typeof val === 'string' &&
-                    val.endsWith('(auto-calculated)')
-                ) {
-                    continue;
-                }
-
-                // Normalize ISO datetime strings so .000Z and Z match
-                if (
-                    typeof val === 'string' &&
-                    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/.test(
-                        val,
-                    )
-                ) {
-                    try {
-                        const d = new Date(val);
-                        if (!Number.isNaN(d.getTime())) val = d.toISOString();
-                    } catch {
-                        // ignore
-                    }
-                }
-
-                if (val !== null && val !== undefined && val !== '') {
-                    if (Array.isArray(val) && val.length === 0) continue;
-                    if (
-                        typeof val === 'object' &&
-                        Object.keys(val).length === 0
-                    )
-                        continue;
-                    result[key] = val;
-                }
-            }
-            return Object.keys(result).length > 0 ? result : undefined;
-        }
-
-        // Normalize root-level string if it's a date
-        if (
-            typeof obj === 'string' &&
-            /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/.test(
-                obj,
-            )
-        ) {
-            try {
-                const d = new Date(obj);
-                if (!Number.isNaN(d.getTime())) return d.toISOString();
-            } catch {
-                // ignore
-            }
-        }
-
-        return obj;
-    };
-
-    return (
-        JSON.stringify(cleanAndSort(formData.value, true)) !==
-        JSON.stringify(cleanAndSort(originalData.value, true))
-    );
-});
+const hasUnsavedChanges = computed(() => userDirty.value);
 
 // Warn on browser tab close / refresh with unsaved changes
 function handleBeforeUnload(e: BeforeUnloadEvent) {
