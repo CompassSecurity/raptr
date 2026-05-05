@@ -63,13 +63,13 @@ Stores manage reactive state but **delegate all API calls to services**. Types a
 
 ### Frontend ↔ Backend Contract
 
-The OpenAPI schema is the contract between frontend and backend. After any backend API change:
+The OpenAPI schema is the contract between frontend and backend. Code generation is handled by [`@hey-api/openapi-ts`](https://heyapi.dev/), configured in `frontend/openapi-ts.config.ts`. After any backend API change:
 
 ```bash
 bun run update:api   # Fetches OpenAPI schema and regenerates TypeScript types + Zod schemas (requires running backend service at localhost:8000)
 ```
 
-This generates `src/types/schema.ts` (TypeScript types) and `src/types/zod.ts` (Zod validation schemas) from the running backend.
+This generates `src/types/types.gen.ts` (TypeScript types) and `src/types/zod.gen.ts` (Zod validation schemas) from the running backend. Forms validate against the generated `z<SchemaName>` exports through a small Zod v4 adapter at `src/utils/zodAdapter.ts`.
 
 ### Docker Build
 

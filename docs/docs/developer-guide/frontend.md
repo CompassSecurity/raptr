@@ -44,11 +44,13 @@ frontend/src/
 │   └── profile/             #   User profile settings
 ├── composables/             # Reusable composition functions
 ├── types/
-│   ├── schema.ts            #   Auto-generated TypeScript types
-│   ├── zod.ts               #   Auto-generated Zod schemas
-│   ├── utils.ts             #   Shared entity type exports
+│   ├── types.gen.ts         #   Auto-generated TypeScript types (@hey-api/openapi-ts)
+│   ├── zod.gen.ts           #   Auto-generated Zod schemas (@hey-api/openapi-ts)
+│   ├── utils.ts             #   Re-exports from types.gen + shared utility types
 │   └── components.ts        #   Component-specific types
-├── utils/                   # Utility functions
+├── utils/
+│   ├── zodAdapter.ts        #   Zod v4 → vee-validate TypedSchema adapter
+│   └── ...                  #   other utility functions
 └── views/                   # Route-level page components
 ```
 
@@ -101,18 +103,36 @@ export const useWidgetStore = defineStore('widget', () => {
 
 ### Type Imports
 
-Always import entity types from `@/types/utils` — never define local type aliases from `schema.ts`:
+Always import entity types from `@/types/utils` — `utils.ts` re-exports the named types from `types.gen.ts` and adds hand-written utility types:
 
 ```typescript
 // Correct
 import type { UserRead, AssessmentRead } from '@/types/utils';
 
-// Wrong — don't do this
-import type { components } from '@/types/schema';
+// Wrong — `components` is not exported by the generator
+import type { components } from '@/types/types.gen';
 type UserRead = components['schemas']['UserRead'];
 ```
 
-If a type isn't exported yet, add it to `utils.ts`.
+If a type isn't re-exported yet, add the name to the `export type { … } from './types.gen'` block in `utils.ts`.
+
+### Form Validation
+
+Forms use [vee-validate](https://vee-validate.logaretm.com/) with the auto-generated Zod schemas. Each schema is exported individually with a `z` prefix (`zUserBase`, `zAssessmentBase`, …) — there is no `schemas` namespace.
+
+```typescript
+import { useForm } from 'vee-validate';
+import { toTypedSchema } from '@/utils/zodAdapter';
+import { zUserBase } from '@/types/zod.gen';
+
+const { handleSubmit } = useForm({
+    validationSchema: toTypedSchema(zUserBase),
+});
+```
+
+`toTypedSchema` is a small local adapter (`utils/zodAdapter.ts`) that bridges Zod v4 schemas to vee-validate's `TypedSchema` interface — the published `@vee-validate/zod` package only supports Zod v3.
+
+Validation runs **only on form submit** (configured globally in `main.ts`). After a failed submit, vee-validate auto-revalidates each field as the user edits it, so errors clear live once they've been surfaced. The default Zod v4 message for missing required fields (`"Invalid input: expected string, received undefined"`) is overridden to `"Required"` via a global `z.config({ customError })` — see `main.ts`.
 
 ### Composables
 
@@ -128,16 +148,23 @@ All components use `<script setup lang="ts">`. UI primitives come from shadcn-vu
 
 ## Type Generation
 
+Frontend types are generated from the backend's OpenAPI schema using [`@hey-api/openapi-ts`](https://heyapi.dev/). Configuration lives in `frontend/openapi-ts.config.ts`.
+
 After any backend API change, regenerate the frontend types:
 
 ```bash
 bun run update:api   # Requires backend running on localhost:8000
 ```
 
-This runs three steps: fetch the OpenAPI schema, generate TypeScript types (`schema.ts`), and generate Zod schemas (`zod.ts`).
+This runs two steps:
+
+1. `fetch:openapi` — downloads `openapi.json` from the running backend
+2. `gen:api` — runs `@hey-api/openapi-ts` to produce `src/types/types.gen.ts` (TypeScript types) and `src/types/zod.gen.ts` (Zod schemas)
+
+Each script can also be run individually.
 
 !!! warning
-    Never edit `schema.ts` or `zod.ts` manually — they are overwritten on each generation.
+    Never edit `types.gen.ts` or `zod.gen.ts` manually — they are overwritten on each generation. Add re-exports to `utils.ts` instead.
 
 ## Linting and Formatting
 
