@@ -10,7 +10,6 @@
 
 - Fix for unsaved changes dialog: https://github.com/CompassSecurity/raptr/pull/9
 
-
 ### Chore
 
 - Updated frontend dependencies: https://github.com/CompassSecurity/raptr/pull/8
@@ -19,6 +18,12 @@
   - vue/tsconfig: 0.8.1 → 0.9.1
   - vite: 7.3.2 → 8.0.10
   - marked: 17.0.6 → 18.0.3
+- Updated frontend dependencies: https://github.com/CompassSecurity/raptr/pull/13
+  - TypeScript 5.9.3 → 6.0.3
+  - Lucide Vue next → @lucide/vue 1.14.0
+  - Zod 3.25.76 → 4.4.3
+- Removed old frontend type and zod schema generators. Replaced with hey-api: https://github.com/CompassSecurity/raptr/pull/13
+
 
 ## 0.1.0-beta.2 (2026-05-04)
 
