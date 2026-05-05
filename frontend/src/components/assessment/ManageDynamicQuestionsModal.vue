@@ -121,7 +121,7 @@ watch(
         for (const q of assignedQuestions.value) {
             const template = templateMap.get(q.evaluation_template_id);
             if (template) {
-                q.name = template.evaluation_criteria || template.name;
+                q.name = template.evaluation_criteria ?? template.name ?? '';
                 q.description = template.description ?? null;
             }
         }
@@ -142,8 +142,8 @@ const filteredTemplates = computed(() => {
             if (!searchQuery.value) return true;
             const q = searchQuery.value.toLowerCase();
             return (
-                t.name.toLowerCase().includes(q) ||
-                t.evaluation_criteria.toLowerCase().includes(q) ||
+                (t.name?.toLowerCase().includes(q) ?? false) ||
+                (t.evaluation_criteria?.toLowerCase().includes(q) ?? false) ||
                 (t.description?.toLowerCase().includes(q) ?? false)
             );
         });
@@ -152,7 +152,7 @@ const filteredTemplates = computed(() => {
 function addQuestion(template: EvaluationTemplateRead) {
     assignedQuestions.value.push({
         evaluation_template_id: template.id,
-        name: template.evaluation_criteria || template.name,
+        name: template.evaluation_criteria ?? template.name ?? '',
         description: template.description ?? null,
     });
 }

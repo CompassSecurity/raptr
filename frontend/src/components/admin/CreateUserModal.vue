@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod';
+import { toTypedSchema } from '@/utils/zodAdapter';
 import { useForm } from 'vee-validate';
 import { nextTick, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
@@ -40,11 +40,11 @@ const emit = defineEmits<{
 
 const adminStore = useAdminStore();
 
-import { schemas } from '@/types/zod';
+import { zUserCreate } from '@/types/zod.gen';
 
 // Create User Form
 const emailInput = ref<InstanceType<typeof Input> | null>(null);
-const formSchema = toTypedSchema(schemas.UserCreate);
+const formSchema = toTypedSchema(zUserCreate);
 
 watch(
     () => props.open,

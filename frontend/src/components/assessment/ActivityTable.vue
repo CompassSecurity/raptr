@@ -51,7 +51,7 @@ import type {
     PaginationState,
     TagRead,
 } from '@/types/utils';
-import { schemas } from '@/types/zod';
+import { zActivityPriority, zActivityState } from '@/types/zod.gen';
 
 const authStore = useAuthStore();
 const preferencesStore = usePreferencesStore();
@@ -312,8 +312,8 @@ const toggleColumn = (key: string) => {
 };
 
 // Filter options
-const priorityOptions = schemas.ActivityPriority.options;
-const stateOptions = schemas.ActivityState.options;
+const priorityOptions = zActivityPriority.options;
+const stateOptions = zActivityState.options;
 
 // Sort state
 const sortColumn = ref<string>('');

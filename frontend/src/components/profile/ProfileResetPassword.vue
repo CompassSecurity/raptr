@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod';
+import { toTypedSchema } from '@/utils/zodAdapter';
 import { useForm } from 'vee-validate';
 import { toast } from 'vue-sonner';
 import * as z from 'zod';
@@ -15,12 +15,12 @@ import {
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useAuthStore } from '@/stores/auth';
-import { schemas } from '@/types/zod';
+import { zUserPasswordUpdate } from '@/types/zod.gen';
 
 const authStore = useAuthStore();
 
 const formSchema = toTypedSchema(
-    schemas.UserPasswordUpdate.extend({
+    zUserPasswordUpdate.extend({
         confirm_password: z.string(),
     }).refine((data) => data.new_password === data.confirm_password, {
         message: "Passwords don't match",

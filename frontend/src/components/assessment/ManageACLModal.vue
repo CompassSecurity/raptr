@@ -29,10 +29,7 @@ import {
 } from '@/components/ui/table';
 import { useAdminStore } from '@/stores/admin';
 import { useAssessmentListStore } from '@/stores/assessmentList';
-import type { components } from '@/types/schema';
-
-type AssessmentRead = components['schemas']['AssessmentRead'];
-type AclRead = components['schemas']['AclRead'];
+import type { AclRead, AssessmentRead } from '@/types/utils';
 
 const props = defineProps<{
     open: boolean;

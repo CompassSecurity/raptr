@@ -54,7 +54,7 @@ bun run gen:zod    # Generate Zod schemas from OpenAPI
 import type { UserRead, AssessmentRead, PaginationParams } from '@/types/utils';
 
 // ❌ WRONG - Don't define local type aliases
-import type { components } from '@/types/schema';
+import type { components } from '@/types/types.gen';
 type UserRead = components['schemas']['UserRead'];  // Never do this!
 ```
 
@@ -220,7 +220,7 @@ const emit = defineEmits<{
 ```typescript
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
-import { schemas } from '@/types/zod';
+import { schemas } from '@/types/zod.gen';
 
 const formSchema = toTypedSchema(schemas.UserBase);
 const { handleSubmit, isSubmitting } = useForm({ validationSchema: formSchema });

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod';
+import { toTypedSchema } from '@/utils/zodAdapter';
 import { useForm } from 'vee-validate';
 import { toast } from 'vue-sonner';
 import { Button } from '@/components/ui/button';
@@ -21,7 +21,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useAdminStore } from '@/stores/admin';
 import type { UserRead } from '@/types/utils';
-import { schemas } from '@/types/zod';
+import { zUserPasswordReset } from '@/types/zod.gen';
 
 const props = defineProps<{
     open: boolean;
@@ -36,7 +36,7 @@ const emit = defineEmits<{
 const adminStore = useAdminStore();
 
 // Reset Password Form
-const formSchema = toTypedSchema(schemas.UserPasswordReset);
+const formSchema = toTypedSchema(zUserPasswordReset);
 
 const { handleSubmit, isSubmitting, resetForm } = useForm({
     validationSchema: formSchema,
