@@ -177,10 +177,12 @@ watch(
 
         isProgrammaticUpdate.value = true;
 
-        if (formData.value.id === newVal.id) {
-            // Smart Update: another user (or our own save) refreshed the activity.
-            // Sync only fields that aren't user-edited in-place to avoid clobbering
-            // unsaved text. originalData still tracks the latest server state for 3-way merge.
+        const sameActivity = formData.value.id === newVal.id;
+
+        // Preserve in-flight user edits only when refreshing the same activity
+        // and the user has actually edited something. Otherwise replace formData
+        // wholesale so external changes (other users, server merges) show up.
+        if (sameActivity && userDirty.value) {
             if (formData.value.evaluation && newVal.evaluation) {
                 const newQuestions =
                     newVal.evaluation.dynamic_questions || [];
@@ -219,7 +221,7 @@ watch(
             return;
         }
 
-        // Full Initialization (switching activities or first load)
+        // Full replacement: new activity, or same activity with no pending edits.
         formData.value = JSON.parse(JSON.stringify(newVal));
 
         formData.value.sources = formData.value.sources || [];

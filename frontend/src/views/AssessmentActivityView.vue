@@ -69,10 +69,14 @@ watch(assessmentId, async (newId, oldId) => {
     }
 });
 
-// Fetch fresh data if the user directly lands on an activity not loaded yet
+// Refresh the active activity whenever the route's activityId changes so
+// the form always shows fresh data (sidebar clicks don't otherwise hit the API).
 watch(activityId, async () => {
-    if (assessmentId.value && activityId.value && !currentActivity.value) {
+    if (!assessmentId.value || !activityId.value) return;
+    if (!currentActivity.value) {
         await fetchActivities();
+    } else {
+        await store.refreshActivity(assessmentId.value, activityId.value);
     }
 });
 
