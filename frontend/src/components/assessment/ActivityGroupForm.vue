@@ -125,7 +125,7 @@ async function save() {
                     
                     <div class="flex items-center justify-between rounded-lg border p-4">
                         <div class="space-y-0.5">
-                            <Label class="text-base text-foreground">Visible</Label>
+                            <Label class="text-sm font-medium">Visible</Label>
                         </div>
                         <Switch
                             v-model="formData.visible"
