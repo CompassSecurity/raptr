@@ -109,6 +109,7 @@ bun run lint:fix
 
 - Use `<script setup lang="ts">` for all components
 - Import types from `@/types/utils` — never define local type aliases
+- Import Zod schemas as `z<SchemaName>` from `@/types/zod.gen`, and use `toTypedSchema` from `@/utils/zodAdapter` (not `@vee-validate/zod`, which is Zod v3 only)
 - Stores delegate API calls to services (stores manage state only)
 - Use `loading` (not `isLoading`) for loading state variables
 - Use composables (`usePagination`, `useModalWithData`) for common patterns

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod';
+import { toTypedSchema } from '@/utils/zodAdapter';
 import { useForm } from 'vee-validate';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { Info } from 'lucide-vue-next';
+import { Info } from '@lucide/vue';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -23,7 +23,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { api } from '@/services/api';
 import { useAuthStore } from '@/stores/auth';
-import { schemas } from '@/types/zod';
+import { zBodyLoginApiV1AuthTokenPost } from '@/types/zod.gen';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -49,7 +49,7 @@ onMounted(async () => {
 });
 
 const formSchema = toTypedSchema(
-    schemas.Body_login_api_v1_auth_token_post.pick({
+    zBodyLoginApiV1AuthTokenPost.pick({
         username: true,
         password: true,
     }),

@@ -27,7 +27,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ChevronDown, Check, ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-vue-next'
+import { ChevronDown, Check, ArrowUp, ArrowDown, ArrowUpDown } from '@lucide/vue'
 import Pagination from '@/components/ui/Pagination.vue'
 
 // Filter option type for select filters

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BookOpen, ChevronDown, Copy, History } from 'lucide-vue-next';
+import { BookOpen, ChevronDown, Copy, History } from '@lucide/vue';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import ActivityAssetsManager from '@/components/assessment/ActivityAssetsManager.vue';
@@ -52,7 +52,7 @@ import type {
     TagRead,
 } from '@/types/utils';
 import { formatDateTime } from '@/utils/dateFormatter';
-import { schemas } from '@/types/zod';
+import { zActivityState } from '@/types/zod.gen';
 import { usePreferencesStore } from '@/stores/preferences';
 
 const props = defineProps<{
@@ -104,7 +104,7 @@ const saveDisabledHint = computed(() => {
 const BLUE_STATE_OPTIONS = ['Waiting Red', 'Waiting Blue'];
 const headerStateOptions = computed(() => {
     if (stateEditable.value) return BLUE_STATE_OPTIONS;
-    return schemas.ActivityState.options;
+    return zActivityState.options;
 });
 const headerStateDisabled = computed(
     () => isSpectator.value || (isBlue.value && !stateEditable.value),
@@ -396,7 +396,7 @@ async function handleSave() {
                         try {
                             const tmpl =
                                 await evaluationTemplateService.getById(id);
-                            nameMap.set(id, tmpl.name);
+                            nameMap.set(id, tmpl.name ?? id);
                         } catch {
                             /* ignore */
                         }

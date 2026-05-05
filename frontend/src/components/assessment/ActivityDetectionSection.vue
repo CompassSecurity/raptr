@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronDown } from 'lucide-vue-next';
+import { ChevronDown } from '@lucide/vue';
 import { computed } from 'vue';
 import ActivityAssetsManager from '@/components/assessment/ActivityAssetsManager.vue';
 import { Badge } from '@/components/ui/badge';
@@ -23,7 +23,7 @@ import { Switch } from '@/components/ui/switch';
 import { usePreferencesStore } from '@/stores/preferences';
 import type { ActivityRead, AssetRead } from '@/types/utils';
 import { formatDateTime } from '@/utils/dateFormatter';
-import { schemas } from '@/types/zod';
+import { zActivitySeverity } from '@/types/zod.gen';
 
 const props = defineProps<{
     assessmentId: string;
@@ -39,7 +39,7 @@ const formData = defineModel<Partial<ActivityRead>>('formData', {
     required: true,
 });
 
-const severityOptions = schemas.ActivitySeverity.options;
+const severityOptions = zActivitySeverity.options;
 const preferencesStore = usePreferencesStore();
 
 // Formatted date strings for readonly display

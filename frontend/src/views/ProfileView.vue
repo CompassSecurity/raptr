@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { User } from 'lucide-vue-next';
+import { User } from '@lucide/vue';
 import ProfileInformation from '@/components/profile/ProfileInformation.vue';
 import ProfileResetMFA from '@/components/profile/ProfileResetMFA.vue';
 import ProfileResetPassword from '@/components/profile/ProfileResetPassword.vue';

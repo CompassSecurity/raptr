@@ -2,11 +2,17 @@ import { type User as OidcUser, UserManager } from 'oidc-client-ts';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { api } from '@/services/api';
-import type { components } from '@/types/schema';
+import type {
+    BodyLoginApiV1AuthTokenPost,
+    MfaSetupResponse,
+    Otp,
+    Token,
+    UserPasswordUpdate,
+} from '@/types/types.gen';
 import type { AclRole, ExternalAuthProvider, UserReadAcl } from '@/types/utils';
 
-type LoginBody = components['schemas']['Body_login_api_v1_auth_token_post'];
-type TokenResponse = components['schemas']['Token'];
+type LoginBody = BodyLoginApiV1AuthTokenPost;
+type TokenResponse = Token;
 
 export const useAuthStore = defineStore('auth', () => {
     const token = ref<string | null>(sessionStorage.getItem('token'));
@@ -97,8 +103,8 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    type MFASetupResponse = components['schemas']['MFASetupResponse'];
-    type OTPCheck = components['schemas']['OTP'];
+    type MFASetupResponse = MfaSetupResponse;
+    type OTPCheck = Otp;
 
     async function setupMfa(): Promise<MFASetupResponse> {
         const response = await api.post<MFASetupResponse>('/auth/mfa/setup');
@@ -329,8 +335,6 @@ export const useAuthStore = defineStore('auth', () => {
             window.location.href = '/login';
         }
     }
-
-    type UserPasswordUpdate = components['schemas']['UserPasswordUpdate'];
 
     async function changePassword(data: UserPasswordUpdate) {
         await api.put('/user/me/password', data);

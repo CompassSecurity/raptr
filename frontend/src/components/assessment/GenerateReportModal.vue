@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FileText, Loader2 } from 'lucide-vue-next';
+import { FileText, Loader2 } from '@lucide/vue';
 import { ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import { Badge } from '@/components/ui/badge';

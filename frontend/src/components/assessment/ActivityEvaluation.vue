@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronDown, Settings2 } from 'lucide-vue-next';
+import { ChevronDown, Settings2 } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 import ManageDynamicQuestionsModal from '@/components/assessment/ManageDynamicQuestionsModal.vue';
 import { Badge } from '@/components/ui/badge';

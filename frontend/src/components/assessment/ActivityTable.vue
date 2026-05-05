@@ -17,7 +17,7 @@ import {
     Settings2,
     Trash2,
     Undo2,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { storeToRefs } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import DateTimeDisplay from '@/components/DateTimeDisplay.vue';
@@ -51,7 +51,7 @@ import type {
     PaginationState,
     TagRead,
 } from '@/types/utils';
-import { schemas } from '@/types/zod';
+import { zActivityPriority, zActivityState } from '@/types/zod.gen';
 
 const authStore = useAuthStore();
 const preferencesStore = usePreferencesStore();
@@ -312,8 +312,8 @@ const toggleColumn = (key: string) => {
 };
 
 // Filter options
-const priorityOptions = schemas.ActivityPriority.options;
-const stateOptions = schemas.ActivityState.options;
+const priorityOptions = zActivityPriority.options;
+const stateOptions = zActivityState.options;
 
 // Sort state
 const sortColumn = ref<string>('');

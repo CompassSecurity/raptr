@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod';
+import { toTypedSchema } from '@/utils/zodAdapter';
 import { useForm } from 'vee-validate';
 import { nextTick, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
@@ -29,7 +29,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useAssessmentListStore } from '@/stores/assessmentList';
-import { schemas } from '@/types/zod';
+import { zAssessmentBase } from '@/types/zod.gen';
 
 const props = defineProps<{
     open: boolean;
@@ -54,13 +54,10 @@ watch(
     },
 );
 
-const { AssessmentBase } = schemas;
-
-// Use the Zod schema for validation
 const formSchema = toTypedSchema(
-    AssessmentBase.extend({
-        name: z.string().min(1, 'Name is required'),
-        description: z.string().min(1, 'Description is required'),
+    zAssessmentBase.extend({
+        name: z.string().min(1, { error: 'Name is required' }),
+        description: z.string().min(1, { error: 'Description is required' }),
     }),
 );
 

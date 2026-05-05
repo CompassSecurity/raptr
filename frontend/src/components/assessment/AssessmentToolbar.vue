@@ -13,7 +13,7 @@ import {
     ShieldCheck,
     Trash,
     Upload,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,

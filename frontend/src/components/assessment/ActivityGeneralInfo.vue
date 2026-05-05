@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronDown } from 'lucide-vue-next';
+import { ChevronDown } from '@lucide/vue';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { toast } from 'vue-sonner';
 import { Badge } from '@/components/ui/badge';
@@ -33,7 +33,11 @@ import {
 import { useMitre } from '@/composables/useMitre';
 import { tagService } from '@/services/tagService';
 import type { ActivityGroupRead, ActivityRead, TagRead } from '@/types/utils';
-import { schemas } from '@/types/zod';
+import {
+    zActivityPriority,
+    zActivityState,
+    zActivitySeverity,
+} from '@/types/zod.gen';
 
 const props = defineProps<{
     assessmentId: string;
@@ -56,9 +60,9 @@ const formData = defineModel<Partial<ActivityRead>>('formData', {
 const { getTechniqueOptions, getTacticOptionsForTechnique } = useMitre();
 
 // Schema options
-const priorityOptions = schemas.ActivityPriority.options;
-const stateOptions = schemas.ActivityState.options;
-const severityOptions = schemas.ActivitySeverity.options;
+const priorityOptions = zActivityPriority.options;
+const stateOptions = zActivityState.options;
+const severityOptions = zActivitySeverity.options;
 
 // When stateEditable is true (blue team), limit to blue-allowed states
 const BLUE_STATE_OPTIONS = ['Waiting Red', 'Waiting Blue'];

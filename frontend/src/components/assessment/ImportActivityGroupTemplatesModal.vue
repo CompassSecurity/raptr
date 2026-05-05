@@ -5,7 +5,7 @@ import {
     type RowSelectionState,
     useVueTable,
 } from '@tanstack/vue-table';
-import { Loader2 } from 'lucide-vue-next';
+import { Loader2 } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import { Button } from '@/components/ui/button';
@@ -79,7 +79,7 @@ const columns: ColumnDef<ActivityGroupTemplateRead>[] = [
         id: 'activity_count',
         header: 'Activities',
         enableColumnFilter: false,
-        cell: ({ row }) => row.original.activity_template_ids.length,
+        cell: ({ row }) => (row.original.activity_template_ids ?? []).length,
     },
 ];
 
@@ -366,7 +366,7 @@ watch(
                     </template>
                     <!-- Activity Count Cell -->
                     <template v-else-if="cell.column.id === 'activity_count'">
-                      {{ row.original.activity_template_ids.length }}
+                      {{ (row.original.activity_template_ids ?? []).length }}
                     </template>
                     <!-- Regular Cells -->
                     <template v-else>

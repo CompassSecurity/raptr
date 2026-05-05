@@ -6,7 +6,7 @@ import {
     FolderOpen,
     GripVertical,
     Loader2,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import draggable from 'vuedraggable';

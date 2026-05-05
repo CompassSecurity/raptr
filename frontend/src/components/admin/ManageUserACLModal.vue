@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Loader2, Search } from 'lucide-vue-next';
+import { Loader2, Search } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import { Button } from '@/components/ui/button';
