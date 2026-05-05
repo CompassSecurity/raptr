@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Check, ChevronsUpDown } from 'lucide-vue-next';
+import { Check, ChevronsUpDown } from '@lucide/vue';
 import { cn } from '@/lib/utils';
 
 

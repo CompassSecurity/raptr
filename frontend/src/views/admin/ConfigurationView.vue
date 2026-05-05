@@ -266,7 +266,7 @@ import {
     KeyRound,
     Settings,
     Shield,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import {
     Card,
     CardContent,

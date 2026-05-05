@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { GripVertical, Loader2, Plus, Search, Trash2 } from 'lucide-vue-next';
+import { GripVertical, Loader2, Plus, Search, Trash2 } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import draggable from 'vuedraggable';

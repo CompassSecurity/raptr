@@ -3,7 +3,7 @@ import { ref, computed, nextTick, watch, onMounted, onUnmounted, type ComponentP
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Eye, Pencil, Upload } from 'lucide-vue-next';
+import { Loader2, Eye, Pencil, Upload } from '@lucide/vue';
 import { useVModel } from '@vueuse/core';
 import { cn } from '@/lib/utils'; // Assuming this exists as per shadcn-vue pattern, checked Textarea.vue
 

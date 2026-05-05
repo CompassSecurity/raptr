@@ -3,7 +3,7 @@ import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { Info } from 'lucide-vue-next';
+import { Info } from '@lucide/vue';
 import { Button } from '@/components/ui/button';
 import {
     Card,

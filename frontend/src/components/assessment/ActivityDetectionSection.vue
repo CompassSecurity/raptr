@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronDown } from 'lucide-vue-next';
+import { ChevronDown } from '@lucide/vue';
 import { computed } from 'vue';
 import ActivityAssetsManager from '@/components/assessment/ActivityAssetsManager.vue';
 import { Badge } from '@/components/ui/badge';

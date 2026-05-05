@@ -21,7 +21,7 @@ import {
     Undo2,
     User,
     Users,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { computed, nextTick, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import { Badge } from '@/components/ui/badge';

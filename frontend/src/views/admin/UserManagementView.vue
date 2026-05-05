@@ -9,7 +9,7 @@ import {
     Trash2,
     UserPlus,
     Users,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { h, onMounted } from 'vue';
 import { toast } from 'vue-sonner';
 import CreateUserModal from '@/components/admin/CreateUserModal.vue';

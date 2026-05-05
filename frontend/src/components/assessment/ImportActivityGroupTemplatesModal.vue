@@ -5,7 +5,7 @@ import {
     type RowSelectionState,
     useVueTable,
 } from '@tanstack/vue-table';
-import { Loader2 } from 'lucide-vue-next';
+import { Loader2 } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import { Button } from '@/components/ui/button';

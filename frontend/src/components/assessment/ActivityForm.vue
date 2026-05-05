@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BookOpen, ChevronDown, Copy, History } from 'lucide-vue-next';
+import { BookOpen, ChevronDown, Copy, History } from '@lucide/vue';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import ActivityAssetsManager from '@/components/assessment/ActivityAssetsManager.vue';

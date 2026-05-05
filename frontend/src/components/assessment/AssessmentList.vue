@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MoreVertical, Pencil, Trash } from 'lucide-vue-next';
+import { MoreVertical, Pencil, Trash } from '@lucide/vue';
 import { onMounted } from 'vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

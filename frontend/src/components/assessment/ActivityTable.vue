@@ -17,7 +17,7 @@ import {
     Settings2,
     Trash2,
     Undo2,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { storeToRefs } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import DateTimeDisplay from '@/components/DateTimeDisplay.vue';

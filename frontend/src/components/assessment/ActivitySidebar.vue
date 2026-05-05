@@ -16,7 +16,7 @@ import {
     PlayCircle,
     Search,
     XCircle,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { computed, ref, toRefs } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import { Button } from '@/components/ui/button';

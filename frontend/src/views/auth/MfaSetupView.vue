@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Loader2 } from 'lucide-vue-next';
+import { Loader2 } from '@lucide/vue';
 import QRCode from 'qrcode';
 import { nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';

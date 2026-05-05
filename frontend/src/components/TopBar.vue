@@ -7,7 +7,7 @@ import {
     MoonIcon,
     Settings,
     SunIcon,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import AboutModal from '@/components/layout/AboutModal.vue';

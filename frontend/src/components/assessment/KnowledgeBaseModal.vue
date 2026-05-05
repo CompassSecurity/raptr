@@ -8,7 +8,7 @@ import {
     FileText,
     Loader2,
     Upload,
-} from 'lucide-vue-next';
+} from '@lucide/vue';
 import { ref, watch } from 'vue';
 import ImportVariablesModal from '@/components/assessment/ImportVariablesModal.vue';
 import { Button } from '@/components/ui/button';

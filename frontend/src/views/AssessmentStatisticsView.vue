@@ -13,7 +13,7 @@ import {
     Title,
     Tooltip,
 } from 'chart.js';
-import { Loader2 } from 'lucide-vue-next';
+import { Loader2 } from '@lucide/vue';
 import { computed, onMounted } from 'vue';
 import { Bar as BarChart, Doughnut, Radar } from 'vue-chartjs';
 import { useRoute } from 'vue-router';
