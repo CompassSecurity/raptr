@@ -7,6 +7,16 @@ export interface FormatOptions {
     timeFormat?: TimeFormat;
 }
 
+// Server timestamps without an explicit offset (e.g. SQLite-backed responses)
+// must be treated as UTC. JS's Date constructor would otherwise parse them as
+// local time. Postgres responses include a "Z" suffix and are passed through.
+const HAS_TZ_SUFFIX = /[zZ]|[+-]\d{2}:?\d{2}$/;
+
+export function parseServerDate(value: string | Date): Date {
+    if (value instanceof Date) return value;
+    return new Date(HAS_TZ_SUFFIX.test(value) ? value : `${value}Z`);
+}
+
 export function formatDateTime(
     dateString: string | null | undefined,
     timezone?: string,
@@ -15,7 +25,7 @@ export function formatDateTime(
 ): string {
     if (!dateString) return '-';
 
-    const date = new Date(dateString);
+    const date = parseServerDate(dateString);
     if (Number.isNaN(date.getTime())) return 'Invalid Date';
 
     const hour12 = timeFormat === 'browser' ? undefined : timeFormat === '12h';
@@ -150,7 +160,7 @@ export function formatDateTimeEditable(
     timeFormat: TimeFormat = 'browser',
 ): string {
     if (!dateString) return '';
-    const date = new Date(dateString);
+    const date = parseServerDate(dateString);
     if (Number.isNaN(date.getTime())) return '';
 
     const hour12 = timeFormat === 'browser' ? undefined : timeFormat === '12h';

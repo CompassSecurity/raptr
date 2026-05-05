@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/select';
 import { activityService } from '@/services/activityService';
 import type { ActivityHistoryRead, ActivityRead } from '@/types/utils';
+import { parseServerDate } from '@/utils/dateFormatter';
 
 const props = defineProps<{
     open: boolean;
@@ -98,7 +99,7 @@ watch(selectedVersionId, (newId) => {
 
 const formatDate = (dateString: string) => {
     try {
-        const d = new Date(dateString);
+        const d = parseServerDate(dateString);
         return (
             d.toLocaleDateString() +
             ' ' +
