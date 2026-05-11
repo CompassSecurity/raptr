@@ -1,5 +1,31 @@
 # Release Notes
 
+## 0.1.0-beta.3 (2026-05-11)
+
+### New Features
+
+- Add "Anaglyph" accessibility mode (https://github.com/CompassSecurity/raptr/pull/16) 
+
+### Fixes
+
+- Fix for unsaved changes dialog (https://github.com/CompassSecurity/raptr/pull/9)
+- Resolved missing Timezone for timestamps in SQLLite (https://github.com/CompassSecurity/raptr/pull/15)
+
+### Chore
+
+- Updated frontend dependencies (https://github.com/CompassSecurity/raptr/pull/8)
+  - vue-router: 4.6.4 → 5.0.6
+  - types/node: 24.12.2 → 25.0.6
+  - vue/tsconfig: 0.8.1 → 0.9.1
+  - vite: 7.3.2 → 8.0.10
+  - marked: 17.0.6 → 18.0.3
+- Updated frontend dependencies (https://github.com/CompassSecurity/raptr/pull/13)
+  - TypeScript 5.9.3 → 6.0.3
+  - Lucide Vue next → @lucide/vue 1.14.0
+  - Zod 3.25.76 → 4.4.3
+- Removed old frontend type and zod schema generators. Replaced with hey-api (https://github.com/CompassSecurity/raptr/pull/13)
+
+
 ## 0.1.0-beta.2 (2026-05-04)
 
 ### New Features
@@ -7,7 +33,7 @@
 - Add warning dialog for unsaved changes when leaving an activity
 - Add autocomplete for the key and value fields of asset properties (frontend only - no API endpoint)
 - Add support for a welcome message banner on login via a backend environment variable
-- Add dynamic version in through Git actions via tags or latest builds
+- Add dynamic software version through Git actions via tags or latest builds
 
 ### Fixes
 
