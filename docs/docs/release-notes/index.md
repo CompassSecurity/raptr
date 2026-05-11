@@ -1,10 +1,10 @@
 # Release Notes
 
-## 0.1.0-beta.3 (2026-05-06)
+## 0.1.0-beta.3 (2026-05-11)
 
 ### New Features
 
-- 
+- Add "Anaglyph" accessibility mode 
 
 ### Fixes
 
