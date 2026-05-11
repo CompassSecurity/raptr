@@ -20,6 +20,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useAnaglyph } from '@/composables/useAnaglyph';
 import { useAssessmentDetailStore } from '@/stores/assessmentDetail';
 import { useAuthStore } from '@/stores/auth';
 import { usePreferencesStore } from '@/stores/preferences';
@@ -31,6 +32,7 @@ const route = useRoute();
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
 const showAboutModal = ref(false);
+const { registerClick: onLogoClick } = useAnaglyph();
 
 // Breadcrumb: show assessment name when on assessment or activity routes
 const assessmentId = computed(() => route.params.id as string | undefined);
@@ -71,7 +73,7 @@ const handleLogout = async () => {
       <!-- Logo + Breadcrumb -->
       <div class="flex items-center gap-1 min-w-0">
         <h1 class="text-2xl font-bold shrink-0">
-          <RouterLink to="/" class="hover:opacity-80 transition-opacity">RAPTR</RouterLink>
+          <RouterLink to="/" class="hover:opacity-80 transition-opacity" @click="onLogoClick">RAPTR</RouterLink>
         </h1>
         <template v-if="isAssessmentRoute && assessmentName">
           <ChevronRight class="h-4 w-4 text-muted-foreground shrink-0" />
@@ -154,6 +156,7 @@ const handleLogout = async () => {
 
           <!-- About Modal -->
           <AboutModal v-model:open="showAboutModal" />
+
 
           <!-- Logout -->
           <Button @click="handleLogout" variant="destructive" size="sm" class="ml-2">

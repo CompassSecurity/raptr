@@ -4,41 +4,41 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
 }
 
 :root {
@@ -130,4 +130,152 @@
 
 html {
     font-size: 14px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Whole-page anaglyph 3D effect
+   Activated by toggling .anaglyph-active on <html>
+   ══════════════════════════════════════════════════════════ */
+
+/* Smooth transition for entering / leaving the effect */
+html.anaglyph-active * {
+    transition: text-shadow 0.4s ease, box-shadow 0.4s ease, filter 0.4s ease;
+}
+
+/* ── Text: red/cyan text-shadow on everything ────────────── */
+html.anaglyph-active * {
+    text-shadow:
+        -3px 0 rgba(255, 0, 0, 0.7),
+        3px 0 rgba(0, 255, 255, 0.7) !important;
+    animation: anaglyph-text-wobble 3s ease-in-out infinite;
+}
+
+/* ── SVG icons (Lucide etc.) ─────────────────────────────── */
+html.anaglyph-active svg {
+    filter:
+        drop-shadow(-2px 0 rgba(255, 0, 0, 0.65)) drop-shadow(2px 0 rgba(0, 255, 255, 0.65));
+    animation: anaglyph-icon-wobble 3s ease-in-out infinite;
+}
+
+/* ── Images ──────────────────────────────────────────────── */
+html.anaglyph-active img {
+    filter:
+        drop-shadow(-3px 0 rgba(255, 0, 0, 0.5)) drop-shadow(3px 0 rgba(0, 255, 255, 0.5));
+}
+
+/* ── Interactive elements: buttons, inputs ───────────────── */
+html.anaglyph-active button,
+html.anaglyph-active [role="button"],
+html.anaglyph-active input,
+html.anaglyph-active select,
+html.anaglyph-active textarea {
+    box-shadow:
+        -3px 0 0 rgba(255, 0, 0, 0.25),
+        3px 0 0 rgba(0, 255, 255, 0.25) !important;
+}
+
+/* ── Cards, tables, bordered containers ──────────────────── */
+html.anaglyph-active [data-slot="card"],
+html.anaglyph-active table,
+html.anaglyph-active .border,
+html.anaglyph-active [class*="rounded-lg"][class*="border"] {
+    box-shadow:
+        -3px 0 0 rgba(255, 0, 0, 0.18),
+        3px 0 0 rgba(0, 255, 255, 0.18);
+}
+
+/* ── Top nav bar ─────────────────────────────────────────── */
+html.anaglyph-active nav.border-b {
+    box-shadow:
+        0 2px 0 rgba(255, 0, 0, 0.2),
+        0 -2px 0 rgba(0, 255, 255, 0.2);
+}
+
+/* ── CRT scanline overlay ────────────────────────────────── */
+html.anaglyph-active body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg,
+            rgba(255, 255, 255, 0.025) 0px,
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px,
+            transparent 3px);
+    opacity: 0;
+    animation: anaglyph-fade-in 0.5s ease forwards, anaglyph-scanline-scroll 8s linear infinite;
+}
+
+/* ── Wobble animations ───────────────────────────────────── */
+@keyframes anaglyph-text-wobble {
+
+    0%,
+    100% {
+        text-shadow:
+            -3px 0 rgba(255, 0, 0, 0.7),
+            3px 0 rgba(0, 255, 255, 0.7);
+    }
+
+    25% {
+        text-shadow:
+            -4px 1px rgba(255, 0, 0, 0.75),
+            4px -1px rgba(0, 255, 255, 0.75);
+    }
+
+    50% {
+        text-shadow:
+            -2px -0.5px rgba(255, 0, 0, 0.65),
+            2px 0.5px rgba(0, 255, 255, 0.65);
+    }
+
+    75% {
+        text-shadow:
+            -4px 0.5px rgba(255, 0, 0, 0.7),
+            4px -0.5px rgba(0, 255, 255, 0.7);
+    }
+}
+
+@keyframes anaglyph-icon-wobble {
+
+    0%,
+    100% {
+        filter:
+            drop-shadow(-2px 0 rgba(255, 0, 0, 0.65)) drop-shadow(2px 0 rgba(0, 255, 255, 0.65));
+    }
+
+    25% {
+        filter:
+            drop-shadow(-3px 0.5px rgba(255, 0, 0, 0.7)) drop-shadow(3px -0.5px rgba(0, 255, 255, 0.7));
+    }
+
+    50% {
+        filter:
+            drop-shadow(-1.5px -0.5px rgba(255, 0, 0, 0.6)) drop-shadow(1.5px 0.5px rgba(0, 255, 255, 0.6));
+    }
+
+    75% {
+        filter:
+            drop-shadow(-3px 0.3px rgba(255, 0, 0, 0.65)) drop-shadow(3px -0.3px rgba(0, 255, 255, 0.65));
+    }
+}
+
+@keyframes anaglyph-scanline-scroll {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 0 100px;
+    }
+}
+
+@keyframes anaglyph-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
