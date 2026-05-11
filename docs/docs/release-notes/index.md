@@ -33,7 +33,7 @@
 - Add warning dialog for unsaved changes when leaving an activity
 - Add autocomplete for the key and value fields of asset properties (frontend only - no API endpoint)
 - Add support for a welcome message banner on login via a backend environment variable
-- Add dynamic version in through Git actions via tags or latest builds
+- Add dynamic software version through Git actions via tags or latest builds
 
 ### Fixes
 
