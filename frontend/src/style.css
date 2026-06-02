@@ -142,140 +142,29 @@ html.anaglyph-active * {
     transition: text-shadow 0.4s ease, box-shadow 0.4s ease, filter 0.4s ease;
 }
 
-/* ── Text: red/cyan text-shadow on everything ────────────── */
+/* ── Text: static red/cyan parallax, scales with font size ──
+   The element's own glyph (white in dark mode / black in light
+   mode) stays as the zero-parallax neutral body; the two shadows
+   are the left/right colour fringes each eye fuses into depth.
+   - offset in em so the parallax holds at any zoom / font size
+   - pure opaque colours so the lenses cleanly cancel each other
+   - NO animation: stereo fusion needs a static offset */
 html.anaglyph-active * {
     text-shadow:
-        -3px 0 rgba(255, 0, 0, 0.7),
-        3px 0 rgba(0, 255, 255, 0.7) !important;
-    animation: anaglyph-text-wobble 3s ease-in-out infinite;
+        -0.09em 0 0 rgb(255, 0, 0),
+        0.09em 0 0 rgb(0, 255, 255) !important;
+    animation: none !important;
 }
 
 /* ── SVG icons (Lucide etc.) ─────────────────────────────── */
 html.anaglyph-active svg {
     filter:
-        drop-shadow(-2px 0 rgba(255, 0, 0, 0.65)) drop-shadow(2px 0 rgba(0, 255, 255, 0.65));
-    animation: anaglyph-icon-wobble 3s ease-in-out infinite;
+        drop-shadow(-0.09em 0 rgb(255, 0, 0)) drop-shadow(0.09em 0 rgb(0, 255, 255));
 }
 
 /* ── Images ──────────────────────────────────────────────── */
 html.anaglyph-active img {
     filter:
-        drop-shadow(-3px 0 rgba(255, 0, 0, 0.5)) drop-shadow(3px 0 rgba(0, 255, 255, 0.5));
+        drop-shadow(-3px 0 rgb(255, 0, 0)) drop-shadow(3px 0 rgb(0, 255, 255));
 }
 
-/* ── Interactive elements: buttons, inputs ───────────────── */
-html.anaglyph-active button,
-html.anaglyph-active [role="button"],
-html.anaglyph-active input,
-html.anaglyph-active select,
-html.anaglyph-active textarea {
-    box-shadow:
-        -3px 0 0 rgba(255, 0, 0, 0.25),
-        3px 0 0 rgba(0, 255, 255, 0.25) !important;
-}
-
-/* ── Cards, tables, bordered containers ──────────────────── */
-html.anaglyph-active [data-slot="card"],
-html.anaglyph-active table,
-html.anaglyph-active .border,
-html.anaglyph-active [class*="rounded-lg"][class*="border"] {
-    box-shadow:
-        -3px 0 0 rgba(255, 0, 0, 0.18),
-        3px 0 0 rgba(0, 255, 255, 0.18);
-}
-
-/* ── Top nav bar ─────────────────────────────────────────── */
-html.anaglyph-active nav.border-b {
-    box-shadow:
-        0 2px 0 rgba(255, 0, 0, 0.2),
-        0 -2px 0 rgba(0, 255, 255, 0.2);
-}
-
-/* ── CRT scanline overlay ────────────────────────────────── */
-html.anaglyph-active body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: 99999;
-    pointer-events: none;
-    background: repeating-linear-gradient(0deg,
-            rgba(255, 255, 255, 0.025) 0px,
-            rgba(255, 255, 255, 0.025) 1px,
-            transparent 1px,
-            transparent 3px);
-    opacity: 0;
-    animation: anaglyph-fade-in 0.5s ease forwards, anaglyph-scanline-scroll 8s linear infinite;
-}
-
-/* ── Wobble animations ───────────────────────────────────── */
-@keyframes anaglyph-text-wobble {
-
-    0%,
-    100% {
-        text-shadow:
-            -3px 0 rgba(255, 0, 0, 0.7),
-            3px 0 rgba(0, 255, 255, 0.7);
-    }
-
-    25% {
-        text-shadow:
-            -4px 1px rgba(255, 0, 0, 0.75),
-            4px -1px rgba(0, 255, 255, 0.75);
-    }
-
-    50% {
-        text-shadow:
-            -2px -0.5px rgba(255, 0, 0, 0.65),
-            2px 0.5px rgba(0, 255, 255, 0.65);
-    }
-
-    75% {
-        text-shadow:
-            -4px 0.5px rgba(255, 0, 0, 0.7),
-            4px -0.5px rgba(0, 255, 255, 0.7);
-    }
-}
-
-@keyframes anaglyph-icon-wobble {
-
-    0%,
-    100% {
-        filter:
-            drop-shadow(-2px 0 rgba(255, 0, 0, 0.65)) drop-shadow(2px 0 rgba(0, 255, 255, 0.65));
-    }
-
-    25% {
-        filter:
-            drop-shadow(-3px 0.5px rgba(255, 0, 0, 0.7)) drop-shadow(3px -0.5px rgba(0, 255, 255, 0.7));
-    }
-
-    50% {
-        filter:
-            drop-shadow(-1.5px -0.5px rgba(255, 0, 0, 0.6)) drop-shadow(1.5px 0.5px rgba(0, 255, 255, 0.6));
-    }
-
-    75% {
-        filter:
-            drop-shadow(-3px 0.3px rgba(255, 0, 0, 0.65)) drop-shadow(3px -0.3px rgba(0, 255, 255, 0.65));
-    }
-}
-
-@keyframes anaglyph-scanline-scroll {
-    0% {
-        background-position: 0 0;
-    }
-
-    100% {
-        background-position: 0 100px;
-    }
-}
-
-@keyframes anaglyph-fade-in {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
