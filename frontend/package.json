@@ -43,7 +43,7 @@
     },
     "devDependencies": {
         "@biomejs/biome": "^2.4.16",
-        "@hey-api/openapi-ts": "^0.97.3",
+        "@hey-api/openapi-ts": "^0.98.2",
         "@types/marked": "^6.0.0",
         "@types/node": "^25.9.1",
         "@types/qrcode": "^1.5.6",
