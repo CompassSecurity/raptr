@@ -4,6 +4,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, Query, UploadFile
 from fastapi.responses import StreamingResponse
+from pathvalidate import sanitize_filename
 from sqlalchemy.orm import Session
 
 from app.core.authorization import (
@@ -277,10 +278,11 @@ def download_activity_file(
         file_id, activity_id, assessment_id, user, session
     )
 
+    safe_filename = sanitize_filename(file.filename) or "file"
     return StreamingResponse(
         io.BytesIO(file.file_content),
         media_type=file.content_type,
-        headers={"Content-Disposition": f'attachment; filename="{file.filename}"'},
+        headers={"Content-Disposition": f'attachment; filename="{safe_filename}"'},
     )
 
 

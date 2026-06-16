@@ -3,6 +3,7 @@ import uuid
 import zipfile
 from datetime import datetime, timezone
 
+from pathvalidate import sanitize_filename
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
@@ -90,7 +91,8 @@ def _export_activity(
     # Export files
     file_exports: list[FileExport] = []
     for f in activity.files:
-        zip_path = f"files/{f.id}_{f.filename}"
+        safe_filename = sanitize_filename(f.filename) or "file"
+        zip_path = f"files/{f.id}_{safe_filename}"
         zip_file.writestr(zip_path, f.file_content)
         file_exports.append(
             FileExport(
