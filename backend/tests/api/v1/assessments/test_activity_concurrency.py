@@ -82,6 +82,7 @@ def test_update_with_matching_updated_at(
         "name": "Updated Name",
         "mitre_tactic": "Execution",
         "mitre_technique": "T1204.001",
+        "state": "Pending",
         "updated_at": test_activity["updated_at"],
     }
 
@@ -111,6 +112,7 @@ def test_update_with_stale_updated_at(
         "name": "First Update",
         "mitre_tactic": "Execution",
         "mitre_technique": "T1204.001",
+        "state": "Pending",
         "updated_at": original_updated_at,
     }
     response1 = client.put(
@@ -132,6 +134,7 @@ def test_update_with_stale_updated_at(
         "name": "Second Update (should conflict)",
         "mitre_tactic": "Execution",
         "mitre_technique": "T1204.001",
+        "state": "Pending",
         "updated_at": original_updated_at,
     }
     response2 = client.put(
@@ -155,6 +158,7 @@ def test_update_without_updated_at(
         "name": "No Concurrency Check",
         "mitre_tactic": "Execution",
         "mitre_technique": "T1204.001",
+        "state": "Pending",
         # No updated_at field
     }
 
@@ -200,6 +204,7 @@ def test_updated_at_bumps_on_asset_only_change(
         "name": test_activity["name"],
         "mitre_tactic": test_activity["mitre_tactic"],
         "mitre_technique": test_activity["mitre_technique"],
+        "state": "Pending",
         "updated_at": original_updated_at,
         "sources": [str(asset.id)],
     }
@@ -224,6 +229,7 @@ def test_updated_at_bumps_on_asset_only_change(
         "name": test_activity["name"],
         "mitre_tactic": test_activity["mitre_tactic"],
         "mitre_technique": test_activity["mitre_technique"],
+        "state": "Pending",
         "updated_at": original_updated_at,  # stale
     }
     response2 = client.put(
@@ -251,6 +257,7 @@ def test_updated_at_bumps_on_evaluation_only_change(
         "name": test_activity["name"],
         "mitre_tactic": test_activity["mitre_tactic"],
         "mitre_technique": test_activity["mitre_technique"],
+        "state": "Pending",
         "updated_at": original_updated_at,
         "expected_logging": True,
         "logged": True,
@@ -277,6 +284,7 @@ def test_updated_at_bumps_on_evaluation_only_change(
         "name": test_activity["name"],
         "mitre_tactic": test_activity["mitre_tactic"],
         "mitre_technique": test_activity["mitre_technique"],
+        "state": "Pending",
         "updated_at": original_updated_at,  # stale
     }
     response2 = client.put(

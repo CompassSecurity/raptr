@@ -3,6 +3,7 @@ import uuid
 import pytest
 from fastapi import HTTPException
 
+from app.enums.enums import ActivityState
 from app.models.assessment import Assessment
 from app.schemas.activity import ActivityBase, ActivityFilter, ActivityUpdate
 from app.services.activity.activity import (
@@ -107,6 +108,7 @@ def test_update_activity(session, test_assessment, test_admin_user):
         name="Updated Name",
         mitre_tactic="Updated Tactic",
         mitre_technique="T9999",
+        state=ActivityState.PENDING,
         activity_notes="New notes",
     )
     updated = update_activity_service(

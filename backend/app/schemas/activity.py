@@ -84,7 +84,7 @@ class ActivityUpdate(ActivityBase):
     provider: str | None = None
     visible: bool = False
     priority: ActivityPriority | None = None
-    state: ActivityState | None = None
+    state: ActivityState | None
     tags: list[uuid.UUID] = []
     activity_group_id: uuid.UUID | None = None
 
@@ -283,7 +283,7 @@ class ActivityUpdateBlue(BaseModel):
     stakeholder_notification_created: bool | None = None
     stakeholder_notification_severity: ActivitySeverity | None = None
     stakeholder_notification_time: datetime | None = None
-    state: ActivityStateBlue | None = ActivityStateBlue.WAITING_BLUE
+    state: ActivityStateBlue | None
     log_sources: list[uuid.UUID] | None = None
     prevention_sources: list[uuid.UUID] | None = None
     alert_sources: list[uuid.UUID] | None = None
