@@ -185,7 +185,7 @@ const stakeholderNotificationCreated = computed({
                                 :available-assets="availableAssets"
                                 :show-only-sources="true"
                                 sources-label="Log Sources"
-                                :compact="true"
+                                accent-color="blue"
                                 :readonly="readonly"
                                 @assets-changed="emit('assets-changed')"
                             />
@@ -240,7 +240,7 @@ const stakeholderNotificationCreated = computed({
                                 :available-assets="availableAssets"
                                 :show-only-sources="true"
                                 sources-label="Prevention Systems"
-                                :compact="true"
+                                accent-color="blue"
                                 :readonly="readonly"
                                 @assets-changed="emit('assets-changed')"
                             />
@@ -315,7 +315,7 @@ const stakeholderNotificationCreated = computed({
                                 :available-assets="availableAssets"
                                 :show-only-sources="true"
                                 sources-label="Detection Systems"
-                                :compact="true"
+                                accent-color="blue"
                                 :readonly="readonly"
                                 @assets-changed="emit('assets-changed')"
                             />
@@ -390,7 +390,7 @@ const stakeholderNotificationCreated = computed({
                                 :available-assets="availableAssets"
                                 :show-only-sources="true"
                                 sources-label="Notification Systems"
-                                :compact="true"
+                                accent-color="blue"
                                 :readonly="readonly"
                                 @assets-changed="emit('assets-changed')"
                             />
