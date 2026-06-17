@@ -110,6 +110,25 @@ def validate_file_content(file: UploadFile) -> FileType:
     )
 
 
+_CANONICAL_EXTENSION = {
+    FileType.PNG: ".png",
+    FileType.JPEG: ".jpg",
+    FileType.JPG: ".jpg",
+    FileType.TXT: ".txt",
+}
+
+
+def _normalize_filename(filename: str, file_type: FileType) -> str:
+    """
+    Force the filename extension to match the detected content type so that a
+    dangerous extension (e.g. .php) cannot be preserved by uploading a polyglot
+    file with valid image magic bytes.
+    """
+    stem = filename.rsplit(".", 1)[0] if "." in filename else filename
+    stem = stem or "unnamed"
+    return f"{stem}{_CANONICAL_EXTENSION[file_type]}"
+
+
 def upload_file_service(
     activity_id: uuid.UUID,
     file: UploadFile,
@@ -126,9 +145,9 @@ def upload_file_service(
     detected_file_type = validate_file_content(file)
     file_content = file.file.read()
 
-    final_filename = sanitize_filename(file.filename) or "unnamed"
-    if detected_file_type == FileType.TXT and not final_filename.endswith(".txt"):
-        final_filename += ".txt"
+    final_filename = _normalize_filename(
+        sanitize_filename(file.filename) or "unnamed", detected_file_type
+    )
 
     category = (
         FileCategory.RED

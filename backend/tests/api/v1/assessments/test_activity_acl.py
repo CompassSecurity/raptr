@@ -301,6 +301,73 @@ def test_blue_user_cannot_upload_when_not_waiting(
     assert response.status_code == 403
 
 
+_PNG_BYTES = b"\x89PNG\r\n\x1a\n" + b"\x00" * 16
+
+
+def test_upload_polyglot_keeps_safe_extension(
+    client: TestClient,
+    session: Session,
+    test_assessment: Assessment,
+    test_activity: Activity,
+    auth_headers_regular: dict[str, str],
+    test_acl_red: Acl,
+):
+    """A PNG-magic file named shell.php is stored with a .png extension, not .php."""
+    response = client.post(
+        f"/api/v1/assessments/{test_assessment.id}/activity/{test_activity.id}/upload",
+        files={"file": ("shell.php", _PNG_BYTES, "image/png")},
+        headers=auth_headers_regular,
+    )
+    assert response.status_code == 200
+
+    file_id = uuid.UUID(response.json()["file_id"])
+    stored = session.get(File, file_id)
+    assert stored.filename == "shell.png"
+    assert ".php" not in stored.filename
+    assert stored.content_type == FileType.PNG
+
+
+def test_upload_text_normalized_to_txt(
+    client: TestClient,
+    session: Session,
+    test_assessment: Assessment,
+    test_activity: Activity,
+    auth_headers_regular: dict[str, str],
+    test_acl_red: Acl,
+):
+    """UTF-8 content with a non-txt extension is stored as .txt."""
+    response = client.post(
+        f"/api/v1/assessments/{test_assessment.id}/activity/{test_activity.id}/upload",
+        files={"file": ("notes.md", b"just some notes", "text/plain")},
+        headers=auth_headers_regular,
+    )
+    assert response.status_code == 200
+
+    stored = session.get(File, uuid.UUID(response.json()["file_id"]))
+    assert stored.filename == "notes.txt"
+    assert stored.content_type == FileType.TXT
+
+
+def test_upload_matching_extension_unchanged(
+    client: TestClient,
+    session: Session,
+    test_assessment: Assessment,
+    test_activity: Activity,
+    auth_headers_regular: dict[str, str],
+    test_acl_red: Acl,
+):
+    """A real png keeps its name (no double extension)."""
+    response = client.post(
+        f"/api/v1/assessments/{test_assessment.id}/activity/{test_activity.id}/upload",
+        files={"file": ("photo.png", _PNG_BYTES, "image/png")},
+        headers=auth_headers_regular,
+    )
+    assert response.status_code == 200
+
+    stored = session.get(File, uuid.UUID(response.json()["file_id"]))
+    assert stored.filename == "photo.png"
+
+
 def test_blue_user_fail_hidden(
     client: TestClient,
     session: Session,
