@@ -155,10 +155,9 @@ def test_red_user_update_restricted_fields(
         "mitre_tactic": "Execution",
         "mitre_technique": "T1204.001",
         "visible": True,
-        # Other fields can be omitted/defaulted if allowed by Pydantic model construction from dict,
-        # BUT because we are doing PUT, we should provide what we want to persist.
-        # ActivityUpdate inherits from ActivityBase which has defaults for optional fields.
-        # However, required fields like name, tactic, technique MUST be present.
+        "state": "Waiting Red",
+        # PUT is full-replace; required fields (name, tactic, technique, state) MUST be
+        # present. Other optional fields may be omitted.
     }
     response = client.put(
         f"/api/v1/assessments/{test_assessment.id}/activity/{test_activity.id}",
@@ -183,6 +182,7 @@ def test_blue_user_update_success(
         "name": "Test Activity",  # Required
         "mitre_tactic": "Execution",  # Required
         "mitre_technique": "T1204.001",  # Required
+        "state": "Waiting Red",  # Required; activity is already in this state
         "log_notes": "Blue Log Notes",
         "alert_notes": "Blue Alert Notes",
         "logged": True,
@@ -200,6 +200,33 @@ def test_blue_user_update_success(
     assert data["alert_notes"] == "Blue Alert Notes"
     assert data["logged"] is True
     assert data["prevented"] is True
+    # Regression: state must be preserved, not silently reset.
+    assert data["state"] == "Waiting Red"
+
+
+def test_blue_update_missing_state_rejected(
+    client: TestClient,
+    test_assessment: Assessment,
+    test_activity: Activity,
+    auth_headers_blue: dict[str, str],
+    test_acl_blue: Acl,
+):
+    """Omitting the required `state` key now returns 422 instead of nulling state."""
+    update_data = {
+        "name": "Test Activity",
+        "mitre_tactic": "Execution",
+        "mitre_technique": "T1204.001",
+        "log_notes": "Blue Log Notes",
+    }
+    response = client.put(
+        f"/api/v1/assessments/{test_assessment.id}/activity/{test_activity.id}",
+        json=update_data,
+        headers=auth_headers_blue,
+    )
+    assert response.status_code == 422
+    assert any(
+        err.get("loc", [])[-1:] == ["state"] for err in response.json()["detail"]
+    )
 
 
 def test_blue_user_fail_hidden(
