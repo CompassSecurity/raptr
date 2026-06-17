@@ -16,7 +16,7 @@ Each knowledge base article has:
 
 Articles are linked to activities in two ways:
 
-- **By MITRE technique**: When an activity is mapped to a MITRE technique, all knowledge base articles linked to that technique are automatically available in the activity's [Knowledge Base section](activities.md#knowledge-base).
+- **By MITRE technique**: When an activity is mapped to a MITRE technique, all knowledge base articles linked to that technique are automatically available in the activity's knowledge base section.
 - **By activity template**: [Activity templates](templates.md#activity-template) can reference specific knowledge base articles by name. When imported into an assessment, these links are carried over to the created activity — allowing templates to point to articles beyond just the MITRE technique mapping.
 
 ## Variables

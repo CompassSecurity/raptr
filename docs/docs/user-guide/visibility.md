@@ -18,8 +18,8 @@ The visibility of an activity is inherited from its parent activity group. If an
 
 Visibility can be changed in several ways:
 
-- Toggle visiblity of activities and activity groups from the [activity table](activities.md#activity-views)
-- Toggle visibility of activities in bulk from the [activity table](activities.md#activity-views)
+- Toggle visiblity of activities and activity groups from the [activity table](activities.md#activity-table-views)
+- Toggle visibility of activities in bulk from the [activity table](activities.md#activity-table-views)
 - Toggle visiblity of activities and activity groups from the [coresponding form](activities.md#general-information)
 
 ??? abstract "Toggle visibility in table view"

@@ -58,7 +58,7 @@ Redesign the logging system to produce meaningful audit logs.
 <div class="timeline-card" markdown>
 <div class="timeline-card-header" markdown>
 ### :rocket: Beta Release
-<span class="timeline-version">[v0.1.0.beta.1]</span>
+<span class="timeline-version">\[v0.1.0.beta.1\]</span>
 </div>
 Release of version 0.1.0.beta.1
 </div>
@@ -72,7 +72,7 @@ Release of version 0.1.0.beta.1
 <div class="timeline-card" markdown>
 <div class="timeline-card-header" markdown>
 ### :rocket: Alpha Release
-<span class="timeline-version">[v0.1.0.alpha.1]</span>
+<span class="timeline-version">\[v0.1.0.alpha.1\]</span>
 </div>
 Release of version 0.1.0.alpha.1
 </div>

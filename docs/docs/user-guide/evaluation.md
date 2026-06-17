@@ -40,7 +40,7 @@ The static evaluation also tracks timing metrics:
 - **Event-to-Alert time**: How long between the activity execution (start time) and the first alert
 - **Alert-to-Stakeholder time**: How long between the alert time and the stakeholder notification
 
-These fields are auto-calculated, but the evaluation result must be manually set. The following options exist `pass`, `fail`, and `N/A`. By default the `N/A` state is choosen. See [working with auto-calculated fields](#working-with-auto-calculated-fields).
+These fields are auto-calculated, but the evaluation result must be manually set. The following options exist `pass`, `fail`, and `N/A`. By default the `N/A` state is choosen.
 
 ### Severity Evaluations
 
@@ -49,7 +49,7 @@ The system also compares expected vs. actual severity levels for alerts and stak
 - **Alert vs expected severity**: The expected severity of the alert vs the actual severity of the alert
 - **Stakeholder notification vs expected severity**: The expected severity of the stakeholder notification vs the actual severity of the stakeholder notification
 
-These fields are auto-calculated, but the evaluation result must be manually set. The following options exist `pass`, `fail`, and `N/A`. By default the `N/A` state is choosen. See [working with auto-calculated fields](#working-with-auto-calculated-fields).
+These fields are auto-calculated, but the evaluation result must be manually set. The following options exist `pass`, `fail`, and `N/A`. By default the `N/A` state is choosen.
 
 ??? bug "Only one expected severity"
     Currently there is only one expected severity for alerts and stakeholder notification. The assumption is that both notifications should have the same severity level.
@@ -81,7 +81,7 @@ Each evaluation question which cannot be answered automatically must be manually
     [![Working with dynamic evaluation questions](../assets/eval-dynamic-questions.gif "Working with dynamic evaluation questions")](../assets/eval-dynamic-questions.gif){:target="_blank"}
 
 ??? bug "Auto-calculated fields"
-    The timing and severity static evaluation questions text are auto-calculated. Nevertheless these fields support [Markdown](#markdown-fields). You can overwrite the fields. As long as the field ends in `(auto-calculated)` the field will be re-calculated on changes.
+    The timing and severity static evaluation questions text are auto-calculated. Nevertheless these fields support [Markdown](activities.md#markdown-fields). You can overwrite the fields. As long as the field ends in `(auto-calculated)` the field will be re-calculated on changes.
 
 ??? abstract "Working with auto-calculated fields"
     [![Working with auto-calculated fields](../assets/eval-auto-calculated.gif "Working with auto-calculated fields")](../assets/eval-auto-calculated.gif){:target="_blank"}

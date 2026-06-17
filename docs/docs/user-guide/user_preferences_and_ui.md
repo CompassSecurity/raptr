@@ -33,7 +33,7 @@ RAPTR supports time-based one-time password (TOTP) multi-factor authentication f
 
 You can use the **Reset MFA** function to delete the current OTP secret. You will be logged out and can generate a new OTP secret on your next login.
 
-An Administrator can also reset a users MFA. See [Administration](administration.md#lucide-shield-x-reset-mfa) for more information.
+An Administrator can also reset a users MFA. See [Administration](administration.md#reset-mfa) for more information.
 
 ??? bug "No optional MFA choice"
     The current RAPTR setup only support global MFA enforcement. Either it is required or not. There is no option to enable or allow MFA on a per user basis.
@@ -62,7 +62,7 @@ Some views, such as the assessments list or activity list, support auto-refreshi
 ### Toggle UTC and Local Time
 
 Toggle between UTC and local time using the :lucide-globe: icon in the top navigation bar. Your preference is saved locally in your browser. All times in RAPTR should display according to this setting.
-You can overwride your browser local time zone in the [profile settings](user_preferences.md#timezone-and-date-format).
+You can overwride your browser local time zone in the [profile settings](#timezone-and-date-format).
 
 ??? abstract "Toggle between UTC and local time"
     [![Toggle between UTC and local time](../assets/ui-toggle-utc-local.gif "Toggle between UTC and local time")](../assets/ui-toggle-utc-local.gif){:target="_blank"}
