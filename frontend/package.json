@@ -29,7 +29,7 @@
         "oidc-client-ts": "^3.5.0",
         "pinia": "^3.0.4",
         "qrcode": "^1.5.4",
-        "reka-ui": "^2.9.10",
+        "reka-ui": "2.9.9",
         "tailwind-merge": "^3.6.0",
         "tailwindcss": "^4.3.1",
         "vee-validate": "^4.15.1",
