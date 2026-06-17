@@ -5,9 +5,11 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from app.core.authentication import create_access_token_service
+from app.enums.enums import FileCategory, FileType
 from app.models.acl import Acl
 from app.models.activity import Activity
 from app.models.assessment import Assessment
+from app.models.file import File
 from app.models.user import User
 
 
@@ -227,6 +229,76 @@ def test_blue_update_missing_state_rejected(
     assert any(
         err.get("loc", [])[-1:] == ["state"] for err in response.json()["detail"]
     )
+
+
+def test_blue_user_can_upload_file_when_waiting(
+    client: TestClient,
+    test_assessment: Assessment,
+    test_activity: Activity,
+    auth_headers_blue: dict[str, str],
+    test_acl_blue: Acl,
+):
+    """Blue user can upload a file while the activity is in a Waiting state."""
+    # test_activity is created in state "Waiting Red"
+    response = client.post(
+        f"/api/v1/assessments/{test_assessment.id}/activity/{test_activity.id}/upload",
+        files={"file": ("evidence.txt", b"blue evidence", "text/plain")},
+        headers=auth_headers_blue,
+    )
+    assert response.status_code == 200
+    assert response.json()["file_id"]
+
+
+def test_blue_user_can_delete_file_when_waiting(
+    client: TestClient,
+    session: Session,
+    test_assessment: Assessment,
+    test_activity: Activity,
+    test_blue_user: User,
+    auth_headers_blue: dict[str, str],
+    test_acl_blue: Acl,
+):
+    """Blue user can delete their own (BLUE-category) file while Waiting."""
+    file_row = File(
+        activity_id=test_activity.id,
+        created_by=test_blue_user.id,
+        filename="blue.txt",
+        content_type=FileType.TXT,
+        category=FileCategory.BLUE,
+        size=4,
+        file_content=b"data",
+    )
+    session.add(file_row)
+    session.commit()
+    session.refresh(file_row)
+    file_id = file_row.id
+
+    response = client.delete(
+        f"/api/v1/assessments/{test_assessment.id}/activity/{test_activity.id}/files/{file_id}",
+        headers=auth_headers_blue,
+    )
+    assert response.status_code == 200
+    assert session.get(File, file_id) is None
+
+
+def test_blue_user_cannot_upload_when_not_waiting(
+    client: TestClient,
+    session: Session,
+    test_assessment: Assessment,
+    test_activity: Activity,
+    auth_headers_blue: dict[str, str],
+    test_acl_blue: Acl,
+):
+    """The re-gated endpoint blocks Blue uploads when state is not Waiting Red/Blue."""
+    test_activity.state = "In Progress"
+    session.commit()
+
+    response = client.post(
+        f"/api/v1/assessments/{test_assessment.id}/activity/{test_activity.id}/upload",
+        files={"file": ("evidence.txt", b"blue evidence", "text/plain")},
+        headers=auth_headers_blue,
+    )
+    assert response.status_code == 403
 
 
 def test_blue_user_fail_hidden(

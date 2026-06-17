@@ -19,6 +19,7 @@ const props = defineProps<{
     activityId: string;
     refreshKey: number;
     readonly?: boolean;
+    blueEditable?: boolean;
 }>();
 
 const authStore = useAuthStore();
@@ -27,17 +28,24 @@ const loadingFiles = ref(false);
 const uploadingFile = ref(false);
 const fileInputRef = ref<HTMLInputElement | null>(null);
 
+const assessmentRole = computed(() =>
+    authStore.getAssessmentRole(props.assessmentId),
+);
+
 function canDelete(file: FileRead): boolean {
     if (!props.readonly) return true;
-    const role = authStore.getAssessmentRole(props.assessmentId);
-    // Blue team can always delete blue files
-    return role === 'blue' && file.category === 'blue';
+    // Blue team can delete blue files, but only while the activity is in a
+    // Waiting state (mirrors the backend permission gate).
+    return (
+        assessmentRole.value === 'blue' &&
+        file.category === 'blue' &&
+        !!props.blueEditable
+    );
 }
 
 const canUpload = computed(() => {
     if (!props.readonly) return true;
-    const role = authStore.getAssessmentRole(props.assessmentId);
-    return role === 'blue';
+    return assessmentRole.value === 'blue' && !!props.blueEditable;
 });
 
 async function fetchFiles() {
