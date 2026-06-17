@@ -383,7 +383,7 @@ export type ActivityRead = {
      */
     visible?: boolean;
     priority?: ActivityPriority | null;
-    state?: ActivityState | null;
+    state: ActivityState | null;
     /**
      * Tags
      */
@@ -670,7 +670,7 @@ export type ActivityUpdate = {
      */
     visible?: boolean;
     priority?: ActivityPriority | null;
-    state?: ActivityState | null;
+    state: ActivityState | null;
     /**
      * Tags
      */
