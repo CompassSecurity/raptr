@@ -7,9 +7,11 @@ from dataclasses import asdict
 from datetime import datetime
 
 from fastapi import HTTPException, status
+from jinja2.exceptions import SecurityError, TemplateError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core.logging import app_logger
 from app.enums.enums import ReportTemplateFormat
 from app.models.report_template import ReportTemplate
 from app.models.user import User
@@ -54,33 +56,57 @@ def generate_report_service(
         sort_order=request.sort_order,
     )
 
-    if template.format == ReportTemplateFormat.HTML:
-        output = render_html_report(template.template_content, context)
-        result = GeneratedReport(
-            content=output.encode("utf-8"),
-            media_type="text/html",
-            filename=template.filename,
-        )
-        del context, output
-        release_memory()
-        return result
-    elif template.format == ReportTemplateFormat.DOCX:
-        # Collect image data for DOCX embedding (markdown → InlineImage)
-        image_data = collect_report_images(session, assessment_id)
-        output = render_docx_report(template.template_content, context, image_data)
+    try:
+        if template.format == ReportTemplateFormat.HTML:
+            output = render_html_report(template.template_content, context)
+            result = GeneratedReport(
+                content=output.encode("utf-8"),
+                media_type="text/html",
+                filename=template.filename,
+            )
+            del context, output
+            release_memory()
+            return result
+        elif template.format == ReportTemplateFormat.DOCX:
+            # Collect image data for DOCX embedding (markdown → InlineImage)
+            image_data = collect_report_images(session, assessment_id)
+            output = render_docx_report(template.template_content, context, image_data)
 
-        del context, image_data
-        release_memory()
+            del context, image_data
+            release_memory()
 
-        return GeneratedReport(
-            content=output,
-            media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            filename=template.filename,
+            return GeneratedReport(
+                content=output,
+                media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                filename=template.filename,
+            )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Unsupported format: {template.format}",
+            )
+    except SecurityError as e:
+        # The template tried to access a sandbox-disallowed attribute — a
+        # blocked SSTI attempt. Log as a security event (template id/filename
+        # and the non-sensitive sandbox message) but keep the client response
+        # generic so no payload/traceback is leaked.
+        app_logger.error(
+            f"Rejected report template id={template.id} "
+            f"filename={template.filename!r}: blocked unsafe expression: {e}"
         )
-    else:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Unsupported format: {template.format}",
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="The selected report template was rejected: it contains disallowed expressions.",
+        )
+    except TemplateError as e:
+        # Malformed template (syntax / undefined / runtime error).
+        app_logger.error(
+            f"Failed to render report template id={template.id} "
+            f"filename={template.filename!r}: {e}"
+        )
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="The selected report template could not be rendered. Please check the template.",
         )
 
 

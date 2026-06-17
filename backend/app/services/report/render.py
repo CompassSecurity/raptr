@@ -12,6 +12,7 @@ from dataclasses import asdict
 from datetime import datetime
 
 import jinja2
+import jinja2.sandbox
 
 from app.services.report.markdown import prepare_docx_context
 from app.services.report.report_data import ReportContext
@@ -63,7 +64,10 @@ def render_html_report(
     Image data is already embedded as base64 in the context (FileReport.data_base64),
     so templates handle image rendering client-side.
     """
-    env = jinja2.Environment(autoescape=True)
+    # Use a SandboxedEnvironment so that templates (which originate from an
+    # external, admin-seeded source via CUSTOM_DATA_URL) cannot execute
+    # arbitrary Python via Jinja2 SSTI user generates a report.
+    env = jinja2.sandbox.SandboxedEnvironment(autoescape=True)
     env.filters["tojson"] = _tojson_filter
 
     template = env.from_string(template_content.decode("utf-8"))
@@ -90,7 +94,10 @@ def render_docx_report(
 
     tpl = DocxTemplate(io.BytesIO(template_content))
     docx_context = prepare_docx_context(asdict(context), tpl, image_data)
-    tpl.render(docx_context)
+    # Render with a SandboxedEnvironment to prevent Jinja2 SSTI/RCE from
+    # externally-sourced (admin-seeded) templates. docxtpl manages XML escaping
+    # itself, so autoescape stays off (the default).
+    tpl.render(docx_context, jinja_env=jinja2.sandbox.SandboxedEnvironment())
 
     output = io.BytesIO()
     tpl.save(output)
