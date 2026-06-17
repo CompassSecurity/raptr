@@ -4,6 +4,7 @@ import uuid
 import zipfile
 
 from fastapi import HTTPException, status
+from pathvalidate import sanitize_filename
 from sqlalchemy import insert, select
 from sqlalchemy.orm import Session
 
@@ -261,7 +262,7 @@ def _import_activity(
         new_file = File(
             activity_id=activity.id,
             created_by=user.id,
-            filename=file_data.filename,
+            filename=sanitize_filename(file_data.filename) or "unnamed",
             content_type=file_data.content_type,
             category=file_data.category,
             size=file_data.size,

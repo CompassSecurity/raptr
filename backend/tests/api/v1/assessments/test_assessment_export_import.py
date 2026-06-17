@@ -545,6 +545,255 @@ def test_import_missing_eval_template(
     assert any("Also NonExistent" in w for w in data["warnings"])
 
 
+def _manifest_with_file(filename: str, zip_path: str) -> dict:
+    """Minimal import manifest with a single activity holding one file."""
+    return {
+        "format_version": 1,
+        "exported_at": "2026-01-01T00:00:00Z",
+        "assessment_name": "Filename Sanitization Test",
+        "assessment_description": "",
+        "assessment_type": "PurpleTeam",
+        "default_evaluation_templates": [],
+        "tags": [],
+        "assets": [],
+        "activity_groups": [
+            {
+                "name": "Default",
+                "visible": False,
+                "is_default": True,
+                "activity_group_position": 0,
+                "deleted": False,
+                "activities": [
+                    {
+                        "name": "Activity with file",
+                        "mitre_tactic": "TA0001",
+                        "mitre_technique": "T1190",
+                        "visible": False,
+                        "activity_position": 0,
+                        "deleted": False,
+                        "tag_names": [],
+                        "source_names": [],
+                        "target_names": [],
+                        "tool_names": [],
+                        "log_source_names": [],
+                        "prevention_source_names": [],
+                        "alert_source_names": [],
+                        "stakeholder_notification_source_names": [],
+                        "files": [
+                            {
+                                "filename": filename,
+                                "content_type": "image/png",
+                                "category": "red",
+                                "size": 4,
+                                "zip_path": zip_path,
+                                "original_id": "",
+                            }
+                        ],
+                        "evaluation": None,
+                    }
+                ],
+            }
+        ],
+    }
+
+
+def test_import_sanitizes_malicious_filename(
+    client: TestClient,
+    auth_headers_admin: dict[str, str],
+    session: Session,
+):
+    """A manifest filename with traversal/quote/newline chars is sanitized on import."""
+    malicious = '../../etc/pa"ss\nwd.png'
+    zip_path = "files/blob.png"
+    manifest = _manifest_with_file(malicious, zip_path)
+
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        zf.writestr("manifest.json", json.dumps(manifest))
+        zf.writestr(zip_path, b"\x89PNG")
+    buf.seek(0)
+
+    resp = client.post(
+        "/api/v1/assessment/import",
+        headers=auth_headers_admin,
+        files={"file": ("test.zip", buf.getvalue(), "application/zip")},
+    )
+    assert resp.status_code == 200
+
+    import uuid
+
+    from sqlalchemy import select
+
+    new_id = uuid.UUID(resp.json()["assessment_id"])
+    activity = (
+        session.execute(select(Activity).where(Activity.assessment_id == new_id))
+        .scalars()
+        .unique()
+        .one()
+    )
+    stored = (
+        session.execute(select(File).where(File.activity_id == activity.id))
+        .scalars()
+        .unique()
+        .one()
+    )
+
+    assert stored.filename  # non-empty
+    for bad in ("/", "\\", '"', "\n", "\r"):
+        assert bad not in stored.filename
+
+
+def test_export_zip_path_has_no_traversal(
+    client: TestClient,
+    auth_headers_admin: dict[str, str],
+    session: Session,
+    test_admin_user: User,
+):
+    """A file with a ../-laden filename must not yield a zip entry escaping files/."""
+    assessment = Assessment(
+        name="Zip Slip Test",
+        description="",
+        assessment_type="PurpleTeam",
+        created_by=test_admin_user.id,
+    )
+    session.add(assessment)
+    session.flush()
+
+    group = ActivityGroup(
+        name="Default",
+        assessment_id=assessment.id,
+        is_default=True,
+        visible=True,
+        activity_group_position=0,
+        created_by=test_admin_user.id,
+    )
+    session.add(group)
+    session.flush()
+
+    activity = Activity(
+        name="A",
+        assessment_id=assessment.id,
+        activity_group_id=group.id,
+        mitre_tactic="TA0001",
+        mitre_technique="T1190",
+        activity_position=0,
+        created_by=test_admin_user.id,
+    )
+    session.add(activity)
+    session.flush()
+
+    session.add(
+        File(
+            activity_id=activity.id,
+            created_by=test_admin_user.id,
+            filename="../../../../etc/passwd",
+            content_type=FileType.PNG,
+            category=FileCategory.RED,
+            size=4,
+            file_content=b"\x89PNG",
+        )
+    )
+    session.add(
+        Acl(
+            user_id=test_admin_user.id,
+            assessment_id=assessment.id,
+            assessment_role="red",
+            created_by=test_admin_user.id,
+        )
+    )
+    session.commit()
+
+    resp = client.post(
+        f"/api/v1/assessments/{assessment.id}/export/assessment",
+        headers=auth_headers_admin,
+    )
+    assert resp.status_code == 200
+
+    zf = zipfile.ZipFile(io.BytesIO(resp.content))
+    for name in zf.namelist():
+        if name == "manifest.json":
+            continue
+        assert name.startswith("files/")
+        # No path separators after the files/ prefix → entry stays inside files/
+        # and cannot traverse out, regardless of any leftover "." characters.
+        remainder = name[len("files/") :]
+        assert "/" not in remainder
+        assert "\\" not in remainder
+    zf.close()
+
+
+def test_download_content_disposition_is_safe(
+    client: TestClient,
+    auth_headers_regular: dict[str, str],
+    session: Session,
+    test_regular_user: User,
+):
+    """A crafted stored filename must not break the Content-Disposition header."""
+    assessment = Assessment(
+        name="Header Injection Test",
+        description="",
+        assessment_type="PurpleTeam",
+        created_by=test_regular_user.id,
+    )
+    session.add(assessment)
+    session.flush()
+
+    group = ActivityGroup(
+        name="Default",
+        assessment_id=assessment.id,
+        is_default=True,
+        visible=True,
+        activity_group_position=0,
+        created_by=test_regular_user.id,
+    )
+    session.add(group)
+    session.flush()
+
+    activity = Activity(
+        name="A",
+        assessment_id=assessment.id,
+        activity_group_id=group.id,
+        mitre_tactic="TA0001",
+        mitre_technique="T1190",
+        activity_position=0,
+        created_by=test_regular_user.id,
+    )
+    session.add(activity)
+    session.flush()
+
+    file_row = File(
+        activity_id=activity.id,
+        created_by=test_regular_user.id,
+        filename='evil".png',
+        content_type=FileType.PNG,
+        category=FileCategory.RED,
+        size=4,
+        file_content=b"\x89PNG",
+    )
+    session.add(file_row)
+    session.add(
+        Acl(
+            user_id=test_regular_user.id,
+            assessment_id=assessment.id,
+            assessment_role="red",
+            created_by=test_regular_user.id,
+        )
+    )
+    session.commit()
+
+    resp = client.get(
+        f"/api/v1/assessments/{assessment.id}/activity/{activity.id}"
+        f"/files/{file_row.id}/download",
+        headers=auth_headers_regular,
+    )
+    assert resp.status_code == 200
+
+    disposition = resp.headers["content-disposition"]
+    # Exactly the two wrapping quotes, no embedded quote/CRLF that could inject.
+    assert disposition.count('"') == 2
+    assert "\n" not in disposition and "\r" not in disposition
+
+
 def test_import_invalid_zip(
     client: TestClient,
     auth_headers_admin: dict[str, str],
