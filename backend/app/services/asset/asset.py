@@ -25,7 +25,7 @@ def get_assets_service(
     """
     base_statement = select(Asset).where(Asset.assessment_id == assessment_id)
 
-    if user.assessment_acl_role != AclRole.RED:
+    if user.assessment_acl_role == AclRole.SPECTATOR:
         base_statement = base_statement.filter(Asset.deleted.is_(False))
 
     return paginated_query(session, Asset, filter_query, base_statement=base_statement)

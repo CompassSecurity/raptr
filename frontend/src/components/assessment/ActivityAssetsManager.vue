@@ -49,6 +49,7 @@ const props = defineProps<{
     compact?: boolean;
     readonly?: boolean;
     availableAssets?: AssetRead[];
+    accentColor?: 'green' | 'orange' | 'purple' | 'blue';
 }>();
 
 const emit = defineEmits<{
@@ -95,6 +96,27 @@ const iconMap: Record<string, any> = {
 
 function getIconComponent(iconName: string | null | undefined) {
     return (iconName && iconMap[iconName]) || Computer;
+}
+
+const ACCENT_LABEL_CLASS: Record<string, string> = {
+    green: 'text-green-600 dark:text-green-400',
+    orange: 'text-orange-600 dark:text-orange-400',
+    purple: 'text-purple-600 dark:text-purple-400',
+    blue: 'text-blue-600 dark:text-blue-400',
+};
+const ACCENT_BORDER_CLASS: Record<string, string> = {
+    green: 'border-l-green-500',
+    orange: 'border-l-orange-500',
+    purple: 'border-l-purple-500',
+    blue: 'border-l-blue-700',
+};
+const DEFAULT_SECTION_ACCENT: Record<string, string> = {
+    sources: 'green',
+    targets: 'orange',
+    tools: 'purple',
+};
+function accentFor(key: string): string {
+    return props.accentColor ?? DEFAULT_SECTION_ACCENT[key] ?? 'green';
 }
 
 // Global asset fetch
@@ -266,9 +288,7 @@ onMounted(() => {
                     <Label 
                         :class="[
                             'text-sm font-medium',
-                            !compact && section.key === 'sources' ? 'text-green-600 dark:text-green-400' : '',
-                            !compact && section.key === 'targets' ? 'text-orange-600 dark:text-orange-400' : '',
-                            !compact && section.key === 'tools' ? 'text-purple-600 dark:text-purple-400' : ''
+                            !compact && !showOnlySources ? ACCENT_LABEL_CLASS[accentFor(section.key)] : ''
                         ]"
                     >
                         {{ showOnlySources ? sourcesLabel : section.label }}
@@ -288,18 +308,17 @@ onMounted(() => {
                 </div>
                 
                 <!-- Assets Grid -->
-                <div v-if="section.items.length > 0" :class="compact ? 'flex flex-wrap gap-2' : 'grid grid-cols-2 gap-2'">
+                <div v-if="section.items.length > 0" :class="compact || showOnlySources ? 'flex flex-wrap gap-2' : 'grid grid-cols-2 gap-2'">
                     <Popover v-for="asset in section.items" :key="asset.id">
                         <PopoverTrigger as-child>
                             <div 
                                 :class="[
                                     'group relative flex items-center transition-colors cursor-pointer',
-                                    compact 
-                                        ? 'gap-2 px-2 py-1.5 rounded-md border bg-card hover:bg-accent/20' 
+                                    compact
+                                        ? 'gap-2 px-2 py-1.5 rounded-md border bg-card hover:bg-accent/20'
                                         : 'flex-col justify-center p-3 rounded-lg border-2 bg-card hover:bg-accent/20 min-h-[120px]',
-                                    !compact && section.key === 'sources' ? 'border-l-green-500' : '',
-                                    !compact && section.key === 'targets' ? 'border-l-orange-500' : '',
-                                    !compact && section.key === 'tools' ? 'border-l-purple-500' : '',
+                                    !compact && showOnlySources ? 'w-[150px]' : '',
+                                    !compact ? ACCENT_BORDER_CLASS[accentFor(section.key)] : '',
                                     asset.deleted ? 'opacity-60 border-dashed border-muted-foreground/30' : ''
                                 ]"
                             >
