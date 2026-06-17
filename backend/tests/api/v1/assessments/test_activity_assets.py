@@ -68,7 +68,7 @@ def test_activity_fixture(
         provider="Test Provider",
         created_by=test_admin_user.id,
         priority="Low",
-        state="Pending",
+        state="Waiting Blue",
         visible=True,
         activity_rationale="",
         activity_actions="",

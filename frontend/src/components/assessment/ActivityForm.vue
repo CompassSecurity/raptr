@@ -727,6 +727,7 @@ defineExpose({ hasUnsavedChanges });
             :activity-id="formData.id ?? ''"
             :refresh-key="attachmentRefreshKey"
             :readonly="attachmentsReadonly"
+            :blue-editable="blueCanEdit"
         />
         </div>
     </div>

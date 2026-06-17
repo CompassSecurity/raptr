@@ -191,7 +191,7 @@ def assign_update_assets_to_activity(
     role: ActivityAssetRole,
     asset_update: ActivityAssetUpdate,
     assessment_id: uuid.UUID,
-    user: User = Depends(require_assessment_role(AclRole.BLUE)),
+    user: User = Depends(validate_activity_update_permission),
     session: Session = Depends(get_session),
 ):
     """
@@ -291,7 +291,7 @@ def upload_file(
     activity_id: uuid.UUID,
     assessment_id: uuid.UUID,
     file: UploadFile = File(...),
-    user: User = Depends(require_assessment_role(AclRole.BLUE)),
+    user: User = Depends(validate_activity_update_permission),
     session: Session = Depends(get_session),
 ):
     """
@@ -305,7 +305,7 @@ def delete_activity_file(
     file_id: uuid.UUID,
     activity_id: uuid.UUID,
     assessment_id: uuid.UUID,
-    user: User = Depends(require_assessment_role(AclRole.BLUE)),
+    user: User = Depends(validate_activity_update_permission),
     session: Session = Depends(get_session),
 ):
     """
