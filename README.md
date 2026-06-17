@@ -34,3 +34,9 @@ A sandbox playground is available at [https://sandbox.raptr.app/](https://sandbo
 - `templates/`: Example templates for RAPTR
 - `Dockerfile`: Configuration for building the RAPTR single-container deployment
 - `docker-compose.yml`: Example compose file for local deployment
+<br>
+<br>
+<br>
+<div align="center">
+  <img width="500" height="500" alt="raptr" src="https://github.com/user-attachments/assets/56a23fa3-81e2-4852-8107-688297a23b26" />
+</div>
