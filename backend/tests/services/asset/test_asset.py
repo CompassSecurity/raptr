@@ -3,7 +3,7 @@ import uuid
 import pytest
 from fastapi import HTTPException
 
-from app.enums.enums import ActivityAssetRole
+from app.enums.enums import AclRole, ActivityAssetRole
 from app.models.activity import Activity
 from app.models.assessment import Assessment
 from app.schemas.asset import AssetBase, AssetFilter
@@ -58,6 +58,42 @@ def test_get_assets(session, test_assessment, test_admin_user):
         test_assessment.id, test_admin_user, session, AssetFilter()
     )
     assert assets.total == 2
+
+
+def test_get_assets_deleted_visibility_by_role(
+    session, test_assessment, test_admin_user
+):
+    create_asset_service(
+        AssetBase(name="Active", icon="server", properties={}),
+        test_assessment.id,
+        test_admin_user,
+        session,
+    )
+    deleted = create_asset_service(
+        AssetBase(name="Deleted", icon="server", properties={}),
+        test_assessment.id,
+        test_admin_user,
+        session,
+    )
+    toggle_asset_delete_service(deleted.id, test_assessment.id, test_admin_user, session)
+
+    test_admin_user.assessment_acl_role = AclRole.BLUE
+    blue_view = get_assets_service(
+        test_assessment.id, test_admin_user, session, AssetFilter()
+    )
+    assert blue_view.total == 2
+
+    test_admin_user.assessment_acl_role = AclRole.RED
+    red_view = get_assets_service(
+        test_assessment.id, test_admin_user, session, AssetFilter()
+    )
+    assert red_view.total == 2
+
+    test_admin_user.assessment_acl_role = AclRole.SPECTATOR
+    spectator_view = get_assets_service(
+        test_assessment.id, test_admin_user, session, AssetFilter()
+    )
+    assert spectator_view.total == 1
 
 
 def test_get_assets_with_filter(session, test_assessment, test_admin_user):
