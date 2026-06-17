@@ -83,7 +83,7 @@ The user management page `/admin/users` displays all users in a filterable table
     [![Create a new user](../assets/admin-user-create.gif "Create a new user")](../assets/admin-user-create.gif){:target="_blank"}
 
 ??? info "User Invitation"
-    RAPTR does not send any E-Mails. After user creation, share the credentials with the user. They can change their password from the [profile page](user_preferences.md#password).
+    RAPTR does not send any E-Mails. After user creation, share the credentials with the user. They can change their password from the [profile page](user_preferences_and_ui.md#password).
 
 ??? Bug "Initial Password"
     At its current stage, it is not possible to set or mark a user's password so that it must be changed upon first login.

@@ -84,7 +84,7 @@ The sidebar offers a quick overview and access to all activities and activity gr
 
 The activity header shows the name and current state. Admins and Red Team members can change the state from the header. Blue Team members can only toggle between **Waiting Blue** and **Waiting Red** (when the activity is in one of those states).
 
-Admins and Red Teamers can also access the :lucide-book-open: [Knowledge Base](knowledge_base.md) and :lucide-history: [History](activities.md#history) sections from the header.
+Admins and Red Teamers can also access the :lucide-book-open: [Knowledge Base](knowledge_base.md) and :lucide-history: [History](activities.md#activity-history) sections from the header.
 
 #### General Information
 
@@ -107,7 +107,7 @@ This General section has three main purposes:
 - **Requirements**: Explain environmental prerequisites that must be in place before execution, see [overcoming requirements hell](getting_started.md#overcoming-requirements-hell). Supports [Markdown](#markdown-fields)
 
 ??? bug "Strict MITRE mapping"
-    Currently the MITRE mapping is not strictly enforced in the backend. It is possible to create an activity with a MITRE mapping that is not valid. This will lead to the activity not being displayed in the [MITRE ATT&CK Heatmap](evaluation.md#mitre-attack-heatmap) or in the [MITRE ATT&CK Navigator](evaluation.md#export) export. The frontend enforces a strict mapping by only allowing or filtering techniques based on the chosen tactics, and vice versa.
+    Currently the MITRE mapping is not strictly enforced in the backend. It is possible to create an activity with a MITRE mapping that is not valid. This will lead to the activity not being displayed in the [MITRE ATT&CK Heatmap](evaluation.md#mitre-attck-heatmap) or in the [MITRE ATT&CK Navigator](evaluation.md#mitre-navigator-layer) export. The frontend enforces a strict mapping by only allowing or filtering techniques based on the chosen tactics, and vice versa.
 
 ##### Expected Outcomes
 
@@ -122,7 +122,7 @@ This section is used to set the expected outcomes of the activity. The settings 
 !!! info "Alert and Stakeholder Notification terminology"
     The term `Alert` is used in RAPTR for any kind of automatic generated information that the Blue Team receives from the security stack. This can be a SIEM alert, an EDR alert, a firewall alert, etc.
 
-    `Stakeholder Notification` refers to any kind of notification sent to stakeholders. This term originates from the fact that we often test external MSSPs/SOCs on behalf of the customer, without informing the Blue Team about the test. As well as the SOC's detection capabilities, the customer is also interested in testing whether the SOC adheres to defined processes and procedures. For example, SLAs and escalation through defined channels. Using the [evaluation templates](templates.md#evaluation-templates), you can define any metric for stakeholder notifications. E.g. quality and correctness of the notification etc. 
+    `Stakeholder Notification` refers to any kind of notification sent to stakeholders. This term originates from the fact that we often test external MSSPs/SOCs on behalf of the customer, without informing the Blue Team about the test. As well as the SOC's detection capabilities, the customer is also interested in testing whether the SOC adheres to defined processes and procedures. For example, SLAs and escalation through defined channels. Using the [evaluation templates](templates.md#evaluation-template), you can define any metric for stakeholder notifications. E.g. quality and correctness of the notification etc. 
 
 ??? bug "Only one expected severity"
     Currently there is only one expected severity for alerts and stakeholder notification. The assumption is that both notifications should have the same severity level.
@@ -203,7 +203,7 @@ The static evaluation section shows the following data:
 
 ##### Dynamic Evaluation Questions
 
-You can either add new [evaluation template](evaluation#evaluation-templates) questions here or if you added them to the [default evaluation questions](assessments.md#lucide-settings-2-default-evaluation-templates) on the assessment level they will appear here as well.
+You can either add new [evaluation template](templates.md#evaluation-template) questions here or if you added them to the [default evaluation questions](assessments.md#default-evaluation-templates) on the assessment level they will appear here as well.
 The dynamic evaluation questions can be used for any kind of evaluation that is not covered by the static evalaution questions.
 
 ??? abstract "Working with dynamic evaluation questions"
@@ -237,7 +237,7 @@ All free text fields in the activity form support Markdown formating. Furthermor
 
 You can change between UTC and your local time from the [toolbar](user_preferences_and_ui.md#toggle-utc-and-local-time).
 
-The format used to display time (`24h` or `AM/PM`) and date format (e.g. `MM/DD/YYYY` or `DD/MM/YYYY`) can be configured in your [profile settings](user_preferences.md#timezone-and-date-format).
+The format used to display time (`24h` or `AM/PM`) and date format (e.g. `MM/DD/YYYY` or `DD/MM/YYYY`) can be configured in your [profile settings](user_preferences_and_ui.md#timezone-and-date-format).
 
 Use the :lucide-calendar: calendar or the **now** button to set the date and time. You can also type a date and time directely into the field. RAPTR will do its best to parse the date and time you enter.
 
