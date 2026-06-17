@@ -75,7 +75,9 @@ def test_get_assets_deleted_visibility_by_role(
         test_admin_user,
         session,
     )
-    toggle_asset_delete_service(deleted.id, test_assessment.id, test_admin_user, session)
+    toggle_asset_delete_service(
+        deleted.id, test_assessment.id, test_admin_user, session
+    )
 
     test_admin_user.assessment_acl_role = AclRole.BLUE
     blue_view = get_assets_service(
