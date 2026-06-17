@@ -481,7 +481,6 @@ const handleGroupToggleVisibility = async (group: ActivityGroupRead) => {
       @export="handleExport"
       @statistics="handleStatistics"
       @manage-assets="handleManageAssets"
-      @manageAssets="handleManageAssets"
       @manage-order="handleManageOrder"
       @manage-acl="handleManageACL"
       @manage-templates="handleManageTemplates"
