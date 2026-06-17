@@ -1,5 +1,36 @@
 # Release Notes
 
+## 0.1.0-beta.4 (2026-06-17)
+
+### New Features
+
+- Redesigned asset display in the activity Detection section for a consistent look with the activity Details ([pull 26](https://github.com/CompassSecurity/raptr/pull/26))
+
+### Fixes
+
+- Blue Team members can now view and restore soft-deleted assets ([pull 26](https://github.com/CompassSecurity/raptr/pull/26))
+- Sandboxed the Jinja2 environment used to render report templates to prevent server-side template injection (SSTI), with clearer error handling and logging for rejected templates ([pull 22](https://github.com/CompassSecurity/raptr/pull/22))
+- Sanitized file names during assessment import and export to prevent path traversal (zip-slip) and `Content-Disposition` header injection ([pull 23](https://github.com/CompassSecurity/raptr/pull/23))
+- The activity `state` is now required on update, so a partial request can no longer silently reset the workflow state ([pull 24](https://github.com/CompassSecurity/raptr/pull/24))
+- Restricted Blue Team file upload and deletion behind the activity update permission (activity must be visible, not deleted, and in a Waiting state) ([pull 25](https://github.com/CompassSecurity/raptr/pull/25))
+- Hardened file upload against polyglot files by normalizing the stored file extension to the detected content type ([pull 27](https://github.com/CompassSecurity/raptr/pull/27))
+- Anaglyph mode improvements ([b7712db](https://github.com/CompassSecurity/raptr/commit/b7712db))
+- Removed a duplicate event binding surfaced by the updated Vue tooling ([pull 28](https://github.com/CompassSecurity/raptr/pull/28))
+- Fixed broken documentation links and anchors ([d279562](https://github.com/CompassSecurity/raptr/commit/d279562))
+
+### Chore
+
+- Updated frontend and backend dependencies ([pull 28](https://github.com/CompassSecurity/raptr/pull/28))
+  - Biome → 2.5.0
+  - vue → 3.5.38, vue-tsc → 3.3.5
+  - tailwindcss / @tailwindcss/vite → 4.3.1
+  - reka-ui → 2.9.10, @lucide/vue → 1.20.0
+  - dompurify → 3.4.10, marked → 18.0.5, axios → 1.18.0
+  - @hey-api/openapi-ts → 0.98.2, @types/node → 25.9.3
+- Earlier dependency and Biome version bumps ([6c2e2e7](https://github.com/CompassSecurity/raptr/commit/6c2e2e7), [3b08058](https://github.com/CompassSecurity/raptr/commit/3b08058))
+- Scoped the release and pull-request CI workflows with `paths-ignore` and removed the unused sandbox workflow ([8206d27](https://github.com/CompassSecurity/raptr/commit/8206d27), [00ae160](https://github.com/CompassSecurity/raptr/commit/00ae160))
+
+
 ## 0.1.0-beta.3 (2026-05-11)
 
 ### New Features
