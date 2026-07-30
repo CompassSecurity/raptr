@@ -45,7 +45,7 @@
         "@biomejs/biome": "^2.5.6",
         "@hey-api/openapi-ts": "^0.98.2",
         "@types/marked": "^6.0.0",
-        "@types/node": "^25.9.5",
+        "@types/node": "^26.1.2",
         "@types/qrcode": "^1.5.6",
         "@vitejs/plugin-vue": "^6.0.8",
         "@vue/tsconfig": "^0.9.1",
