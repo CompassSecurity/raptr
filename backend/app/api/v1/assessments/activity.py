@@ -15,7 +15,7 @@ from app.db.session import get_session
 from app.enums.enums import AclRole, ActivityAssetRole
 from app.models.user import User
 from app.schemas.activity import (
-    ActivityBase,
+    ActivityCreate,
     ActivityFilter,
     ActivityRead,
     ActivityUpdate,
@@ -91,7 +91,7 @@ def get_activity_by_id(
 
 @router.post("/", response_model=ActivityRead)
 def create_activity(
-    activity: ActivityBase,
+    activity: ActivityCreate,
     assessment_id: uuid.UUID,
     user: User = Depends(require_assessment_role(AclRole.RED)),
     session: Session = Depends(get_session),

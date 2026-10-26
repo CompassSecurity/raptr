@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.models.activity_group import ActivityGroup
 from app.models.assessment import Assessment
 from app.models.user import User
-from app.schemas.activity import ActivityBase
+from app.schemas.activity import ActivityCreate
 from app.services.activity.activity import create_activity_service
 from app.services.activity_group.activity_group import (
     assign_activity_to_activity_group_service,
@@ -86,7 +86,7 @@ def test_activity_ordering_service(session: Session, test_regular_user: User):
     act1_data = activity_data_base.copy()
     act1_data["name"] = "Activity A"
     act1 = create_activity_service(
-        ActivityBase(**act1_data), assessment.id, test_regular_user, session
+        ActivityCreate(**act1_data), assessment.id, test_regular_user, session
     )
     # Assign to group
     act1 = assign_activity_to_activity_group_service(
@@ -99,7 +99,7 @@ def test_activity_ordering_service(session: Session, test_regular_user: User):
     act2_data = activity_data_base.copy()
     act2_data["name"] = "Activity B"
     act2 = create_activity_service(
-        ActivityBase(**act2_data), assessment.id, test_regular_user, session
+        ActivityCreate(**act2_data), assessment.id, test_regular_user, session
     )
     # Assign to group
     act2 = assign_activity_to_activity_group_service(
@@ -111,7 +111,7 @@ def test_activity_ordering_service(session: Session, test_regular_user: User):
     act3_data = activity_data_base.copy()
     act3_data["name"] = "Activity C"
     act3 = create_activity_service(
-        ActivityBase(**act3_data), assessment.id, test_regular_user, session
+        ActivityCreate(**act3_data), assessment.id, test_regular_user, session
     )
     # Assign to group
     act3 = assign_activity_to_activity_group_service(

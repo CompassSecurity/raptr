@@ -468,3 +468,33 @@ def test_visible_endpoint_toggle_and_explicit_state(
     )
     assert response.status_code == 200
     assert current_visible() is False
+
+
+def test_create_activity_in_group(
+    client: TestClient,
+    test_assessment: Assessment,
+    test_acl_red: Acl,
+    auth_headers_regular: dict[str, str],
+):
+    """Test creating an activity directly in a chosen activity group"""
+    base_url = f"/api/v1/assessments/{test_assessment.id}"
+    response = client.post(
+        f"{base_url}/activity_group/",
+        json={"name": "Target Group"},
+        headers=auth_headers_regular,
+    )
+    assert response.status_code == 200
+    group_id = response.json()["id"]
+
+    response = client.post(
+        f"{base_url}/activity/",
+        json={
+            "name": "Grouped Activity",
+            "mitre_tactic": "Execution",
+            "mitre_technique": "T1204.001",
+            "activity_group_id": group_id,
+        },
+        headers=auth_headers_regular,
+    )
+    assert response.status_code == 200
+    assert response.json()["activity_group_id"] == group_id

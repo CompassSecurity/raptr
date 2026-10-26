@@ -5,7 +5,8 @@ from fastapi import HTTPException
 
 from app.enums.enums import ActivityState
 from app.models.assessment import Assessment
-from app.schemas.activity import ActivityBase, ActivityFilter, ActivityUpdate
+from app.schemas.activity import ActivityCreate, ActivityFilter, ActivityUpdate
+from app.schemas.activity_group import ActivityGroupBase
 from app.services.activity.activity import (
     create_activity_service,
     get_activity_by_id_service,
@@ -13,6 +14,10 @@ from app.services.activity.activity import (
     toggle_delete_activity_service,
     toggle_visible_activity_service,
     update_activity_service,
+)
+from app.services.activity_group.activity_group import (
+    create_activity_group_service,
+    get_or_create_default_group,
 )
 
 
@@ -31,7 +36,7 @@ def test_assessment(session, test_admin_user):
 
 
 def test_create_activity(session, test_assessment, test_admin_user):
-    activity_data = ActivityBase(
+    activity_data = ActivityCreate(
         name="Test Activity",
         mitre_tactic="Initial Access",
         mitre_technique="T1190",
@@ -46,9 +51,83 @@ def test_create_activity(session, test_assessment, test_admin_user):
     assert activity.assessment_id == test_assessment.id
 
 
+def test_create_activity_in_group(session, test_assessment, test_admin_user):
+    group = create_activity_group_service(
+        ActivityGroupBase(name="Target Group"),
+        test_assessment.id,
+        test_admin_user,
+        session,
+    )
+    data = {"mitre_tactic": "T", "mitre_technique": "T1", "activity_group_id": group.id}
+
+    first = create_activity_service(
+        ActivityCreate(name="First", **data),
+        test_assessment.id,
+        test_admin_user,
+        session,
+    )
+    second = create_activity_service(
+        ActivityCreate(name="Second", **data),
+        test_assessment.id,
+        test_admin_user,
+        session,
+    )
+
+    assert first.activity_group_id == group.id
+    assert second.activity_group_id == group.id
+    # New activities go to the end of the group
+    assert second.activity_position > first.activity_position
+
+
+def test_create_activity_without_group_uses_default(
+    session, test_assessment, test_admin_user
+):
+    activity = create_activity_service(
+        ActivityCreate(name="Activity", mitre_tactic="T", mitre_technique="T1"),
+        test_assessment.id,
+        test_admin_user,
+        session,
+    )
+    default_group = get_or_create_default_group(test_assessment.id, session)
+    assert activity.activity_group_id == default_group.id
+
+
+def test_create_activity_in_invalid_group(session, test_assessment, test_admin_user):
+    other_assessment = Assessment(
+        name="Other Assessment",
+        description="Description",
+        assessment_type="PurpleTeam",
+        created_by=test_admin_user.id,
+    )
+    session.add(other_assessment)
+    session.commit()
+    foreign_group = create_activity_group_service(
+        ActivityGroupBase(name="Foreign Group"),
+        other_assessment.id,
+        test_admin_user,
+        session,
+    )
+
+    # Unknown group and group of another assessment
+    for group_id in (uuid.uuid4(), foreign_group.id):
+        with pytest.raises(HTTPException) as exc:
+            create_activity_service(
+                ActivityCreate(
+                    name="Activity",
+                    mitre_tactic="T",
+                    mitre_technique="T1",
+                    activity_group_id=group_id,
+                ),
+                test_assessment.id,
+                test_admin_user,
+                session,
+            )
+        assert exc.value.status_code == 404
+
+
 def test_get_all_activities(session, test_assessment, test_admin_user):
-    a1 = ActivityBase(name="Activity 1", mitre_tactic="T", mitre_technique="T1")
-    a2 = ActivityBase(name="Activity 2", mitre_tactic="T", mitre_technique="T2")
+    a1 = ActivityCreate(name="Activity 1", mitre_tactic="T", mitre_technique="T1")
+    a2 = ActivityCreate(name="Activity 2", mitre_tactic="T", mitre_technique="T2")
 
     create_activity_service(a1, test_assessment.id, test_admin_user, session)
     create_activity_service(a2, test_assessment.id, test_admin_user, session)
@@ -60,8 +139,8 @@ def test_get_all_activities(session, test_assessment, test_admin_user):
 
 
 def test_get_all_activities_with_filter(session, test_assessment, test_admin_user):
-    a1 = ActivityBase(name="Login Bruteforce", mitre_tactic="T", mitre_technique="T1")
-    a2 = ActivityBase(name="SQL Injection", mitre_tactic="T", mitre_technique="T2")
+    a1 = ActivityCreate(name="Login Bruteforce", mitre_tactic="T", mitre_technique="T1")
+    a2 = ActivityCreate(name="SQL Injection", mitre_tactic="T", mitre_technique="T2")
 
     create_activity_service(a1, test_assessment.id, test_admin_user, session)
     create_activity_service(a2, test_assessment.id, test_admin_user, session)
@@ -74,7 +153,7 @@ def test_get_all_activities_with_filter(session, test_assessment, test_admin_use
 
 
 def test_get_activity_by_id(session, test_assessment, test_admin_user):
-    activity_data = ActivityBase(
+    activity_data = ActivityCreate(
         name="Test Activity", mitre_tactic="T", mitre_technique="T1"
     )
     created = create_activity_service(
@@ -97,7 +176,7 @@ def test_get_activity_by_id_not_found(session, test_assessment, test_admin_user)
 
 
 def test_update_activity(session, test_assessment, test_admin_user):
-    activity_data = ActivityBase(
+    activity_data = ActivityCreate(
         name="Original", mitre_tactic="T", mitre_technique="T1"
     )
     created = create_activity_service(
@@ -121,7 +200,7 @@ def test_update_activity(session, test_assessment, test_admin_user):
 
 
 def test_toggle_delete_activity(session, test_assessment, test_admin_user):
-    activity_data = ActivityBase(
+    activity_data = ActivityCreate(
         name="Test Activity", mitre_tactic="T", mitre_technique="T1"
     )
     created = create_activity_service(
@@ -150,7 +229,7 @@ def test_toggle_delete_activity(session, test_assessment, test_admin_user):
 
 
 def test_toggle_visible_activity(session, test_assessment, test_admin_user):
-    activity_data = ActivityBase(
+    activity_data = ActivityCreate(
         name="Test Activity", mitre_tactic="T", mitre_technique="T1"
     )
     created = create_activity_service(
@@ -179,7 +258,7 @@ def test_toggle_visible_activity(session, test_assessment, test_admin_user):
 
 
 def test_set_visible_activity_explicit(session, test_assessment, test_admin_user):
-    activity_data = ActivityBase(
+    activity_data = ActivityCreate(
         name="Test Activity", mitre_tactic="T", mitre_technique="T1"
     )
     created = create_activity_service(
