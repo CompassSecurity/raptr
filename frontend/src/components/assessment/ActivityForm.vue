@@ -532,7 +532,7 @@ defineExpose({ hasUnsavedChanges });
 <template>
     <div class="w-full px-4 mx-auto space-y-8 pb-24">
         <!-- Sticky Header -->
-        <div class="sticky top-0 z-10 bg-background pb-4 border-b">
+        <div class="sticky top-0 z-20 bg-background pb-4 border-b">
             <div class="flex justify-between items-start pt-2">
                 <div>
                     <h2 class="text-3xl font-bold tracking-tight">{{ formData.name || 'Activity Details' }}</h2>

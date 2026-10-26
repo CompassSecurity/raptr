@@ -17,7 +17,8 @@ function select(value: string) {
 </script>
 
 <template>
-    <div class="inline-flex rounded-md" :class="{ 'pointer-events-none': disabled }" role="group">
+    <!-- isolate keeps the buttons' focus:z-10 from stacking above sticky headers -->
+    <div class="inline-flex isolate rounded-md" :class="{ 'pointer-events-none': disabled }" role="group">
         <Button
             type="button"
             size="sm"
