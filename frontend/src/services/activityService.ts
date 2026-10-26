@@ -1,11 +1,12 @@
 import type {
-    ActivityBase,
+    ActivityCreate,
     ActivityGroupBase,
     ActivityGroupRead,
     ActivityGroupUpdate,
     ActivityHistoryRead,
     ActivityRead,
     ActivityUpdate,
+    ActivityVisibleUpdate,
     DynamicEvaluationQuestionAssign,
     MessageResponse,
     PaginatedResponse,
@@ -13,8 +14,8 @@ import type {
 import { api } from './api';
 
 export type ActivityCreateInput = Pick<
-    ActivityBase,
-    'name' | 'mitre_tactic' | 'mitre_technique'
+    ActivityCreate,
+    'name' | 'mitre_tactic' | 'mitre_technique' | 'activity_group_id'
 >;
 
 export const activityService = {
@@ -87,6 +88,23 @@ export const activityService = {
     ): Promise<void> {
         await api.put(
             `/assessments/${assessmentId}/activity/${activityId}/visible`,
+        );
+    },
+
+    // Sets an explicit state (idempotent), unlike toggleVisibleActivity
+    async bulkSetVisible(
+        assessmentId: string,
+        activityIds: string[],
+        visible: boolean,
+    ): Promise<void> {
+        const data: ActivityVisibleUpdate = { visible };
+        await Promise.all(
+            activityIds.map((id) =>
+                api.put(
+                    `/assessments/${assessmentId}/activity/${id}/visible`,
+                    data,
+                ),
+            ),
         );
     },
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BookOpen, ChevronDown, Copy, History } from '@lucide/vue';
+import { BookOpen, Copy, History } from '@lucide/vue';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import ActivityAssetsManager from '@/components/assessment/ActivityAssetsManager.vue';
@@ -12,12 +12,6 @@ import ConflictResolutionDialog from '@/components/assessment/ConflictResolution
 import KnowledgeBaseModal from '@/components/assessment/KnowledgeBaseModal.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from '@/components/ui/collapsible';
 import DateTimePicker from '@/components/ui/DateTimePicker.vue';
 import { Label } from '@/components/ui/label';
 import MarkdownEditor from '@/components/ui/MarkdownEditor.vue';
@@ -28,6 +22,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
     Tooltip,
     TooltipContent,
@@ -126,6 +121,58 @@ const showKBModal = ref(false);
 const showHistoryModal = ref(false);
 const attachmentRefreshKey = ref(0);
 
+// Selected section tab; every newly opened activity starts on Activity Details
+const activeSectionTab = ref('details');
+watch(
+    () => props.activity?.id,
+    () => {
+        activeSectionTab.value = 'details';
+    },
+);
+
+// Browser-style section tabs: the active tab joins the page below and shows its section colour on top
+const SECTION_TABS = [
+    {
+        value: 'details',
+        label: 'Activity Details',
+        dot: 'bg-red-500',
+        accent: 'data-[state=active]:border-t-red-500 dark:data-[state=active]:border-t-red-500',
+    },
+    {
+        value: 'detection',
+        label: 'Activity Detection',
+        dot: 'bg-blue-500',
+        accent: 'data-[state=active]:border-t-blue-500 dark:data-[state=active]:border-t-blue-500',
+    },
+    {
+        value: 'evaluation',
+        label: 'Evaluation',
+        dot: 'bg-purple-500',
+        accent: 'data-[state=active]:border-t-purple-500 dark:data-[state=active]:border-t-purple-500',
+    },
+    {
+        value: 'attachments',
+        label: 'Attachments',
+        dot: 'bg-muted-foreground/50',
+        accent: 'data-[state=active]:border-t-muted-foreground dark:data-[state=active]:border-t-muted-foreground',
+    },
+] as const;
+
+const SECTION_TAB_CLASS = [
+    '-mb-px h-12 min-w-[200px] flex-none justify-start gap-2.5 px-5 text-base',
+    'rounded-t-lg rounded-b-none border border-t-2 border-transparent',
+    'text-muted-foreground dark:text-muted-foreground hover:bg-muted/50 hover:text-foreground',
+    'data-[state=active]:relative data-[state=active]:z-10 data-[state=active]:border-border data-[state=active]:border-b-card data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-none',
+    'dark:data-[state=active]:border-border dark:data-[state=active]:border-b-card dark:data-[state=active]:bg-card',
+].join(' ');
+
+// Tab page: same container as the General Information card; the active tab sits on its top border
+const SECTION_PANEL_CLASS =
+    'bg-card text-card-foreground rounded-xl rounded-tl-none border p-6 shadow-sm';
+
+// Shown in the Attachments tab label
+const attachmentCount = ref(0);
+
 // Local state for the form
 const formData = ref<Partial<ActivityRead>>({});
 const originalData = ref<Partial<ActivityRead>>({}); // Snapshot for 3-way merge
@@ -172,7 +219,7 @@ const conflictDisplayLookups = computed(() => {
 // Initialize form data
 watch(
     () => props.activity,
-    (newVal) => {
+    async (newVal) => {
         if (!newVal) return;
 
         isProgrammaticUpdate.value = true;
@@ -214,9 +261,8 @@ watch(
 
             originalData.value = JSON.parse(JSON.stringify(newVal));
 
-            nextTick(() => {
-                isProgrammaticUpdate.value = false;
-            });
+            await nextTick();
+            isProgrammaticUpdate.value = false;
             return;
         }
 
@@ -240,11 +286,10 @@ watch(
             formData.value.stakeholder_notification_created ?? false;
 
         // Wait for child v-model normalizations to settle before clearing the flag.
-        nextTick(() => {
-            originalData.value = JSON.parse(JSON.stringify(formData.value));
-            userDirty.value = false;
-            isProgrammaticUpdate.value = false;
-        });
+        await nextTick();
+        originalData.value = JSON.parse(JSON.stringify(formData.value));
+        userDirty.value = false;
+        isProgrammaticUpdate.value = false;
     },
     { immediate: true, deep: true },
 );
@@ -534,7 +579,7 @@ defineExpose({ hasUnsavedChanges });
 <template>
     <div class="w-full px-4 mx-auto space-y-8 pb-24">
         <!-- Sticky Header -->
-        <div class="sticky top-0 z-10 bg-background pb-4 border-b">
+        <div class="sticky top-0 z-20 bg-background pb-4 border-b">
             <div class="flex justify-between items-start pt-2">
                 <div>
                     <h2 class="text-3xl font-bold tracking-tight">{{ formData.name || 'Activity Details' }}</h2>
@@ -617,89 +662,94 @@ defineExpose({ hasUnsavedChanges });
             @tag-created="handleTagCreated"
         />
 
+        <!-- Sections as tabs; hidden tabs stay mounted so the dirty tracking and editor state are kept -->
+        <Tabs v-model="activeSectionTab" :unmount-on-hide="false" class="gap-0">
+        <TabsList class="h-auto w-full items-end justify-start gap-1 rounded-none bg-transparent p-0">
+            <TabsTrigger
+                v-for="tab in SECTION_TABS"
+                :key="tab.value"
+                :value="tab.value"
+                :class="[SECTION_TAB_CLASS, tab.accent]"
+            >
+                <span :class="['h-2.5 w-2.5 rounded-full', tab.dot]" />
+                {{ tab.label }}
+                <span
+                    v-if="tab.value === 'attachments' && attachmentCount > 0"
+                    class="text-xs bg-muted px-2 py-0.5 rounded-full"
+                >{{ attachmentCount }}</span>
+            </TabsTrigger>
+        </TabsList>
+
         <!-- Red Team / Activity Details -->
-        <Collapsible defaultOpen>
-            <Card class="border-l-4 border-l-red-500 shadow-sm">
-                <CollapsibleTrigger as-child>
-                    <CardHeader class="cursor-pointer hover:bg-muted/50 transition-colors">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <CardTitle class="text-lg text-red-700 dark:text-red-400">Activity Details</CardTitle>
-                            </div>
-                            <ChevronDown class="h-5 w-5 text-muted-foreground transition-transform duration-200 [[data-state=open]_&]:rotate-180" />
-                        </div>
-                    </CardHeader>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                    <CardContent class="space-y-6">
-                    <ActivityAssetsManager
-                        :sources="formData.sources ?? []"
-                        :targets="formData.targets ?? []"
-                        :tools="formData.tools ?? []"
-                        @update:sources="formData.sources = $event"
-                        @update:targets="formData.targets = $event"
-                        @update:tools="formData.tools = $event"
-                        :assessment-id="assessmentId"
-                        :available-assets="availableAssets"
-                        :readonly="redTeamReadonly"
-                        @assets-changed="handleAssetsChanged"
-                    />
+        <TabsContent value="details" :class="SECTION_PANEL_CLASS">
+        <div class="space-y-6">
+            <ActivityAssetsManager
+                :sources="formData.sources ?? []"
+                :targets="formData.targets ?? []"
+                :tools="formData.tools ?? []"
+                @update:sources="formData.sources = $event"
+                @update:targets="formData.targets = $event"
+                @update:tools="formData.tools = $event"
+                :assessment-id="assessmentId"
+                :available-assets="availableAssets"
+                :readonly="redTeamReadonly"
+                @assets-changed="handleAssetsChanged"
+            />
 
-                    <div class="border-t pt-6"></div>
+            <div class="border-t pt-6"></div>
 
-                    <div class="space-y-3">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="space-y-2">
-                                <Label class="text-sm font-medium">Start Time</Label>
-                                <template v-if="redTeamReadonly">
-                                    <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.activity_start_time) }}</div>
-                                </template>
-                                <template v-else>
-                                    <DateTimePicker
-                                        :model-value="formData.activity_start_time ?? undefined"
-                                        @update:model-value="formData.activity_start_time = $event ?? null"
-                                    />
-                                </template>
-                            </div>
-                            <div class="space-y-2">
-                                <Label class="text-sm font-medium">End Time</Label>
-                                <template v-if="redTeamReadonly">
-                                    <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.activity_end_time) }}</div>
-                                </template>
-                                <template v-else>
-                                    <DateTimePicker
-                                        :model-value="formData.activity_end_time ?? undefined"
-                                        @update:model-value="formData.activity_end_time = $event ?? null"
-                                    />
-                                </template>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border-t pt-6"></div>
+            <div class="space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-2">
-                        <MarkdownEditor :on-upload="uploadImageForMarkdown" :resolve-image-url="resolveImageUrl"
-                            :model-value="formData.activity_actions ?? ''"
-                            @update:model-value="formData.activity_actions = $event"
-                            label="Activity Actions"
-                            placeholder="Describe the actions taken during this activity"
-                            :disabled="redTeamReadonly"
-                        />
+                        <Label class="text-sm font-medium">Start Time</Label>
+                        <template v-if="redTeamReadonly">
+                            <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.activity_start_time) }}</div>
+                        </template>
+                        <template v-else>
+                            <DateTimePicker
+                                :model-value="formData.activity_start_time ?? undefined"
+                                @update:model-value="formData.activity_start_time = $event ?? null"
+                            />
+                        </template>
                     </div>
                     <div class="space-y-2">
-                        <MarkdownEditor :on-upload="uploadImageForMarkdown" :resolve-image-url="resolveImageUrl"
-                            :model-value="formData.activity_notes ?? ''"
-                            @update:model-value="formData.activity_notes = $event"
-                            label="Activity Notes"
-                            placeholder="Additional notes or observations"
-                            :disabled="redTeamReadonly"
-                        />
+                        <Label class="text-sm font-medium">End Time</Label>
+                        <template v-if="redTeamReadonly">
+                            <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.activity_end_time) }}</div>
+                        </template>
+                        <template v-else>
+                            <DateTimePicker
+                                :model-value="formData.activity_end_time ?? undefined"
+                                @update:model-value="formData.activity_end_time = $event ?? null"
+                            />
+                        </template>
                     </div>
-                    </CardContent>
-                </CollapsibleContent>
-            </Card>
-        </Collapsible>
+                </div>
+            </div>
+            <div class="border-t pt-6"></div>
+            <div class="space-y-2">
+                <MarkdownEditor :on-upload="uploadImageForMarkdown" :resolve-image-url="resolveImageUrl"
+                    :model-value="formData.activity_actions ?? ''"
+                    @update:model-value="formData.activity_actions = $event"
+                    label="Activity Actions"
+                    placeholder="Describe the actions taken during this activity"
+                    :disabled="redTeamReadonly"
+                />
+            </div>
+            <div class="space-y-2">
+                <MarkdownEditor :on-upload="uploadImageForMarkdown" :resolve-image-url="resolveImageUrl"
+                    :model-value="formData.activity_notes ?? ''"
+                    @update:model-value="formData.activity_notes = $event"
+                    label="Activity Notes"
+                    placeholder="Additional notes or observations"
+                    :disabled="redTeamReadonly"
+                />
+            </div>
+        </div>
+        </TabsContent>
 
         <!-- Blue Team Detection -->
+        <TabsContent value="detection" :class="SECTION_PANEL_CLASS">
         <ActivityDetectionSection
             v-model:form-data="formData"
             :assessment-id="assessmentId"
@@ -709,8 +759,10 @@ defineExpose({ hasUnsavedChanges });
             :available-assets="availableAssets"
             @assets-changed="handleAssetsChanged"
         />
+        </TabsContent>
 
         <!-- Evaluation & Metrics -->
+        <TabsContent value="evaluation" :class="SECTION_PANEL_CLASS">
         <ActivityEvaluation
             v-model:form-data="formData"
             :assessment-id="assessmentId"
@@ -720,15 +772,20 @@ defineExpose({ hasUnsavedChanges });
             :readonly="evaluationReadonly"
             @questions-updated="handleDynamicQuestionsUpdated"
         />
+        </TabsContent>
 
         <!-- Attachments -->
+        <TabsContent value="attachments" :class="SECTION_PANEL_CLASS">
         <ActivityAttachments
+            @count-changed="attachmentCount = $event"
             :assessment-id="assessmentId"
             :activity-id="formData.id ?? ''"
             :refresh-key="attachmentRefreshKey"
             :readonly="attachmentsReadonly"
             :blue-editable="blueCanEdit"
         />
+        </TabsContent>
+        </Tabs>
         </div>
     </div>
 

@@ -61,7 +61,7 @@ import type { UserRead, AssessmentRead, PaginationParams } from '@/types/utils';
 
 // ❌ WRONG - the components['schemas']['X'] pattern is from the old generator
 import type { components } from '@/types/types.gen';
-type UserRead = components['schemas']['UserRead'];  // `components` does not exist!
+type UserRead = components['schemas']['UserRead']; // `components` does not exist!
 
 // ❌ WRONG - don't import generated types directly when utils.ts already re-exports them
 import type { UserRead } from '@/types/types.gen';
@@ -69,7 +69,7 @@ import type { UserRead } from '@/types/types.gen';
 
 **Available types in `utils.ts`:**
 - Entity types: `AssessmentRead`, `ActivityRead`, `UserRead`, `AclRead`, `TagRead`, `AssetRead`
-- Base types: `AssessmentBase`, `ActivityBase`, `UserBase`, `ActivityGroupBase`
+- Base types: `AssessmentBase`, `ActivityCreate`, `UserBase`, `ActivityGroupBase`
 - Update types: `ActivityUpdate`, `ActivityGroupUpdate`, `UserPasswordReset`
 - Enums: `ActivityPriority`, `ActivityState`, `ActivitySeverity`, `UserRole`, `AclRole`
 - Utilities: `PaginatedResponse<T>`, `PaginationParams`, `PaginationState`, `MessageResponse`
@@ -92,8 +92,13 @@ import type { MyType, PaginationParams, PaginationState } from '@/types/utils';
 export const useMyStore = defineStore('myStore', () => {
     // State
     const items = ref<MyType[]>([]);
-    const loading = ref(false);  // ✅ Always 'loading', never 'isLoading'
-    const pagination = ref<PaginationState>({ total: 0, page: 1, size: 100, pages: 1 });
+    const loading = ref(false); // ✅ Always 'loading', never 'isLoading'
+    const pagination = ref<PaginationState>({
+        total: 0,
+        page: 1,
+        size: 100,
+        pages: 1,
+    });
 
     // Actions - delegate to service
     async function fetchItems(params?: PaginationParams) {
@@ -101,7 +106,12 @@ export const useMyStore = defineStore('myStore', () => {
         try {
             const data = await myService.getItems(params);
             items.value = data.items;
-            pagination.value = { total: data.total, page: data.page, size: data.size, pages: data.pages };
+            pagination.value = {
+                total: data.total,
+                page: data.page,
+                size: data.size,
+                pages: data.pages,
+            };
         } finally {
             loading.value = false;
         }
@@ -127,11 +137,20 @@ Services handle all API communication. They return typed data directly.
 ```typescript
 // src/services/myService.ts
 import { api } from './api';
-import type { MyType, PaginatedResponse, PaginationParams } from '@/types/utils';
+import type {
+    MyType,
+    PaginatedResponse,
+    PaginationParams,
+} from '@/types/utils';
 
 export const myService = {
-    async getItems(params?: PaginationParams): Promise<PaginatedResponse<MyType>> {
-        const response = await api.get<PaginatedResponse<MyType>>('/my-endpoint/', { params });
+    async getItems(
+        params?: PaginationParams,
+    ): Promise<PaginatedResponse<MyType>> {
+        const response = await api.get<PaginatedResponse<MyType>>(
+            '/my-endpoint/',
+            { params },
+        );
         return response.data;
     },
 
@@ -163,7 +182,7 @@ import { usePagination } from '@/composables/usePagination';
 
 const { fetch, handleSearch, handlePageChange } = usePagination(
     (params) => myStore.fetchItems(params),
-    100  // page size
+    100, // page size
 );
 
 onMounted(() => fetch());
@@ -209,6 +228,7 @@ deleteDialog.open(userId);
 **All components use `<script setup lang="ts">`.**
 
 #### Modal Pattern
+
 ```vue
 <script setup lang="ts">
 import type { UserRead } from '@/types/utils';
@@ -226,13 +246,16 @@ const emit = defineEmits<{
 ```
 
 #### Form Validation
+
 ```typescript
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@/utils/zodAdapter';
 import { zUserBase } from '@/types/zod.gen';
 
 const formSchema = toTypedSchema(zUserBase);
-const { handleSubmit, isSubmitting } = useForm({ validationSchema: formSchema });
+const { handleSubmit, isSubmitting } = useForm({
+    validationSchema: formSchema,
+});
 ```
 
 **Notes on validation:**
@@ -273,6 +296,7 @@ src/
 ### Adding a New API Endpoint
 
 1. **Create/update service** in `src/services/`:
+
    ```typescript
    async newMethod(): Promise<ResponseType> {
        const response = await api.post<ResponseType>('/endpoint/');
@@ -281,6 +305,7 @@ src/
    ```
 
 2. **Add types to `utils.ts`** if needed — append the name to the `export type { … } from './types.gen'` block:
+
    ```typescript
    export type {
        // …existing entries…
@@ -289,6 +314,7 @@ src/
    ```
 
 3. **Update store** to use the service:
+
    ```typescript
    async function newAction() {
        loading.value = true;

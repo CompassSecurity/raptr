@@ -23,6 +23,8 @@ export const useAssessmentDetailStore = defineStore('assessmentDetail', () => {
         pages: 1,
     });
     const loading = ref(false);
+    // Last activity query, so a refetch keeps the caller's sort order and limit
+    let lastActivityParams: Record<string, unknown> | undefined;
 
     async function fetchAssessment(id: string) {
         loading.value = true;
@@ -37,6 +39,7 @@ export const useAssessmentDetailStore = defineStore('assessmentDetail', () => {
         assessmentId: string,
         params?: Record<string, unknown>,
     ) {
+        lastActivityParams = params;
         loading.value = true;
         try {
             const data = await activityService.getActivities(
@@ -80,6 +83,38 @@ export const useAssessmentDetailStore = defineStore('assessmentDetail', () => {
         return fresh;
     }
 
+    async function reorderGroups(assessmentId: string, groupIds: string[]) {
+        await activityGroupService.reorderGroups(assessmentId, groupIds);
+        await fetchGroups(assessmentId);
+    }
+
+    /**
+     * Put an activity at its new place in a group. A move from another group
+     * lands at the end of the target group, so the target is reordered after.
+     * orderedActivityIds must list every non-deleted activity of the group.
+     */
+    async function placeActivity(
+        assessmentId: string,
+        activityId: string,
+        groupId: string,
+        orderedActivityIds: string[],
+        fromOtherGroup: boolean,
+    ) {
+        if (fromOtherGroup) {
+            await activityService.bulkMoveToGroup(
+                assessmentId,
+                [activityId],
+                groupId,
+            );
+        }
+        await activityGroupService.reorderActivities(
+            assessmentId,
+            groupId,
+            orderedActivityIds,
+        );
+        await fetchActivities(assessmentId, lastActivityParams);
+    }
+
     return {
         assessment,
         groups,
@@ -90,5 +125,7 @@ export const useAssessmentDetailStore = defineStore('assessmentDetail', () => {
         fetchActivities,
         fetchGroups,
         refreshActivity,
+        reorderGroups,
+        placeActivity,
     };
 });

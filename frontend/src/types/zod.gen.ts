@@ -61,14 +61,15 @@ export const zActivityAssetUpdate = z.object({
 });
 
 /**
- * ActivityBase
+ * ActivityCreate
  *
- * Assessment activity base model
+ * Assessment activity create model
  */
-export const zActivityBase = z.object({
+export const zActivityCreate = z.object({
     name: z.string(),
     mitre_tactic: z.string(),
-    mitre_technique: z.string()
+    mitre_technique: z.string(),
+    activity_group_id: z.uuid().nullish()
 });
 
 /**
@@ -206,6 +207,15 @@ export const zActivityTemplateRead = z.object({
     provider: z.string(),
     linked_knowledge_base_articles: z.array(z.string()).nullish(),
     id: z.uuid()
+});
+
+/**
+ * ActivityVisibleUpdate
+ *
+ * Schema for setting an activity's visible state explicitly
+ */
+export const zActivityVisibleUpdate = z.object({
+    visible: z.boolean()
 });
 
 /**
@@ -1786,7 +1796,7 @@ export const zGetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetQuery = z.o
  */
 export const zGetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponse = zPaginatedResponseActivityRead;
 
-export const zCreateActivityApiV1AssessmentsAssessmentIdActivityPostBody = zActivityBase;
+export const zCreateActivityApiV1AssessmentsAssessmentIdActivityPostBody = zActivityCreate;
 
 export const zCreateActivityApiV1AssessmentsAssessmentIdActivityPostPath = z.object({
     assessment_id: z.uuid()
@@ -1875,6 +1885,11 @@ export const zAssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityAc
  * Successful Response
  */
 export const zAssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponse = zMessageResponse;
+
+/**
+ * Visibility
+ */
+export const zToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutBody = zActivityVisibleUpdate.nullable();
 
 export const zToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutPath = z.object({
     activity_id: z.uuid(),

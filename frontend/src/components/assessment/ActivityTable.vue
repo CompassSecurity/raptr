@@ -91,7 +91,7 @@ const emit = defineEmits<{
     (e: 'group-toggle-visibility', group: ActivityGroupRead): void;
     (e: 'bulk-delete', activityIds: string[]): void;
     (e: 'bulk-move-to-group', activityIds: string[]): void;
-    (e: 'bulk-toggle-visibility', activityIds: string[]): void;
+    (e: 'bulk-set-visibility', activityIds: string[], visible: boolean): void;
 }>();
 
 // Multi-select state
@@ -189,11 +189,15 @@ function toggleSelect(activityId: string) {
     selectedIds.value = new Set(selectedIds.value);
 }
 
-// Clear selection when activities change
+// Keep the selection across reloads (e.g. after a bulk action), but drop rows
+// that are no longer listed (page change, filter, deleted and hidden)
 watch(
     () => props.activities,
-    () => {
-        selectedIds.value = new Set();
+    (activities) => {
+        const listedIds = new Set(activities.map((a) => a.id));
+        selectedIds.value = new Set(
+            [...selectedIds.value].filter((id) => listedIds.has(id)),
+        );
     },
 );
 
@@ -458,9 +462,13 @@ const getStateColor = (state: string | null | undefined) => {
           <FolderInput class="mr-2 h-4 w-4" />
           Move to Group
         </Button>
-        <Button variant="outline" size="sm" class="h-8" @click="emit('bulk-toggle-visibility', [...selectedIds])">
+        <Button variant="outline" size="sm" class="h-8" @click="emit('bulk-set-visibility', [...selectedIds], true)">
           <Eye class="mr-2 h-4 w-4" />
-          Toggle Visibility
+          Show
+        </Button>
+        <Button variant="outline" size="sm" class="h-8" @click="emit('bulk-set-visibility', [...selectedIds], false)">
+          <EyeOff class="mr-2 h-4 w-4" />
+          Hide
         </Button>
         <Button variant="outline" size="sm" class="h-8 text-destructive hover:text-destructive" @click="emit('bulk-delete', [...selectedIds])">
           <Trash2 class="mr-2 h-4 w-4" />
@@ -507,7 +515,7 @@ const getStateColor = (state: string | null | undefined) => {
           <TableRow>
             <TableHead v-if="authStore.hasAdminOrRedAccess(props.assessmentId)" class="w-12 p-0">
               <div 
-                class="w-full h-full min-h-[2.5rem] flex items-center justify-center cursor-pointer hover:bg-muted/50"
+                class="w-full h-full min-h-[2.5rem] flex items-center pl-2 cursor-pointer hover:bg-muted/50"
                 @click.stop="toggleSelectAll(allSelected ? false : true)"
               >
                 <Checkbox
@@ -857,18 +865,26 @@ const getStateColor = (state: string | null | undefined) => {
               >
                 <TableCell :colspan="totalColumns" class="p-0">
                   <div class="flex items-stretch min-h-[2.5rem]">
-                    <div 
-                      v-if="groupData.activities.length > 0 && authStore.hasAdminOrRedAccess(props.assessmentId)"
-                      class="flex w-12 shrink-0 items-center justify-center cursor-pointer hover:bg-muted transition-colors border-r border-transparent hover:border-border/50"
-                      @click.stop="toggleGroupSelect(groupData.activities, !isGroupSelected(groupData.activities))"
+                    <!-- Empty groups show a disabled checkbox to keep the column aligned -->
+                    <div
+                      v-if="authStore.hasAdminOrRedAccess(props.assessmentId)"
+                      :class="[
+                        'flex w-12 shrink-0 items-center pl-2',
+                        groupData.activities.length > 0
+                          ? 'cursor-pointer hover:bg-muted transition-colors border-r border-transparent hover:border-border/50'
+                          : 'cursor-not-allowed'
+                      ]"
+                      :title="groupData.activities.length > 0 ? undefined : 'No activities in this group'"
+                      @click.stop="groupData.activities.length > 0 && toggleGroupSelect(groupData.activities, !isGroupSelected(groupData.activities))"
                     >
                       <Checkbox
                         :model-value="isGroupSelected(groupData.activities) ? true : (isGroupIndeterminate(groupData.activities) ? 'indeterminate' : false)"
+                        :disabled="groupData.activities.length === 0"
                         class="pointer-events-none"
                         aria-label="Select group"
                       />
                     </div>
-                    
+
                     <div class="flex flex-1 items-center gap-2 px-2 py-2 cursor-pointer" @click="toggleGroup(groupId)">
                       <ChevronRight v-if="!expandedGroups.has(groupId)" class="h-4 w-4" />
                     <ChevronDown v-else class="h-4 w-4" />
@@ -935,8 +951,9 @@ const getStateColor = (state: string | null | undefined) => {
                   ]"
                   @click="emit('row-click', activity)"
                 >
-                  <TableCell 
+                  <TableCell
                     v-if="authStore.hasAdminOrRedAccess(props.assessmentId)"
+                    class="pl-6"
                     @click.stop="toggleSelect(activity.id)"
                   >
                     <Checkbox

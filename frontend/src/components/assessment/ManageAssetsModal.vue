@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+    AppWindow,
     Check,
     ChevronsUpDown,
     Cloud,
@@ -8,9 +9,12 @@ import {
     Globe,
     Hammer,
     Info,
+    LayoutGrid,
     Loader2,
+    Mail,
     Network,
     Pencil,
+    Phone,
     Plus,
     Search,
     SearchCode,
@@ -59,7 +63,9 @@ import type { AssetBase, AssetRead } from '@/types/utils';
 const props = defineProps<{
     open: boolean;
     assessmentId: string;
-    initialView?: 'list' | 'create';
+    initialView?: 'list' | 'create' | 'edit';
+    // Asset to edit when initialView is 'edit'
+    editAsset?: AssetRead | null;
 }>();
 
 const emit = defineEmits<{
@@ -82,6 +88,10 @@ const AVAILABLE_ICONS = [
     'Hammer',
     'User',
     'Globe',
+    'Phone',
+    'Mail',
+    'LayoutGrid',
+    'AppWindow',
 ] as const;
 
 const iconMap: Record<string, any> = {
@@ -96,6 +106,10 @@ const iconMap: Record<string, any> = {
     Hammer,
     User,
     Globe,
+    Phone,
+    Mail,
+    LayoutGrid,
+    AppWindow,
 };
 
 function getIconComponent(iconName: string) {
@@ -257,12 +271,11 @@ function objectToProperties(
 }
 
 // View navigation
-function showCreateView() {
+async function showCreateView() {
     currentView.value = 'create';
     resetForm();
-    nextTick(() => {
-        nameInput.value?.$el?.focus();
-    });
+    await nextTick();
+    nameInput.value?.$el?.focus();
 }
 
 function showEditView(asset: AssetRead) {
@@ -277,8 +290,13 @@ function showListView() {
     resetForm();
 }
 
+// Opened straight into a form: finishing it closes the modal instead of showing the list
+const openedIntoForm = computed(
+    () => props.initialView === 'create' || props.initialView === 'edit',
+);
+
 function handleCancel() {
-    if (props.initialView === 'create') {
+    if (openedIntoForm.value) {
         emit('update:open', false);
     } else {
         showListView();
@@ -382,7 +400,7 @@ async function handleCreate() {
         toast.success(`Asset "${payload.name}" created`);
 
         await fetchAssets();
-        if (props.initialView === 'create') {
+        if (openedIntoForm.value) {
             emit('update:open', false);
         } else {
             showListView();
@@ -414,7 +432,7 @@ async function handleUpdate() {
         toast.success(`Asset "${payload.name}" updated`);
 
         await fetchAssets();
-        if (props.initialView === 'create') {
+        if (openedIntoForm.value) {
             emit('update:open', false);
         } else {
             showListView();
@@ -462,6 +480,12 @@ watch(
         if (isOpen) {
             if (props.initialView === 'create' && canEdit.value) {
                 showCreateView();
+            } else if (
+                props.initialView === 'edit' &&
+                props.editAsset &&
+                canEdit.value
+            ) {
+                showEditView(props.editAsset);
             } else {
                 showListView();
             }

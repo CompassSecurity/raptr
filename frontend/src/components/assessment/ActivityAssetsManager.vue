@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+    AppWindow,
     Check,
     Cloud,
     Computer,
@@ -7,11 +8,14 @@ import {
     Globe,
     Hammer,
     Info,
+    LayoutGrid,
+    Mail,
     Network,
+    Pencil,
+    Phone,
     Plus,
     Search,
     SearchCode,
-    Settings2,
     Shield,
     ShieldCheck,
     User,
@@ -78,7 +82,8 @@ const searchQuery = ref('');
 const activeTab = ref<'sources' | 'targets' | 'tools'>('sources');
 const modalTab = ref<'select' | 'manage'>('select');
 const manageAssetsModalOpen = ref(false);
-const manageAssetsInitialView = ref<'list' | 'create'>('list');
+const manageAssetsInitialView = ref<'list' | 'create' | 'edit'>('list');
+const manageAssetsEditAsset = ref<AssetRead | null>(null);
 
 const iconMap: Record<string, any> = {
     Cloud,
@@ -92,6 +97,10 @@ const iconMap: Record<string, any> = {
     Hammer,
     User,
     Globe,
+    Phone,
+    Mail,
+    LayoutGrid,
+    AppWindow,
 };
 
 function getIconComponent(iconName: string | null | undefined) {
@@ -118,6 +127,15 @@ const DEFAULT_SECTION_ACCENT: Record<string, string> = {
 function accentFor(key: string): string {
     return props.accentColor ?? DEFAULT_SECTION_ACCENT[key] ?? 'green';
 }
+
+// Add / empty-state tiles use the same footprint as an asset tile
+const placeholderTileClass = computed(() => [
+    'flex items-center justify-center gap-1.5 text-center text-muted-foreground',
+    props.compact
+        ? 'px-2 py-1.5 rounded-md border text-xs'
+        : 'flex-col p-3 rounded-lg border-2 min-h-[120px] text-sm',
+    !props.compact && props.showOnlySources ? 'w-[150px]' : '',
+]);
 
 // Global asset fetch
 async function fetchAssets() {
@@ -158,6 +176,14 @@ const filteredAssets = computed(() => {
     });
 });
 
+// Show the latest name/icon/properties after an asset is edited, without
+// touching the selected lists (that would mark the activity form as dirty)
+function withLatest(list: AssetRead[]) {
+    return list.map(
+        (asset) => resolvedAssets.value.find((a) => a.id === asset.id) ?? asset,
+    );
+}
+
 // Sections for display
 const sections = computed(() => {
     if (props.showOnlySources) {
@@ -165,14 +191,26 @@ const sections = computed(() => {
             {
                 key: 'sources' as const,
                 label: props.sourcesLabel || 'Sources',
-                items: props.sources,
+                items: withLatest(props.sources),
             },
         ];
     }
     return [
-        { key: 'sources' as const, label: 'Sources', items: props.sources },
-        { key: 'targets' as const, label: 'Targets', items: props.targets },
-        { key: 'tools' as const, label: 'Tools', items: props.tools },
+        {
+            key: 'sources' as const,
+            label: 'Sources',
+            items: withLatest(props.sources),
+        },
+        {
+            key: 'targets' as const,
+            label: 'Targets',
+            items: withLatest(props.targets),
+        },
+        {
+            key: 'tools' as const,
+            label: 'Tools',
+            items: withLatest(props.tools),
+        },
     ];
 });
 
@@ -219,10 +257,10 @@ function removeAsset(assetId: string, type: 'sources' | 'targets' | 'tools') {
     else emit('update:tools', newList);
 }
 
-function openModal(tab?: 'sources' | 'targets' | 'tools' | Event) {
+function openModal(tab: 'sources' | 'targets' | 'tools') {
     modalOpen.value = true;
     modalTab.value = 'select'; // Reset to select tab
-    activeTab.value = typeof tab === 'string' ? tab : 'sources';
+    activeTab.value = tab;
     searchQuery.value = '';
     if (resolvedAssets.value.length === 0) {
         fetchAssets();
@@ -236,6 +274,12 @@ function openManageAssets() {
 
 function openNewAsset() {
     manageAssetsInitialView.value = 'create';
+    manageAssetsModalOpen.value = true;
+}
+
+function openEditAsset(asset: AssetRead) {
+    manageAssetsInitialView.value = 'edit';
+    manageAssetsEditAsset.value = asset;
     manageAssetsModalOpen.value = true;
 }
 
@@ -266,18 +310,6 @@ onMounted(() => {
 
 <template>
     <div :class="compact ? 'space-y-2' : 'space-y-4'">
-        <!-- Main Header with Manage Button (non-compact only) -->
-        <div v-if="!compact && !readonly" class="flex items-center gap-2">
-            <Button
-                variant="ghost"
-                size="sm"
-                @click="openModal"
-            >
-                <Settings2 class="mr-2 h-3.5 w-3.5" />
-                Manage Assets
-            </Button>
-        </div>
-
         <!-- Grid Display -->
         <div :class="[
             'grid gap-4',
@@ -294,21 +326,10 @@ onMounted(() => {
                         {{ showOnlySources ? sourcesLabel : section.label }}
                     </Label>
                     <span v-if="section.items.length > 0" class="text-xs bg-muted px-2 py-0.5 rounded-full">{{ section.items.length }}</span>
-                    <!-- Manage button in compact mode - same line as title -->
-                    <Button
-                        v-if="compact && !readonly"
-                        variant="ghost"
-                        size="sm"
-                        @click="openModal"
-                        class="text-xs h-6 px-2"
-                    >
-                        <Settings2 class="mr-1 h-3 w-3" />
-                        Manage
-                    </Button>
                 </div>
                 
                 <!-- Assets Grid -->
-                <div v-if="section.items.length > 0" :class="compact || showOnlySources ? 'flex flex-wrap gap-2' : 'grid grid-cols-2 gap-2'">
+                <div :class="compact || showOnlySources ? 'flex flex-wrap gap-2' : 'grid grid-cols-2 gap-2'">
                     <Popover v-for="asset in section.items" :key="asset.id">
                         <PopoverTrigger as-child>
                             <div 
@@ -322,7 +343,17 @@ onMounted(() => {
                                     asset.deleted ? 'opacity-60 border-dashed border-muted-foreground/30' : ''
                                 ]"
                             >
-                                <!-- Remove Button (Top Right for normal, inline for compact) -->
+                                <!-- Edit + Remove Buttons (Top Right for normal, inline for compact) -->
+                                <Button
+                                    v-if="!compact && !readonly && !asset.deleted"
+                                    variant="ghost"
+                                    size="icon"
+                                    class="absolute top-1 right-7 h-5 w-5 rounded-full text-muted-foreground hover:text-foreground z-10"
+                                    title="Edit asset"
+                                    @click.stop="openEditAsset(asset)"
+                                >
+                                    <Pencil class="h-3 w-3" />
+                                </Button>
                                 <Button
                                     v-if="!compact && !readonly"
                                     variant="ghost"
@@ -348,12 +379,22 @@ onMounted(() => {
                                     :class="compact ? 'h-3 w-3 text-muted-foreground opacity-60 shrink-0' : 'absolute bottom-1 right-1 h-3 w-3 text-muted-foreground opacity-60'"
                                 />
                                 
-                                <!-- Remove Button for compact mode -->
+                                <!-- Edit + Remove Buttons for compact mode -->
+                                <Button
+                                    v-if="compact && !readonly && !asset.deleted"
+                                    variant="ghost"
+                                    size="icon"
+                                    class="ml-auto h-5 w-5 rounded-full text-muted-foreground hover:text-foreground shrink-0"
+                                    title="Edit asset"
+                                    @click.stop="openEditAsset(asset)"
+                                >
+                                    <Pencil class="h-3 w-3" />
+                                </Button>
                                 <Button
                                     v-if="compact && !readonly"
                                     variant="ghost"
                                     size="icon"
-                                    class="ml-auto h-5 w-5 rounded-full text-muted-foreground hover:text-destructive shrink-0"
+                                    :class="['h-5 w-5 rounded-full text-muted-foreground hover:text-destructive shrink-0', asset.deleted ? 'ml-auto' : '']"
                                     @click.stop="removeAsset(asset.id, section.key)"
                                 >
                                     <X class="h-3 w-3" />
@@ -376,13 +417,26 @@ onMounted(() => {
                             </div>
                         </PopoverContent>
                     </Popover>
-                </div>
-                <div v-else 
-                    :class="['text-xs text-muted-foreground italic text-center py-8 border rounded-lg bg-muted/30 transition-colors', !readonly ? 'cursor-pointer hover:bg-muted/50 hover:text-foreground' : '']"
-                    @click="!readonly && openModal(section.key)"
-                >
-                    <div class="flex flex-col items-center gap-1.5 p-2">
-                        <Plus v-if="!readonly" class="h-4 w-4 opacity-50" />
+
+                    <!-- Add tile: always available for quick adding (same size as an asset tile) -->
+                    <button
+                        v-if="!readonly"
+                        type="button"
+                        :class="[
+                            placeholderTileClass,
+                            'border-dashed transition-colors hover:bg-muted/50 hover:text-foreground'
+                        ]"
+                        :title="`Add ${section.key}`"
+                        @click="openModal(section.key)"
+                    >
+                        <Plus :class="compact ? 'h-3 w-3' : 'h-5 w-5 opacity-60'" />
+                        <span>{{ section.items.length > 0 ? 'Add' : `No ${section.key} selected` }}</span>
+                    </button>
+                    <!-- Read-only empty state -->
+                    <div
+                        v-else-if="section.items.length === 0"
+                        :class="[placeholderTileClass, 'bg-muted/30 italic']"
+                    >
                         <span>No {{ section.key }} selected</span>
                     </div>
                 </div>
@@ -465,6 +519,7 @@ onMounted(() => {
             @update:open="manageAssetsModalOpen = $event"
             :assessment-id="assessmentId"
             :initial-view="manageAssetsInitialView"
+            :edit-asset="manageAssetsEditAsset"
             @success="handleAssetManagementSuccess"
         />
     </div>

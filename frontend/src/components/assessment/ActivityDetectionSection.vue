@@ -1,14 +1,7 @@
 <script setup lang="ts">
-import { ChevronDown } from '@lucide/vue';
 import { computed } from 'vue';
 import ActivityAssetsManager from '@/components/assessment/ActivityAssetsManager.vue';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from '@/components/ui/collapsible';
 import DateTimePicker from '@/components/ui/DateTimePicker.vue';
 import { Label } from '@/components/ui/label';
 import MarkdownEditor from '@/components/ui/MarkdownEditor.vue';
@@ -133,281 +126,265 @@ const stakeholderNotificationCreated = computed({
 </script>
 
 <template>
-    <Collapsible defaultOpen>
-        <Card class="border-l-4 border-l-blue-500 shadow-sm">
-            <CollapsibleTrigger as-child>
-                <CardHeader class="cursor-pointer hover:bg-muted/50 transition-colors">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <CardTitle class="text-lg text-blue-700 dark:text-blue-400">Activity Detection</CardTitle>
-                        </div>
-                        <ChevronDown class="h-5 w-5 text-muted-foreground transition-transform duration-200 [[data-state=open]_&]:rotate-180" />
+    <div class="space-y-6">
+        <!-- 1. Logged -->
+        <div class="space-y-4 p-4 rounded-lg border">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <Label class="text-sm font-semibold" for="switch_logged">Activity Logged</Label>
+                </div>
+                <template v-if="readonly">
+                    <Badge :class="logged ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ logged ? 'Yes' : 'No' }}</Badge>
+                </template>
+                <template v-else>
+                    <Switch id="switch_logged" v-model="logged" />
+                </template>
+            </div>
+
+            <div v-if="logged" class="space-y-4 pt-2 border-t">
+                <div class="space-y-2 w-full sm:w-1/2 pr-2">
+                    <Label class="text-sm font-medium">Log Time</Label>
+                    <template v-if="readonly">
+                        <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.log_time) }}</div>
+                    </template>
+                    <template v-else>
+                        <DateTimePicker
+                            :model-value="formData.log_time ?? undefined"
+                            @update:model-value="formData.log_time = $event ?? null"
+                        />
+                    </template>
+                </div>
+                <ActivityAssetsManager
+                    :sources="formData.log_sources ?? []"
+                    :targets="[]"
+                    :tools="[]"
+                    @update:sources="formData.log_sources = $event"
+                    @update:targets="() => {}"
+                    @update:tools="() => {}"
+                    :assessment-id="assessmentId"
+                    :available-assets="availableAssets"
+                    :show-only-sources="true"
+                    sources-label="Log Sources"
+                    accent-color="blue"
+                    :readonly="readonly"
+                    @assets-changed="emit('assets-changed')"
+                />
+            </div>
+
+            <div class="space-y-2" :class="{ 'pt-2 border-t': !logged }">
+                <MarkdownEditor :on-upload="uploadImage" :resolve-image-url="resolveImageUrl"
+                    :model-value="formData.log_notes ?? ''"
+                    @update:model-value="formData.log_notes = $event"
+                    label="Log Notes"
+                    placeholder="Document logging observations..."
+                    :disabled="readonly"
+                />
+            </div>
+        </div>
+
+        <!-- 2. Prevented -->
+        <div class="space-y-4 p-4 rounded-lg border">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <Label class="text-sm font-semibold" for="switch_prevented">Activity Prevented</Label>
+                </div>
+                <template v-if="readonly">
+                    <Badge :class="prevented ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ prevented ? 'Yes' : 'No' }}</Badge>
+                </template>
+                <template v-else>
+                    <Switch id="switch_prevented" v-model="prevented" />
+                </template>
+            </div>
+
+            <div v-if="prevented" class="space-y-4 pt-2 border-t">
+                <div class="space-y-2 w-full sm:w-1/2 pr-2">
+                    <Label class="text-sm font-medium">Prevention Time</Label>
+                    <template v-if="readonly">
+                        <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.prevent_time) }}</div>
+                    </template>
+                    <template v-else>
+                        <DateTimePicker
+                            :model-value="formData.prevent_time ?? undefined"
+                            @update:model-value="formData.prevent_time = $event ?? null"
+                        />
+                    </template>
+                </div>
+                <ActivityAssetsManager
+                    :sources="formData.prevention_sources ?? []"
+                    :targets="[]"
+                    :tools="[]"
+                    @update:sources="formData.prevention_sources = $event"
+                    @update:targets="() => {}"
+                    @update:tools="() => {}"
+                    :assessment-id="assessmentId"
+                    :available-assets="availableAssets"
+                    :show-only-sources="true"
+                    sources-label="Prevention Systems"
+                    accent-color="blue"
+                    :readonly="readonly"
+                    @assets-changed="emit('assets-changed')"
+                />
+            </div>
+
+            <div class="space-y-2" :class="{ 'pt-2 border-t': !prevented }">
+                <MarkdownEditor :on-upload="uploadImage" :resolve-image-url="resolveImageUrl"
+                    :model-value="formData.prevent_notes ?? ''"
+                    @update:model-value="formData.prevent_notes = $event"
+                    label="Prevention Notes"
+                    placeholder="Document prevention observations..."
+                    :disabled="readonly"
+                />
+            </div>
+        </div>
+
+        <!-- 3. Alerted -->
+        <div class="space-y-4 p-4 rounded-lg border">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <Label class="text-sm font-semibold" for="switch_alerted">Alert Generated</Label>
+                </div>
+                <template v-if="readonly">
+                    <Badge :class="alerted ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ alerted ? 'Yes' : 'No' }}</Badge>
+                </template>
+                <template v-else>
+                    <Switch id="switch_alerted" v-model="alerted" />
+                </template>
+            </div>
+
+            <div v-if="alerted" class="space-y-4 pt-2 border-t">
+                <div class="space-y-4">
+                    <div class="space-y-2 w-full sm:w-1/2 pr-2">
+                        <Label class="text-sm font-medium">Alert Time</Label>
+                        <template v-if="readonly">
+                            <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.alert_time) }}</div>
+                        </template>
+                        <template v-else>
+                            <DateTimePicker
+                                :model-value="formData.alert_time ?? undefined"
+                                @update:model-value="formData.alert_time = $event ?? null"
+                            />
+                        </template>
                     </div>
-                </CardHeader>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-                <CardContent class="space-y-6 pt-6">
-                    <!-- 1. Logged -->
-                    <div class="space-y-4 p-4 rounded-lg border">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <Label class="text-sm font-semibold" for="switch_logged">Activity Logged</Label>
-                            </div>
-                            <template v-if="readonly">
-                                <Badge :class="logged ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ logged ? 'Yes' : 'No' }}</Badge>
-                            </template>
-                            <template v-else>
-                                <Switch id="switch_logged" v-model="logged" />
-                            </template>
-                        </div>
-
-                        <div v-if="logged" class="space-y-4 pt-2 border-t">
-                            <div class="space-y-2 w-full sm:w-1/2 pr-2">
-                                <Label class="text-sm font-medium">Log Time</Label>
-                                <template v-if="readonly">
-                                    <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.log_time) }}</div>
-                                </template>
-                                <template v-else>
-                                    <DateTimePicker
-                                        :model-value="formData.log_time ?? undefined"
-                                        @update:model-value="formData.log_time = $event ?? null"
-                                    />
-                                </template>
-                            </div>
-                            <ActivityAssetsManager
-                                :sources="formData.log_sources ?? []"
-                                :targets="[]"
-                                :tools="[]"
-                                @update:sources="formData.log_sources = $event"
-                                @update:targets="() => {}"
-                                @update:tools="() => {}"
-                                :assessment-id="assessmentId"
-                                :available-assets="availableAssets"
-                                :show-only-sources="true"
-                                sources-label="Log Sources"
-                                accent-color="blue"
-                                :readonly="readonly"
-                                @assets-changed="emit('assets-changed')"
-                            />
-                        </div>
-
-                        <div class="space-y-2" :class="{ 'pt-2 border-t': !logged }">
-                            <MarkdownEditor :on-upload="uploadImage" :resolve-image-url="resolveImageUrl"
-                                :model-value="formData.log_notes ?? ''"
-                                @update:model-value="formData.log_notes = $event"
-                                label="Log Notes"
-                                placeholder="Document logging observations..."
-                                :disabled="readonly"
-                            />
-                        </div>
+                    <div class="space-y-2 w-full sm:w-1/2 pr-2">
+                        <Label class="text-sm font-medium">Alert Severity</Label>
+                        <template v-if="readonly">
+                            <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ formData.alert_severity || '—' }}</div>
+                        </template>
+                        <template v-else>
+                            <Select v-model="formData.alert_severity">
+                                <SelectTrigger class="w-full">
+                                    <SelectValue :placeholder="formData.alert_severity || '\xa0'" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem v-for="opt in severityOptions" :key="opt" :value="opt">
+                                        {{ opt }}
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </template>
                     </div>
+                </div>
+                <ActivityAssetsManager
+                    :sources="formData.alert_sources ?? []"
+                    :targets="[]"
+                    :tools="[]"
+                    @update:sources="formData.alert_sources = $event"
+                    @update:targets="() => {}"
+                    @update:tools="() => {}"
+                    :assessment-id="assessmentId"
+                    :available-assets="availableAssets"
+                    :show-only-sources="true"
+                    sources-label="Detection Systems"
+                    accent-color="blue"
+                    :readonly="readonly"
+                    @assets-changed="emit('assets-changed')"
+                />
+            </div>
 
-                    <!-- 2. Prevented -->
-                    <div class="space-y-4 p-4 rounded-lg border">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <Label class="text-sm font-semibold" for="switch_prevented">Activity Prevented</Label>
-                            </div>
-                            <template v-if="readonly">
-                                <Badge :class="prevented ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ prevented ? 'Yes' : 'No' }}</Badge>
-                            </template>
-                            <template v-else>
-                                <Switch id="switch_prevented" v-model="prevented" />
-                            </template>
-                        </div>
+            <div class="space-y-2" :class="{ 'pt-2 border-t': !alerted }">
+                <MarkdownEditor :on-upload="uploadImage" :resolve-image-url="resolveImageUrl"
+                    :model-value="formData.alert_notes ?? ''"
+                    @update:model-value="formData.alert_notes = $event"
+                    label="Alert Notes"
+                    placeholder="Document alert observations..."
+                    :disabled="readonly"
+                />
+            </div>
+        </div>
 
-                        <div v-if="prevented" class="space-y-4 pt-2 border-t">
-                            <div class="space-y-2 w-full sm:w-1/2 pr-2">
-                                <Label class="text-sm font-medium">Prevention Time</Label>
-                                <template v-if="readonly">
-                                    <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.prevent_time) }}</div>
-                                </template>
-                                <template v-else>
-                                    <DateTimePicker
-                                        :model-value="formData.prevent_time ?? undefined"
-                                        @update:model-value="formData.prevent_time = $event ?? null"
-                                    />
-                                </template>
-                            </div>
-                            <ActivityAssetsManager
-                                :sources="formData.prevention_sources ?? []"
-                                :targets="[]"
-                                :tools="[]"
-                                @update:sources="formData.prevention_sources = $event"
-                                @update:targets="() => {}"
-                                @update:tools="() => {}"
-                                :assessment-id="assessmentId"
-                                :available-assets="availableAssets"
-                                :show-only-sources="true"
-                                sources-label="Prevention Systems"
-                                accent-color="blue"
-                                :readonly="readonly"
-                                @assets-changed="emit('assets-changed')"
+        <!-- 4. Stakeholder Notification -->
+        <div class="space-y-4 p-4 rounded-lg border">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <Label class="text-sm font-semibold" for="switch_stakeholder">Stakeholder Notification Created</Label>
+                </div>
+                <template v-if="readonly">
+                    <Badge :class="stakeholderNotificationCreated ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ stakeholderNotificationCreated ? 'Yes' : 'No' }}</Badge>
+                </template>
+                <template v-else>
+                    <Switch id="switch_stakeholder" v-model="stakeholderNotificationCreated" />
+                </template>
+            </div>
+
+            <div v-if="stakeholderNotificationCreated" class="space-y-4 pt-2 border-t">
+                <div class="space-y-4">
+                    <div class="space-y-2 w-full sm:w-1/2 pr-2">
+                        <Label class="text-sm font-medium">Notification Time</Label>
+                        <template v-if="readonly">
+                            <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.stakeholder_notification_time) }}</div>
+                        </template>
+                        <template v-else>
+                            <DateTimePicker
+                                :model-value="formData.stakeholder_notification_time ?? undefined"
+                                @update:model-value="formData.stakeholder_notification_time = $event ?? null"
                             />
-                        </div>
-
-                        <div class="space-y-2" :class="{ 'pt-2 border-t': !prevented }">
-                            <MarkdownEditor :on-upload="uploadImage" :resolve-image-url="resolveImageUrl"
-                                :model-value="formData.prevent_notes ?? ''"
-                                @update:model-value="formData.prevent_notes = $event"
-                                label="Prevention Notes"
-                                placeholder="Document prevention observations..."
-                                :disabled="readonly"
-                            />
-                        </div>
+                        </template>
                     </div>
-
-                    <!-- 3. Alerted -->
-                    <div class="space-y-4 p-4 rounded-lg border">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <Label class="text-sm font-semibold" for="switch_alerted">Alert Generated</Label>
-                            </div>
-                            <template v-if="readonly">
-                                <Badge :class="alerted ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ alerted ? 'Yes' : 'No' }}</Badge>
-                            </template>
-                            <template v-else>
-                                <Switch id="switch_alerted" v-model="alerted" />
-                            </template>
-                        </div>
-
-                        <div v-if="alerted" class="space-y-4 pt-2 border-t">
-                            <div class="space-y-4">
-                                <div class="space-y-2 w-full sm:w-1/2 pr-2">
-                                    <Label class="text-sm font-medium">Alert Time</Label>
-                                    <template v-if="readonly">
-                                        <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.alert_time) }}</div>
-                                    </template>
-                                    <template v-else>
-                                        <DateTimePicker
-                                            :model-value="formData.alert_time ?? undefined"
-                                            @update:model-value="formData.alert_time = $event ?? null"
-                                        />
-                                    </template>
-                                </div>
-                                <div class="space-y-2 w-full sm:w-1/2 pr-2">
-                                    <Label class="text-sm font-medium">Alert Severity</Label>
-                                    <template v-if="readonly">
-                                        <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ formData.alert_severity || '—' }}</div>
-                                    </template>
-                                    <template v-else>
-                                        <Select v-model="formData.alert_severity">
-                                            <SelectTrigger class="w-full">
-                                                <SelectValue :placeholder="formData.alert_severity || '\xa0'" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem v-for="opt in severityOptions" :key="opt" :value="opt">
-                                                    {{ opt }}
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </template>
-                                </div>
-                            </div>
-                            <ActivityAssetsManager
-                                :sources="formData.alert_sources ?? []"
-                                :targets="[]"
-                                :tools="[]"
-                                @update:sources="formData.alert_sources = $event"
-                                @update:targets="() => {}"
-                                @update:tools="() => {}"
-                                :assessment-id="assessmentId"
-                                :available-assets="availableAssets"
-                                :show-only-sources="true"
-                                sources-label="Detection Systems"
-                                accent-color="blue"
-                                :readonly="readonly"
-                                @assets-changed="emit('assets-changed')"
-                            />
-                        </div>
-
-                        <div class="space-y-2" :class="{ 'pt-2 border-t': !alerted }">
-                            <MarkdownEditor :on-upload="uploadImage" :resolve-image-url="resolveImageUrl"
-                                :model-value="formData.alert_notes ?? ''"
-                                @update:model-value="formData.alert_notes = $event"
-                                label="Alert Notes"
-                                placeholder="Document alert observations..."
-                                :disabled="readonly"
-                            />
-                        </div>
+                    <div class="space-y-2 w-full sm:w-1/2 pr-2">
+                        <Label class="text-sm font-medium">Notification Severity</Label>
+                        <template v-if="readonly">
+                            <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ formData.stakeholder_notification_severity || '—' }}</div>
+                        </template>
+                        <template v-else>
+                            <Select v-model="formData.stakeholder_notification_severity">
+                                <SelectTrigger class="w-full">
+                                    <SelectValue :placeholder="formData.stakeholder_notification_severity || '\xa0'" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem v-for="opt in severityOptions" :key="opt" :value="opt">
+                                        {{ opt }}
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </template>
                     </div>
+                </div>
+                <ActivityAssetsManager
+                    :sources="formData.stakeholder_notification_sources ?? []"
+                    :targets="[]"
+                    :tools="[]"
+                    @update:sources="formData.stakeholder_notification_sources = $event"
+                    @update:targets="() => {}"
+                    @update:tools="() => {}"
+                    :assessment-id="assessmentId"
+                    :available-assets="availableAssets"
+                    :show-only-sources="true"
+                    sources-label="Notification Systems"
+                    accent-color="blue"
+                    :readonly="readonly"
+                    @assets-changed="emit('assets-changed')"
+                />
+            </div>
 
-                    <!-- 4. Stakeholder Notification -->
-                    <div class="space-y-4 p-4 rounded-lg border">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <Label class="text-sm font-semibold" for="switch_stakeholder">Stakeholder Notification Created</Label>
-                            </div>
-                            <template v-if="readonly">
-                                <Badge :class="stakeholderNotificationCreated ? 'bg-green-600 text-white' : 'bg-muted text-muted-foreground'">{{ stakeholderNotificationCreated ? 'Yes' : 'No' }}</Badge>
-                            </template>
-                            <template v-else>
-                                <Switch id="switch_stakeholder" v-model="stakeholderNotificationCreated" />
-                            </template>
-                        </div>
-
-                        <div v-if="stakeholderNotificationCreated" class="space-y-4 pt-2 border-t">
-                            <div class="space-y-4">
-                                <div class="space-y-2 w-full sm:w-1/2 pr-2">
-                                    <Label class="text-sm font-medium">Notification Time</Label>
-                                    <template v-if="readonly">
-                                        <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.stakeholder_notification_time) }}</div>
-                                    </template>
-                                    <template v-else>
-                                        <DateTimePicker
-                                            :model-value="formData.stakeholder_notification_time ?? undefined"
-                                            @update:model-value="formData.stakeholder_notification_time = $event ?? null"
-                                        />
-                                    </template>
-                                </div>
-                                <div class="space-y-2 w-full sm:w-1/2 pr-2">
-                                    <Label class="text-sm font-medium">Notification Severity</Label>
-                                    <template v-if="readonly">
-                                        <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ formData.stakeholder_notification_severity || '—' }}</div>
-                                    </template>
-                                    <template v-else>
-                                        <Select v-model="formData.stakeholder_notification_severity">
-                                            <SelectTrigger class="w-full">
-                                                <SelectValue :placeholder="formData.stakeholder_notification_severity || '\xa0'" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem v-for="opt in severityOptions" :key="opt" :value="opt">
-                                                    {{ opt }}
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </template>
-                                </div>
-                            </div>
-                            <ActivityAssetsManager
-                                :sources="formData.stakeholder_notification_sources ?? []"
-                                :targets="[]"
-                                :tools="[]"
-                                @update:sources="formData.stakeholder_notification_sources = $event"
-                                @update:targets="() => {}"
-                                @update:tools="() => {}"
-                                :assessment-id="assessmentId"
-                                :available-assets="availableAssets"
-                                :show-only-sources="true"
-                                sources-label="Notification Systems"
-                                accent-color="blue"
-                                :readonly="readonly"
-                                @assets-changed="emit('assets-changed')"
-                            />
-                        </div>
-
-                        <div class="space-y-2" :class="{ 'pt-2 border-t': !stakeholderNotificationCreated }">
-                            <MarkdownEditor :on-upload="uploadImage" :resolve-image-url="resolveImageUrl"
-                                :model-value="formData.stakeholder_notification_notes ?? ''"
-                                @update:model-value="formData.stakeholder_notification_notes = $event"
-                                label="Notification Notes"
-                                placeholder="Document stakeholder notification details..."
-                                :disabled="readonly"
-                            />
-                        </div>
-                    </div>
-                </CardContent>
-            </CollapsibleContent>
-        </Card>
-    </Collapsible>
+            <div class="space-y-2" :class="{ 'pt-2 border-t': !stakeholderNotificationCreated }">
+                <MarkdownEditor :on-upload="uploadImage" :resolve-image-url="resolveImageUrl"
+                    :model-value="formData.stakeholder_notification_notes ?? ''"
+                    @update:model-value="formData.stakeholder_notification_notes = $event"
+                    label="Notification Notes"
+                    placeholder="Document stakeholder notification details..."
+                    :disabled="readonly"
+                />
+            </div>
+        </div>
+    </div>
 </template>

@@ -69,6 +69,15 @@ watch(assessmentId, async (newId, oldId) => {
     }
 });
 
+// Start each newly opened activity or group at the top of the page
+const contentScrollArea = ref<{ $el: HTMLElement } | null>(null);
+watch([activityId, groupId], () => {
+    const viewport = contentScrollArea.value?.$el.querySelector(
+        '[data-slot="scroll-area-viewport"]',
+    );
+    viewport?.scrollTo({ top: 0 });
+});
+
 // Refresh the active activity whenever the route's activityId changes so
 // the form always shows fresh data (sidebar clicks don't otherwise hit the API).
 watch(activityId, async () => {
@@ -205,7 +214,7 @@ function cancelNavigation() {
             <ResizableHandle with-handle />
             
             <ResizablePanel :default-size="80">
-                <ScrollArea class="h-full w-full">
+                <ScrollArea ref="contentScrollArea" class="h-full w-full">
                     <main>
                         <div v-if="currentActivity" class="w-full py-6 px-8 max-w-[2500px] mx-auto">
                             <ActivityForm

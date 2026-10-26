@@ -14,7 +14,6 @@ import { Label } from '@/components/ui/label';
 import MarkdownEditor from '@/components/ui/MarkdownEditor.vue';
 import ReadonlyField from '@/components/ui/ReadonlyField.vue';
 import SearchableSelect from '@/components/ui/SearchableSelect.vue';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import {
     Select,
     SelectContent,
@@ -464,9 +463,10 @@ onUnmounted(() => {
                                         v-for="item in currentTagNames"
                                         :key="item"
                                         :value="item"
+                                        class="rounded-full border bg-transparent"
                                         :style="{
-                                            backgroundColor: getTagColor(item),
-                                            color: '#fff',
+                                            borderColor: getTagColor(item),
+                                            color: getTagColor(item),
                                         }"
                                     >
                                         <TagsInputItemText />
@@ -484,7 +484,7 @@ onUnmounted(() => {
                                     v-if="!(tagsReadonly ?? readonly) && showTagSuggestions && filteredTagSuggestions.length > 0"
                                     class="absolute z-50 w-full mt-1 bg-popover border rounded-md shadow-lg"
                                 >
-                                    <ScrollArea class="max-h-[200px]">
+                                    <div class="max-h-[200px] overflow-y-auto overscroll-contain">
                                         <button
                                             v-for="tag in filteredTagSuggestions"
                                             :key="tag.id"
@@ -498,7 +498,7 @@ onUnmounted(() => {
                                             ></span>
                                             <span>{{ tag.name }}</span>
                                         </button>
-                                    </ScrollArea>
+                                    </div>
                                 </div>
                             </div>
                         </div>

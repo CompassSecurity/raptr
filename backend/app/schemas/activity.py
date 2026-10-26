@@ -75,6 +75,26 @@ class ActivityBase(BaseModel):
     )
 
 
+class ActivityCreate(ActivityBase):
+    """
+    Assessment activity create model
+    """
+
+    # Group to add the activity to; the assessment's default group when omitted
+    activity_group_id: uuid.UUID | None = None
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "name": "Windows: Malicious Link Execution on Client",
+                "mitre_tactic": "TA0002",
+                "mitre_technique": "T1204.001",
+                "activity_group_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            }
+        },
+    )
+
+
 class ActivityUpdate(ActivityBase):
     """
     Assessment activity update model
@@ -290,3 +310,13 @@ class ActivityUpdateBlue(BaseModel):
     stakeholder_notification_sources: list[uuid.UUID] | None = None
     tags: list[uuid.UUID] | None = None
     updated_at: datetime | None = None
+
+
+class ActivityVisibleUpdate(BaseModel):
+    """
+    Schema for setting an activity's visible state explicitly
+    """
+
+    visible: bool
+
+    model_config = ConfigDict(json_schema_extra={"example": {"visible": True}})

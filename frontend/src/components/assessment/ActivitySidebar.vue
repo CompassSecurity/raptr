@@ -12,13 +12,16 @@ import {
     Folder,
     FolderOpen,
     Folders,
+    GripVertical,
     List,
     PlayCircle,
     Search,
     XCircle,
 } from '@lucide/vue';
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
+import draggable from 'vuedraggable';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -31,8 +34,13 @@ import {
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { useAssessmentDetailStore } from '@/stores/assessmentDetail';
+import { useAuthStore } from '@/stores/auth';
 import { usePreferencesStore } from '@/stores/preferences';
-import type { ActivitySortField, ActivityState } from '@/types/utils';
+import type {
+    ActivityRead,
+    ActivitySortField,
+    ActivityState,
+} from '@/types/utils';
 
 const props = withDefaults(
     defineProps<{
@@ -52,10 +60,14 @@ const emit = defineEmits<{
 }>();
 
 const store = useAssessmentDetailStore();
+const authStore = useAuthStore();
 const preferencesStore = usePreferencesStore();
 const route = useRoute();
 const { collapsed } = toRefs(props);
 const searchQuery = ref(preferencesStore.activityTableFilters.name || '');
+
+// Tag pills shown per activity before collapsing the rest into "+N"
+const MAX_SIDEBAR_TAGS = 2;
 
 const expandedGroups = ref<Set<string>>(new Set(['ungrouped']));
 
@@ -130,9 +142,13 @@ const groupedActivities = computed(() => {
         }
     });
 
-    // Remove empty groups
+    // Remove empty groups only while searching (like the activity table);
+    // the synthetic Ungrouped bucket is only shown when it has activities
     for (const [groupId, data] of groups) {
-        if (data.activities.length === 0) {
+        if (
+            data.activities.length === 0 &&
+            (searchQuery.value || groupId === 'ungrouped')
+        ) {
             groups.delete(groupId);
         }
     }
@@ -149,6 +165,102 @@ const toggleGroup = (groupId: string) => {
     }
     expandedGroups.value = newSet;
 };
+
+// Drag & drop ordering
+// vuedraggable reorders the lists it is given, so the grouped view renders a
+// local copy that is rebuilt from the store whenever no drag/save is running.
+type SidebarGroup = { id: string; group: any; activities: ActivityRead[] };
+const groupEntries = ref<SidebarGroup[]>([]);
+const dragging = ref(false);
+const savingOrder = ref(false);
+
+function syncGroupEntries() {
+    groupEntries.value = [...groupedActivities.value].map(([id, data]) => ({
+        id,
+        group: data.group,
+        activities: [...data.activities],
+    }));
+}
+
+watch(
+    groupedActivities,
+    () => {
+        if (!dragging.value && !savingOrder.value) syncGroupEntries();
+    },
+    { immediate: true },
+);
+
+const canReorder = computed(() =>
+    authStore.hasAdminOrRedAccess(props.assessmentId),
+);
+// Only the unfiltered Position order matches what the server stores
+const showsStoredOrder = computed(
+    () =>
+        props.sortBy === 'activity_position' &&
+        props.sortOrder === 'asc' &&
+        !searchQuery.value,
+);
+const dragEnabled = computed(
+    () =>
+        canReorder.value &&
+        !collapsed.value &&
+        showsStoredOrder.value &&
+        !savingOrder.value,
+);
+const showReorderHint = computed(
+    () => canReorder.value && !collapsed.value && !showsStoredOrder.value,
+);
+
+function onDragStart() {
+    dragging.value = true;
+}
+
+function onDragEnd() {
+    dragging.value = false;
+    if (!savingOrder.value) syncGroupEntries();
+}
+
+// Errors are already shown by the API error handler; the list just reverts
+async function saveOrder(action: () => Promise<void>) {
+    savingOrder.value = true;
+    try {
+        await action();
+    } catch {
+        // Revert below
+    } finally {
+        savingOrder.value = false;
+        syncGroupEntries();
+    }
+}
+
+function onGroupsChange(event: { moved?: unknown }) {
+    if (!event.moved) return;
+    const groupIds = groupEntries.value
+        .filter((entry) => entry.id !== 'ungrouped')
+        .map((entry) => entry.id);
+    saveOrder(() => store.reorderGroups(props.assessmentId, groupIds));
+}
+
+function onActivitiesChange(
+    entry: SidebarGroup,
+    event: {
+        added?: { element: ActivityRead };
+        moved?: { element: ActivityRead };
+    },
+) {
+    const change = event.added ?? event.moved;
+    if (!change) return;
+    const orderedIds = entry.activities.map((a) => a.id);
+    saveOrder(() =>
+        store.placeActivity(
+            props.assessmentId,
+            change.element.id,
+            entry.id,
+            orderedIds,
+            !!event.added,
+        ),
+    );
+}
 
 function toggleCollapse() {
     emit('toggle');
@@ -267,78 +379,155 @@ const toggleViewMode = () => {
         <ScrollArea class="flex-1 min-h-0">
             <nav class="grid gap-1 px-2 py-2">
                 <template v-if="preferencesStore.activityViewMode === 'grouped'">
-                    <template v-for="[groupId, groupData] in groupedActivities" :key="groupId">
-                        <!-- Group Header -->
-                        <div 
-                            v-if="!collapsed"
-                            class="flex items-center gap-2 px-1 py-1 text-sm font-medium mt-2 first:mt-0 select-none group"
-                        >
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                class="h-6 w-6 shrink-0 z-10 p-0"
-                                @click.prevent="toggleGroup(groupId)"
-                            >
-                                <ChevronRight v-if="!expandedGroups.has(groupId)" class="h-4 w-4 shrink-0 transition-transform" />
-                                <ChevronDown v-else class="h-4 w-4 shrink-0 transition-transform" />
-                            </Button>
-                            
-                            <RouterLink
-                                v-if="groupId !== 'ungrouped'"
-                                :to="{ name: 'assessment-group-detail', params: { id: assessmentId, groupId: groupId } }"
-                                :class="cn(
-                                    'flex flex-1 items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted/50 transition-colors',
-                                    route.params.groupId === groupId ? 'bg-muted/80 text-foreground' : 'text-muted-foreground'
-                                )"
-                            >
-                                <Folder v-if="!expandedGroups.has(groupId)" class="h-4 w-4 shrink-0" />
-                                <FolderOpen v-else class="h-4 w-4 shrink-0" />
-                                <EyeOff
-                                    v-if="!groupData.group.visible"
-                                    class="h-3.5 w-3.5 text-muted-foreground/50 shrink-0 flex-none"
-                                    title="Group not visible to blue/spectator"
-                                />
-                                <span class="truncate">{{ groupData.group.name }}</span>
-                            </RouterLink>
-                            <div v-else class="flex flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-muted-foreground">
-                                <Folder v-if="!expandedGroups.has(groupId)" class="h-4 w-4 shrink-0" />
-                                <FolderOpen v-else class="h-4 w-4 shrink-0" />
-                                <span class="truncate">{{ groupData.group.name }}</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Group Activities -->
-                        <template v-if="expandedGroups.has(groupId) || collapsed">
-                            <RouterLink
-                                v-for="activity in groupData.activities"
-                                :key="activity.id"
-                                :to="{ name: 'assessment-activity-detail', params: { id: assessmentId, activityId: activity.id } }"
-                                :class="cn(
-                                    'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors',
-                                    route.params.activityId === activity.id ? 'bg-accent text-accent-foreground' : 'transparent',
-                                    collapsed ? 'justify-center px-2' : 'pl-8'
-                                )"
-                                :title="collapsed ? activity.name : undefined"
-                            >
-                                <div class="flex items-center gap-1 shrink-0">
-                                    <component
-                                        :is="getStateIcon(activity.state)"
-                                        :class="cn('h-4 w-4', getStateColor(activity.state))"
-                                    />
-                                    <EyeOff
-                                        v-if="!collapsed && !activity.visible"
-                                        class="h-3.5 w-3.5 text-muted-foreground/50 shrink-0 flex-none"
-                                        title="Not visible to blue/spectator"
-                                    />
-                                </div>
-                                <div v-if="!collapsed" class="flex flex-col min-w-0 flex-1 gap-0.5 mt-0.5 mb-0.5">
-                                    <span class="truncate font-medium leading-none">
-                                        {{ activity.name }}
+                    <p v-if="showReorderHint" class="px-2 pb-1 text-[11px] leading-snug text-muted-foreground">
+                        Sort by Position (ascending) and clear the search to reorder by drag &amp; drop.
+                    </p>
+                    <!-- Groups: drag the grip on a group header to reorder groups -->
+                    <draggable
+                        :list="groupEntries"
+                        item-key="id"
+                        group="sidebar-groups"
+                        handle=".group-drag-handle"
+                        :disabled="!dragEnabled"
+                        ghost-class="opacity-30"
+                        :animation="200"
+                        :force-fallback="true"
+                        :scroll="true"
+                        class="grid gap-1"
+                        @start="onDragStart"
+                        @end="onDragEnd"
+                        @change="onGroupsChange"
+                    >
+                        <template #item="{ element: entry }">
+                            <div :class="['grid gap-1', collapsed ? '' : 'mt-2 first:mt-0']">
+                                <!-- Group Header -->
+                                <div
+                                    v-if="!collapsed"
+                                    class="flex items-center gap-2 px-1 py-1 text-sm font-medium select-none group/header"
+                                >
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        class="h-6 w-6 shrink-0 z-10 p-0"
+                                        @click.prevent="toggleGroup(entry.id)"
+                                    >
+                                        <ChevronRight v-if="!expandedGroups.has(entry.id)" class="h-4 w-4 shrink-0 transition-transform" />
+                                        <ChevronDown v-else class="h-4 w-4 shrink-0 transition-transform" />
+                                    </Button>
+
+                                    <!-- draggable="false": stop the browser's native link drag from competing with the grip -->
+                                    <RouterLink
+                                        v-if="entry.id !== 'ungrouped'"
+                                        :to="{ name: 'assessment-group-detail', params: { id: assessmentId, groupId: entry.id } }"
+                                        draggable="false"
+                                        :class="cn(
+                                            'flex flex-1 min-w-0 items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted/50 transition-colors',
+                                            route.params.groupId === entry.id ? 'bg-muted/80 text-foreground' : 'text-muted-foreground'
+                                        )"
+                                    >
+                                        <Folder v-if="!expandedGroups.has(entry.id)" class="h-4 w-4 shrink-0" />
+                                        <FolderOpen v-else class="h-4 w-4 shrink-0" />
+                                        <EyeOff
+                                            v-if="!entry.group.visible"
+                                            class="h-3.5 w-3.5 text-muted-foreground/50 shrink-0 flex-none"
+                                            title="Group not visible to blue/spectator"
+                                        />
+                                        <span class="truncate">{{ entry.group.name }}</span>
+                                    </RouterLink>
+                                    <div v-else class="flex flex-1 min-w-0 items-center gap-2 rounded-md px-2 py-1.5 text-muted-foreground">
+                                        <Folder v-if="!expandedGroups.has(entry.id)" class="h-4 w-4 shrink-0" />
+                                        <FolderOpen v-else class="h-4 w-4 shrink-0" />
+                                        <span class="truncate">{{ entry.group.name }}</span>
+                                    </div>
+
+                                    <span
+                                        v-if="dragEnabled && entry.id !== 'ungrouped'"
+                                        class="group-drag-handle mr-2 shrink-0 cursor-grab rounded p-0.5 text-muted-foreground opacity-0 transition-opacity hover:bg-muted group-hover/header:opacity-100"
+                                        title="Drag to reorder group"
+                                    >
+                                        <GripVertical class="h-4 w-4" />
                                     </span>
                                 </div>
-                            </RouterLink>
+
+                                <!-- Group Activities: drag the grip to reorder or move to another (expanded) group -->
+                                <draggable
+                                    v-if="expandedGroups.has(entry.id) || collapsed"
+                                    :list="entry.activities"
+                                    item-key="id"
+                                    handle=".activity-drag-handle"
+                                    :disabled="!dragEnabled"
+                                    :group="{ name: 'sidebar-activities', put: entry.id !== 'ungrouped' ? ['sidebar-activities'] : false }"
+                                    ghost-class="opacity-30"
+                                    :animation="200"
+                                    :force-fallback="true"
+                                    :scroll="true"
+                                    :class="[
+                                        'grid gap-1',
+                                        dragging && entry.activities.length === 0 ? 'min-h-9 rounded-md border border-dashed' : ''
+                                    ]"
+                                    @start="onDragStart"
+                                    @end="onDragEnd"
+                                    @change="onActivitiesChange(entry, $event)"
+                                >
+                                    <template #item="{ element: activity }">
+                                        <RouterLink
+                                            :to="{ name: 'assessment-activity-detail', params: { id: assessmentId, activityId: activity.id } }"
+                                            draggable="false"
+                                            :class="cn(
+                                                'group/item flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors',
+                                                route.params.activityId === activity.id ? 'bg-accent text-accent-foreground' : 'transparent',
+                                                collapsed ? 'justify-center px-2' : 'pl-8'
+                                            )"
+                                            :title="collapsed ? activity.name : undefined"
+                                        >
+                                            <div class="flex items-center gap-1 shrink-0">
+                                                <component
+                                                    :is="getStateIcon(activity.state)"
+                                                    :class="cn('h-4 w-4', getStateColor(activity.state))"
+                                                />
+                                                <EyeOff
+                                                    v-if="!collapsed && !activity.visible"
+                                                    class="h-3.5 w-3.5 text-muted-foreground/50 shrink-0 flex-none"
+                                                    title="Not visible to blue/spectator"
+                                                />
+                                            </div>
+                                            <div v-if="!collapsed" class="flex flex-col min-w-0 flex-1 gap-0.5 mt-0.5 mb-0.5">
+                                                <span class="truncate font-medium leading-none">
+                                                    {{ activity.name }}
+                                                </span>
+                                            </div>
+                                            <div
+                                                v-if="!collapsed && activity.tags?.length"
+                                                class="flex items-center gap-1 shrink-0"
+                                                :title="activity.tags.map((t: { name: string }) => t.name).join(', ')"
+                                            >
+                                                <Badge
+                                                    v-for="tag in activity.tags.slice(0, MAX_SIDEBAR_TAGS)"
+                                                    :key="tag.id"
+                                                    variant="outline"
+                                                    class="h-4 max-w-20 px-1.5 text-[10px] leading-none"
+                                                    :style="{ borderColor: tag.color, color: tag.color }"
+                                                >
+                                                    <span class="truncate">{{ tag.name }}</span>
+                                                </Badge>
+                                                <span v-if="activity.tags.length > MAX_SIDEBAR_TAGS" class="text-[10px] text-muted-foreground">
+                                                    +{{ activity.tags.length - MAX_SIDEBAR_TAGS }}
+                                                </span>
+                                            </div>
+                                            <span
+                                                v-if="dragEnabled"
+                                                class="activity-drag-handle shrink-0 cursor-grab rounded p-0.5 text-muted-foreground opacity-0 transition-opacity hover:bg-muted group-hover/item:opacity-100"
+                                                title="Drag to reorder or move to another group"
+                                                @click.prevent.stop
+                                            >
+                                                <GripVertical class="h-4 w-4" />
+                                            </span>
+                                        </RouterLink>
+                                    </template>
+                                </draggable>
+                            </div>
                         </template>
-                    </template>
+                    </draggable>
                 </template>
                 <template v-else>
                     <RouterLink
@@ -366,6 +555,24 @@ const toggleViewMode = () => {
                         <div v-if="!collapsed" class="flex flex-col min-w-0 flex-1 gap-0.5 mt-0.5 mb-0.5">
                             <span class="truncate font-medium leading-none">
                                 {{ activity.name }}
+                            </span>
+                        </div>
+                        <div
+                            v-if="!collapsed && activity.tags?.length"
+                            class="flex items-center gap-1 shrink-0"
+                            :title="activity.tags.map((t) => t.name).join(', ')"
+                        >
+                            <Badge
+                                v-for="tag in activity.tags.slice(0, MAX_SIDEBAR_TAGS)"
+                                :key="tag.id"
+                                variant="outline"
+                                class="h-4 max-w-20 px-1.5 text-[10px] leading-none"
+                                :style="{ borderColor: tag.color, color: tag.color }"
+                            >
+                                <span class="truncate">{{ tag.name }}</span>
+                            </Badge>
+                            <span v-if="activity.tags.length > MAX_SIDEBAR_TAGS" class="text-[10px] text-muted-foreground">
+                                +{{ activity.tags.length - MAX_SIDEBAR_TAGS }}
                             </span>
                         </div>
                     </RouterLink>

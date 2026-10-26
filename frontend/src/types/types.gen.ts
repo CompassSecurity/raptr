@@ -69,11 +69,11 @@ export type ActivityAssetUpdate = {
 };
 
 /**
- * ActivityBase
+ * ActivityCreate
  *
- * Assessment activity base model
+ * Assessment activity create model
  */
-export type ActivityBase = {
+export type ActivityCreate = {
     /**
      * Name
      */
@@ -86,6 +86,10 @@ export type ActivityBase = {
      * Mitre Technique
      */
     mitre_technique: string;
+    /**
+     * Activity Group Id
+     */
+    activity_group_id?: string | null;
 };
 
 /**
@@ -807,6 +811,18 @@ export type ActivityUpdate = {
      */
     stakeholder_notification_notes?: string | null;
     evaluation?: ActivityEvaluationUpdate | null;
+};
+
+/**
+ * ActivityVisibleUpdate
+ *
+ * Schema for setting an activity's visible state explicitly
+ */
+export type ActivityVisibleUpdate = {
+    /**
+     * Visible
+     */
+    visible: boolean;
 };
 
 /**
@@ -4221,7 +4237,7 @@ export type GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponses = {
 export type GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponse = GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponses[keyof GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponses];
 
 export type CreateActivityApiV1AssessmentsAssessmentIdActivityPostData = {
-    body: ActivityBase;
+    body: ActivityCreate;
     path: {
         /**
          * Assessment Id
@@ -4490,7 +4506,10 @@ export type AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActi
 export type AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponse = AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponses[keyof AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponses];
 
 export type ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutData = {
-    body?: never;
+    /**
+     * Visibility
+     */
+    body?: ActivityVisibleUpdate | null;
     path: {
         /**
          * Activity Id

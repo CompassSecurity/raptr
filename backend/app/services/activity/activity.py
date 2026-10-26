@@ -16,7 +16,7 @@ from app.models.activity_group import ActivityGroup
 from app.models.evaluation_template import EvaluationTemplate
 from app.models.user import User
 from app.schemas.activity import (
-    ActivityBase,
+    ActivityCreate,
     ActivityFilter,
     ActivityRead,
     ActivityUpdate,
@@ -141,24 +141,31 @@ def get_activity_by_id_service(
 
 
 def create_activity_service(
-    activity: ActivityBase, assessment_id: uuid.UUID, user: User, session: Session
+    activity: ActivityCreate, assessment_id: uuid.UUID, user: User, session: Session
 ) -> Activity:
     """
-    Create a new activity.
+    Create a new activity at the end of the given group, or of the
+    assessment's default group when no group is given.
     """
-    from app.services.activity_group.activity_group import get_or_create_default_group
-
-    default_group = get_or_create_default_group(
-        assessment_id, session, created_by=user.id
+    from app.services.activity_group.activity_group import (
+        get_activity_group_by_id_service,
+        get_or_create_default_group,
     )
-    new_position = calculate_new_activity_position(session, default_group.id)
+
+    if activity.activity_group_id:
+        group = get_activity_group_by_id_service(
+            activity.activity_group_id, assessment_id, user, session
+        )
+    else:
+        group = get_or_create_default_group(assessment_id, session, created_by=user.id)
+    new_position = calculate_new_activity_position(session, group.id)
 
     activity_db = Activity(
         assessment_id=assessment_id,
         name=activity.name,
         mitre_tactic=activity.mitre_tactic,
         mitre_technique=activity.mitre_technique,
-        activity_group_id=default_group.id,
+        activity_group_id=group.id,
         activity_position=new_position,
         created_by=user.id,
     )
@@ -430,17 +437,22 @@ def toggle_delete_activity_service(
 
 
 def toggle_visible_activity_service(
-    activity_id: uuid.UUID, assessment_id: uuid.UUID, user: User, session: Session
+    activity_id: uuid.UUID,
+    assessment_id: uuid.UUID,
+    user: User,
+    session: Session,
+    visible: bool | None = None,
 ) -> None:
     """
-    Toggle visible state of an activity
+    Toggle visible state of an activity, or set it to `visible` when given.
+    Setting the current state again changes nothing (idempotent).
     """
     activity_db = get_activity_by_id_service(activity_id, assessment_id, user, session)
 
-    if activity_db.visible:
-        activity_db.visible = False
-    else:
-        activity_db.visible = True
+    new_visible = not activity_db.visible if visible is None else visible
+    if activity_db.visible == new_visible:
+        return
+    activity_db.visible = new_visible
     activity_db.updated_by = user.id
     activity_db.updated_at = func.now()
     session.commit()
