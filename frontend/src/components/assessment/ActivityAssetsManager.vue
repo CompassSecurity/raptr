@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+    AppWindow,
     Check,
     Cloud,
     Computer,
@@ -7,7 +8,10 @@ import {
     Globe,
     Hammer,
     Info,
+    LayoutGrid,
+    Mail,
     Network,
+    Phone,
     Plus,
     Search,
     SearchCode,
@@ -92,6 +96,10 @@ const iconMap: Record<string, any> = {
     Hammer,
     User,
     Globe,
+    Phone,
+    Mail,
+    LayoutGrid,
+    AppWindow,
 };
 
 function getIconComponent(iconName: string | null | undefined) {
