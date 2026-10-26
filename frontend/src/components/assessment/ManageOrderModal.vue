@@ -103,10 +103,14 @@ async function fetchActivitiesForGroup(groupId: string) {
             props.assessmentId,
             groupId,
         );
-        // Already filtered to non-deleted by backend, sort by position
-        const sorted = activities.sort(
-            (a, b) => (a.activity_position ?? 0) - (b.activity_position ?? 0),
-        );
+        // Red/admin also receive deleted activities, but the reorder endpoint
+        // only accepts non-deleted ones, so drop them; then sort by position
+        const sorted = activities
+            .filter((a) => !a.deleted)
+            .sort(
+                (a, b) =>
+                    (a.activity_position ?? 0) - (b.activity_position ?? 0),
+            );
         groupActivities.value.set(groupId, sorted);
         initialActivityOrders.value.set(
             groupId,
