@@ -290,3 +290,13 @@ class ActivityUpdateBlue(BaseModel):
     stakeholder_notification_sources: list[uuid.UUID] | None = None
     tags: list[uuid.UUID] | None = None
     updated_at: datetime | None = None
+
+
+class ActivityVisibleUpdate(BaseModel):
+    """
+    Schema for setting an activity's visible state explicitly
+    """
+
+    visible: bool
+
+    model_config = ConfigDict(json_schema_extra={"example": {"visible": True}})

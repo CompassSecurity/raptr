@@ -417,3 +417,54 @@ def test_delete_activity(
     # Verify soft delete - activity should be marked as deleted
     session.refresh(activity)
     # Note: Activity model might need deleted field - check model definition
+
+
+def test_visible_endpoint_toggle_and_explicit_state(
+    client: TestClient,
+    test_assessment: Assessment,
+    test_acl_red: Acl,
+    auth_headers_regular: dict[str, str],
+):
+    """Without a body the state toggles; with {"visible": x} it is set to x"""
+    base_url = f"/api/v1/assessments/{test_assessment.id}/activity"
+    response = client.post(
+        f"{base_url}/",
+        json={
+            "name": "Test Activity",
+            "mitre_tactic": "Execution",
+            "mitre_technique": "T1204.001",
+        },
+        headers=auth_headers_regular,
+    )
+    assert response.status_code == 200
+    activity_id = response.json()["id"]
+    assert response.json()["visible"] is False
+
+    def current_visible() -> bool:
+        response = client.get(f"{base_url}/{activity_id}", headers=auth_headers_regular)
+        return response.json()["visible"]
+
+    # Toggle (no body)
+    response = client.put(
+        f"{base_url}/{activity_id}/visible", headers=auth_headers_regular
+    )
+    assert response.status_code == 200
+    assert current_visible() is True
+
+    # Explicit state, sent twice: stays visible
+    for _ in range(2):
+        response = client.put(
+            f"{base_url}/{activity_id}/visible",
+            json={"visible": True},
+            headers=auth_headers_regular,
+        )
+        assert response.status_code == 200
+        assert current_visible() is True
+
+    response = client.put(
+        f"{base_url}/{activity_id}/visible",
+        json={"visible": False},
+        headers=auth_headers_regular,
+    )
+    assert response.status_code == 200
+    assert current_visible() is False

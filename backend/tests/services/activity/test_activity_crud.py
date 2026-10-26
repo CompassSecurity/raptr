@@ -176,3 +176,40 @@ def test_toggle_visible_activity(session, test_assessment, test_admin_user):
         created.id, test_assessment.id, test_admin_user, session
     )
     assert fetched.visible is False
+
+
+def test_set_visible_activity_explicit(session, test_assessment, test_admin_user):
+    activity_data = ActivityBase(
+        name="Test Activity", mitre_tactic="T", mitre_technique="T1"
+    )
+    created = create_activity_service(
+        activity_data, test_assessment.id, test_admin_user, session
+    )
+    assert created.visible is False
+
+    toggle_visible_activity_service(
+        created.id, test_assessment.id, test_admin_user, session, visible=True
+    )
+    fetched = get_activity_by_id_service(
+        created.id, test_assessment.id, test_admin_user, session
+    )
+    assert fetched.visible is True
+    updated_at = fetched.updated_at
+
+    # Setting the same state again changes nothing, not even updated_at
+    toggle_visible_activity_service(
+        created.id, test_assessment.id, test_admin_user, session, visible=True
+    )
+    fetched = get_activity_by_id_service(
+        created.id, test_assessment.id, test_admin_user, session
+    )
+    assert fetched.visible is True
+    assert fetched.updated_at == updated_at
+
+    toggle_visible_activity_service(
+        created.id, test_assessment.id, test_admin_user, session, visible=False
+    )
+    fetched = get_activity_by_id_service(
+        created.id, test_assessment.id, test_admin_user, session
+    )
+    assert fetched.visible is False

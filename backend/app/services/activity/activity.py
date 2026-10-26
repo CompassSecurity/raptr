@@ -430,17 +430,22 @@ def toggle_delete_activity_service(
 
 
 def toggle_visible_activity_service(
-    activity_id: uuid.UUID, assessment_id: uuid.UUID, user: User, session: Session
+    activity_id: uuid.UUID,
+    assessment_id: uuid.UUID,
+    user: User,
+    session: Session,
+    visible: bool | None = None,
 ) -> None:
     """
-    Toggle visible state of an activity
+    Toggle visible state of an activity, or set it to `visible` when given.
+    Setting the current state again changes nothing (idempotent).
     """
     activity_db = get_activity_by_id_service(activity_id, assessment_id, user, session)
 
-    if activity_db.visible:
-        activity_db.visible = False
-    else:
-        activity_db.visible = True
+    new_visible = not activity_db.visible if visible is None else visible
+    if activity_db.visible == new_visible:
+        return
+    activity_db.visible = new_visible
     activity_db.updated_by = user.id
     activity_db.updated_at = func.now()
     session.commit()

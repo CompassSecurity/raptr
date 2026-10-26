@@ -19,6 +19,7 @@ from app.schemas.activity import (
     ActivityFilter,
     ActivityRead,
     ActivityUpdate,
+    ActivityVisibleUpdate,
 )
 from app.schemas.activity_evaluation_dynamic_questions import (
     DynamicEvaluationQuestionAssign,
@@ -208,11 +209,21 @@ def assign_update_assets_to_activity(
 def toggle_visible_activity(
     activity_id: uuid.UUID,
     assessment_id: uuid.UUID,
+    visibility: ActivityVisibleUpdate | None = None,
     user: User = Depends(require_assessment_role(AclRole.RED)),
     session: Session = Depends(get_session),
 ):
-    toggle_visible_activity_service(activity_id, assessment_id, user, session)
-    return MessageResponse(message="Activity visible state toggled successfully")
+    """
+    Without a body: toggle the visible state.
+    With {"visible": true|false}: set that state (idempotent).
+    """
+    if visibility is None:
+        toggle_visible_activity_service(activity_id, assessment_id, user, session)
+        return MessageResponse(message="Activity visible state toggled successfully")
+    toggle_visible_activity_service(
+        activity_id, assessment_id, user, session, visible=visibility.visible
+    )
+    return MessageResponse(message="Activity visible state set successfully")
 
 
 @router.put("/{activity_id}/dynamic_evaluation_questions", response_model=ActivityRead)

@@ -368,6 +368,22 @@ def test_upload_matching_extension_unchanged(
     assert stored.filename == "photo.png"
 
 
+def test_blue_user_cannot_set_visible(
+    client: TestClient,
+    test_assessment: Assessment,
+    test_activity: Activity,
+    auth_headers_blue: dict[str, str],
+    test_acl_blue: Acl,
+):
+    """Test Blue user cannot change an activity's visibility"""
+    response = client.put(
+        f"/api/v1/assessments/{test_assessment.id}/activity/{test_activity.id}/visible",
+        json={"visible": False},
+        headers=auth_headers_blue,
+    )
+    assert response.status_code == 403
+
+
 def test_blue_user_fail_hidden(
     client: TestClient,
     session: Session,
