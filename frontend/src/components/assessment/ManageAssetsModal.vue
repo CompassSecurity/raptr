@@ -63,7 +63,9 @@ import type { AssetBase, AssetRead } from '@/types/utils';
 const props = defineProps<{
     open: boolean;
     assessmentId: string;
-    initialView?: 'list' | 'create';
+    initialView?: 'list' | 'create' | 'edit';
+    // Asset to edit when initialView is 'edit'
+    editAsset?: AssetRead | null;
 }>();
 
 const emit = defineEmits<{
@@ -288,8 +290,13 @@ function showListView() {
     resetForm();
 }
 
+// Opened straight into a form: finishing it closes the modal instead of showing the list
+const openedIntoForm = computed(
+    () => props.initialView === 'create' || props.initialView === 'edit',
+);
+
 function handleCancel() {
-    if (props.initialView === 'create') {
+    if (openedIntoForm.value) {
         emit('update:open', false);
     } else {
         showListView();
@@ -393,7 +400,7 @@ async function handleCreate() {
         toast.success(`Asset "${payload.name}" created`);
 
         await fetchAssets();
-        if (props.initialView === 'create') {
+        if (openedIntoForm.value) {
             emit('update:open', false);
         } else {
             showListView();
@@ -425,7 +432,7 @@ async function handleUpdate() {
         toast.success(`Asset "${payload.name}" updated`);
 
         await fetchAssets();
-        if (props.initialView === 'create') {
+        if (openedIntoForm.value) {
             emit('update:open', false);
         } else {
             showListView();
@@ -473,6 +480,12 @@ watch(
         if (isOpen) {
             if (props.initialView === 'create' && canEdit.value) {
                 showCreateView();
+            } else if (
+                props.initialView === 'edit' &&
+                props.editAsset &&
+                canEdit.value
+            ) {
+                showEditView(props.editAsset);
             } else {
                 showListView();
             }
