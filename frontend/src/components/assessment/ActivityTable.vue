@@ -507,7 +507,7 @@ const getStateColor = (state: string | null | undefined) => {
           <TableRow>
             <TableHead v-if="authStore.hasAdminOrRedAccess(props.assessmentId)" class="w-12 p-0">
               <div 
-                class="w-full h-full min-h-[2.5rem] flex items-center justify-center cursor-pointer hover:bg-muted/50"
+                class="w-full h-full min-h-[2.5rem] flex items-center pl-2 cursor-pointer hover:bg-muted/50"
                 @click.stop="toggleSelectAll(allSelected ? false : true)"
               >
                 <Checkbox
@@ -857,18 +857,26 @@ const getStateColor = (state: string | null | undefined) => {
               >
                 <TableCell :colspan="totalColumns" class="p-0">
                   <div class="flex items-stretch min-h-[2.5rem]">
-                    <div 
-                      v-if="groupData.activities.length > 0 && authStore.hasAdminOrRedAccess(props.assessmentId)"
-                      class="flex w-12 shrink-0 items-center justify-center cursor-pointer hover:bg-muted transition-colors border-r border-transparent hover:border-border/50"
-                      @click.stop="toggleGroupSelect(groupData.activities, !isGroupSelected(groupData.activities))"
+                    <!-- Empty groups show a disabled checkbox to keep the column aligned -->
+                    <div
+                      v-if="authStore.hasAdminOrRedAccess(props.assessmentId)"
+                      :class="[
+                        'flex w-12 shrink-0 items-center pl-2',
+                        groupData.activities.length > 0
+                          ? 'cursor-pointer hover:bg-muted transition-colors border-r border-transparent hover:border-border/50'
+                          : 'cursor-not-allowed'
+                      ]"
+                      :title="groupData.activities.length > 0 ? undefined : 'No activities in this group'"
+                      @click.stop="groupData.activities.length > 0 && toggleGroupSelect(groupData.activities, !isGroupSelected(groupData.activities))"
                     >
                       <Checkbox
                         :model-value="isGroupSelected(groupData.activities) ? true : (isGroupIndeterminate(groupData.activities) ? 'indeterminate' : false)"
+                        :disabled="groupData.activities.length === 0"
                         class="pointer-events-none"
                         aria-label="Select group"
                       />
                     </div>
-                    
+
                     <div class="flex flex-1 items-center gap-2 px-2 py-2 cursor-pointer" @click="toggleGroup(groupId)">
                       <ChevronRight v-if="!expandedGroups.has(groupId)" class="h-4 w-4" />
                     <ChevronDown v-else class="h-4 w-4" />
@@ -935,8 +943,9 @@ const getStateColor = (state: string | null | undefined) => {
                   ]"
                   @click="emit('row-click', activity)"
                 >
-                  <TableCell 
+                  <TableCell
                     v-if="authStore.hasAdminOrRedAccess(props.assessmentId)"
+                    class="pl-6"
                     @click.stop="toggleSelect(activity.id)"
                   >
                     <Checkbox
