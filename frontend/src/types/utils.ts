@@ -27,6 +27,7 @@ export type {
     ActivityState,
     ActivityTemplateRead,
     ActivityUpdate,
+    ActivityVisibleUpdate,
     AssessmentBase,
     AssessmentRead,
     AssessmentType,

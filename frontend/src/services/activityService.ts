@@ -6,6 +6,7 @@ import type {
     ActivityHistoryRead,
     ActivityRead,
     ActivityUpdate,
+    ActivityVisibleUpdate,
     DynamicEvaluationQuestionAssign,
     MessageResponse,
     PaginatedResponse,
@@ -87,6 +88,23 @@ export const activityService = {
     ): Promise<void> {
         await api.put(
             `/assessments/${assessmentId}/activity/${activityId}/visible`,
+        );
+    },
+
+    // Sets an explicit state (idempotent), unlike toggleVisibleActivity
+    async bulkSetVisible(
+        assessmentId: string,
+        activityIds: string[],
+        visible: boolean,
+    ): Promise<void> {
+        const data: ActivityVisibleUpdate = { visible };
+        await Promise.all(
+            activityIds.map((id) =>
+                api.put(
+                    `/assessments/${assessmentId}/activity/${id}/visible`,
+                    data,
+                ),
+            ),
         );
     },
 

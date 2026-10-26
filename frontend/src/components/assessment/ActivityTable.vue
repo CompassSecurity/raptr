@@ -91,7 +91,7 @@ const emit = defineEmits<{
     (e: 'group-toggle-visibility', group: ActivityGroupRead): void;
     (e: 'bulk-delete', activityIds: string[]): void;
     (e: 'bulk-move-to-group', activityIds: string[]): void;
-    (e: 'bulk-toggle-visibility', activityIds: string[]): void;
+    (e: 'bulk-set-visibility', activityIds: string[], visible: boolean): void;
 }>();
 
 // Multi-select state
@@ -189,11 +189,15 @@ function toggleSelect(activityId: string) {
     selectedIds.value = new Set(selectedIds.value);
 }
 
-// Clear selection when activities change
+// Keep the selection across reloads (e.g. after a bulk action), but drop rows
+// that are no longer listed (page change, filter, deleted and hidden)
 watch(
     () => props.activities,
-    () => {
-        selectedIds.value = new Set();
+    (activities) => {
+        const listedIds = new Set(activities.map((a) => a.id));
+        selectedIds.value = new Set(
+            [...selectedIds.value].filter((id) => listedIds.has(id)),
+        );
     },
 );
 
@@ -458,9 +462,13 @@ const getStateColor = (state: string | null | undefined) => {
           <FolderInput class="mr-2 h-4 w-4" />
           Move to Group
         </Button>
-        <Button variant="outline" size="sm" class="h-8" @click="emit('bulk-toggle-visibility', [...selectedIds])">
+        <Button variant="outline" size="sm" class="h-8" @click="emit('bulk-set-visibility', [...selectedIds], true)">
           <Eye class="mr-2 h-4 w-4" />
-          Toggle Visibility
+          Show
+        </Button>
+        <Button variant="outline" size="sm" class="h-8" @click="emit('bulk-set-visibility', [...selectedIds], false)">
+          <EyeOff class="mr-2 h-4 w-4" />
+          Hide
         </Button>
         <Button variant="outline" size="sm" class="h-8 text-destructive hover:text-destructive" @click="emit('bulk-delete', [...selectedIds])">
           <Trash2 class="mr-2 h-4 w-4" />

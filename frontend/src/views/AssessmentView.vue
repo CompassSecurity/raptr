@@ -382,17 +382,36 @@ const handleBulkDelete = async (activityIds: string[]) => {
     }
 };
 
-// Bulk toggle visibility
-const handleBulkToggleVisibility = async (activityIds: string[]) => {
+// Bulk show/hide: sets an explicit state, so mixed selections become uniform
+const handleBulkSetVisibility = async (
+    activityIds: string[],
+    visible: boolean,
+) => {
+    // Count from the listed rows (the selection only contains listed activities);
+    // the request still goes to all of them, which is safe as it is idempotent
+    const selected = new Set(activityIds);
+    const updatedCount = assessmentStore.activities.filter(
+        (a) => selected.has(a.id) && a.visible !== visible,
+    ).length;
     try {
-        await Promise.all(
-            activityIds.map((id) =>
-                activityService.toggleVisibleActivity(assessmentId, id),
-            ),
+        await activityService.bulkSetVisible(
+            assessmentId,
+            activityIds,
+            visible,
         );
-        toast.success(
-            `Visibility toggled for ${activityIds.length} activities`,
-        );
+        const state = visible ? 'visible' : 'hidden';
+        const unchanged = activityIds.length - updatedCount;
+        if (updatedCount === 0) {
+            toast.success(`All selected activities are already ${state}`);
+        } else {
+            const verb = visible ? 'made visible' : 'hidden';
+            const noun = updatedCount === 1 ? 'activity' : 'activities';
+            toast.success(
+                unchanged > 0
+                    ? `${updatedCount} ${noun} ${verb} (${unchanged} already ${state})`
+                    : `${updatedCount} ${noun} ${verb}`,
+            );
+        }
         fetchActivitiesWithParams();
     } catch (error) {
         // Error handled globally
@@ -513,7 +532,7 @@ const handleGroupToggleVisibility = async (group: ActivityGroupRead) => {
         @group-toggle-visibility="handleGroupToggleVisibility"
         @bulk-delete="handleBulkDelete"
         @bulk-move-to-group="handleBulkMoveToGroup"
-        @bulk-toggle-visibility="handleBulkToggleVisibility"
+        @bulk-set-visibility="handleBulkSetVisibility"
       />
       </div>
     </ScrollArea>

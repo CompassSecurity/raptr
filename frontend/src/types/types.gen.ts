@@ -810,6 +810,18 @@ export type ActivityUpdate = {
 };
 
 /**
+ * ActivityVisibleUpdate
+ *
+ * Schema for setting an activity's visible state explicitly
+ */
+export type ActivityVisibleUpdate = {
+    /**
+     * Visible
+     */
+    visible: boolean;
+};
+
+/**
  * AssessmentBase
  *
  * Shared properties for multiple assessment schemas
@@ -4490,7 +4502,10 @@ export type AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActi
 export type AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponse = AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponses[keyof AssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponses];
 
 export type ToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutData = {
-    body?: never;
+    /**
+     * Visibility
+     */
+    body?: ActivityVisibleUpdate | null;
     path: {
         /**
          * Activity Id

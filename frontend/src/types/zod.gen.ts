@@ -209,6 +209,15 @@ export const zActivityTemplateRead = z.object({
 });
 
 /**
+ * ActivityVisibleUpdate
+ *
+ * Schema for setting an activity's visible state explicitly
+ */
+export const zActivityVisibleUpdate = z.object({
+    visible: z.boolean()
+});
+
+/**
  * AssessmentType
  *
  * Possible assessment types
@@ -1875,6 +1884,11 @@ export const zAssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityAc
  * Successful Response
  */
 export const zAssignUpdateAssetsToActivityApiV1AssessmentsAssessmentIdActivityActivityIdAssetsRolePutResponse = zMessageResponse;
+
+/**
+ * Visibility
+ */
+export const zToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutBody = zActivityVisibleUpdate.nullable();
 
 export const zToggleVisibleActivityApiV1AssessmentsAssessmentIdActivityActivityIdVisiblePutPath = z.object({
     activity_id: z.uuid(),
