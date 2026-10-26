@@ -121,8 +121,14 @@ const showKBModal = ref(false);
 const showHistoryModal = ref(false);
 const attachmentRefreshKey = ref(0);
 
-// Selected section tab; kept when switching between activities
+// Selected section tab; every newly opened activity starts on Activity Details
 const activeSectionTab = ref('details');
+watch(
+    () => props.activity?.id,
+    () => {
+        activeSectionTab.value = 'details';
+    },
+);
 
 // Browser-style section tabs: the active tab joins the page below and shows its section colour on top
 const SECTION_TABS = [
