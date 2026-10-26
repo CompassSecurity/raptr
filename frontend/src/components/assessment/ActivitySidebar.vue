@@ -130,9 +130,13 @@ const groupedActivities = computed(() => {
         }
     });
 
-    // Remove empty groups
+    // Remove empty groups only while searching (like the activity table);
+    // the synthetic Ungrouped bucket is only shown when it has activities
     for (const [groupId, data] of groups) {
-        if (data.activities.length === 0) {
+        if (
+            data.activities.length === 0 &&
+            (searchQuery.value || groupId === 'ungrouped')
+        ) {
             groups.delete(groupId);
         }
     }
