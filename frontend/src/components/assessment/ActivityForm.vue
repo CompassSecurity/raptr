@@ -172,7 +172,7 @@ const conflictDisplayLookups = computed(() => {
 // Initialize form data
 watch(
     () => props.activity,
-    (newVal) => {
+    async (newVal) => {
         if (!newVal) return;
 
         isProgrammaticUpdate.value = true;
@@ -214,9 +214,8 @@ watch(
 
             originalData.value = JSON.parse(JSON.stringify(newVal));
 
-            nextTick(() => {
-                isProgrammaticUpdate.value = false;
-            });
+            await nextTick();
+            isProgrammaticUpdate.value = false;
             return;
         }
 
@@ -240,11 +239,10 @@ watch(
             formData.value.stakeholder_notification_created ?? false;
 
         // Wait for child v-model normalizations to settle before clearing the flag.
-        nextTick(() => {
-            originalData.value = JSON.parse(JSON.stringify(formData.value));
-            userDirty.value = false;
-            isProgrammaticUpdate.value = false;
-        });
+        await nextTick();
+        originalData.value = JSON.parse(JSON.stringify(formData.value));
+        userDirty.value = false;
+        isProgrammaticUpdate.value = false;
     },
     { immediate: true, deep: true },
 );

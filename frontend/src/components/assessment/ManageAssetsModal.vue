@@ -257,12 +257,11 @@ function objectToProperties(
 }
 
 // View navigation
-function showCreateView() {
+async function showCreateView() {
     currentView.value = 'create';
     resetForm();
-    nextTick(() => {
-        nameInput.value?.$el?.focus();
-    });
+    await nextTick();
+    nameInput.value?.$el?.focus();
 }
 
 function showEditView(asset: AssetRead) {
