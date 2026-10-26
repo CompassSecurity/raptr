@@ -463,9 +463,10 @@ onUnmounted(() => {
                                         v-for="item in currentTagNames"
                                         :key="item"
                                         :value="item"
+                                        class="rounded-full border bg-transparent"
                                         :style="{
-                                            backgroundColor: getTagColor(item),
-                                            color: '#fff',
+                                            borderColor: getTagColor(item),
+                                            color: getTagColor(item),
                                         }"
                                     >
                                         <TagsInputItemText />
