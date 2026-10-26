@@ -61,14 +61,15 @@ export const zActivityAssetUpdate = z.object({
 });
 
 /**
- * ActivityBase
+ * ActivityCreate
  *
- * Assessment activity base model
+ * Assessment activity create model
  */
-export const zActivityBase = z.object({
+export const zActivityCreate = z.object({
     name: z.string(),
     mitre_tactic: z.string(),
-    mitre_technique: z.string()
+    mitre_technique: z.string(),
+    activity_group_id: z.uuid().nullish()
 });
 
 /**
@@ -1795,7 +1796,7 @@ export const zGetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetQuery = z.o
  */
 export const zGetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponse = zPaginatedResponseActivityRead;
 
-export const zCreateActivityApiV1AssessmentsAssessmentIdActivityPostBody = zActivityBase;
+export const zCreateActivityApiV1AssessmentsAssessmentIdActivityPostBody = zActivityCreate;
 
 export const zCreateActivityApiV1AssessmentsAssessmentIdActivityPostPath = z.object({
     assessment_id: z.uuid()

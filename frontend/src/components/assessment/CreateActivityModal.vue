@@ -25,14 +25,26 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui/popover';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { activityService } from '@/services/activityService';
 import { mitreService } from '@/services/mitreService';
-import type { TacticWithTechniques, TechniqueBase } from '@/types/utils';
+import type {
+    ActivityGroupRead,
+    TacticWithTechniques,
+    TechniqueBase,
+} from '@/types/utils';
 
 const props = defineProps<{
     open: boolean;
     assessmentId: string;
+    groups: ActivityGroupRead[];
 }>();
 
 const emit = defineEmits<{
@@ -45,6 +57,20 @@ const name = ref('');
 const nameInput = ref<InstanceType<typeof Input> | null>(null);
 const selectedTactic = ref<TacticWithTechniques | null>(null);
 const selectedTechnique = ref<TechniqueBase | null>(null);
+const selectedGroupId = ref('');
+
+// Groups a new activity can be added to (in their position order)
+const availableGroups = computed(() =>
+    props.groups.filter((group) => !group.deleted),
+);
+
+// Preselect the default group, so not touching the field behaves as before
+function preselectGroup() {
+    const defaultGroup =
+        availableGroups.value.find((group) => group.is_default) ??
+        availableGroups.value[0];
+    selectedGroupId.value = defaultGroup?.id ?? '';
+}
 
 // Loading and data state
 const loading = ref(false);
@@ -61,6 +87,9 @@ const techniqueDropdownOpen = ref(false);
 watch(
     () => props.open,
     async (isOpen) => {
+        if (isOpen) {
+            preselectGroup();
+        }
         if (isOpen && tactics.value.length === 0) {
             await fetchTactics();
         }
@@ -114,6 +143,7 @@ const resetForm = () => {
     name.value = '';
     selectedTactic.value = null;
     selectedTechnique.value = null;
+    selectedGroupId.value = '';
 };
 
 const handleSubmit = async () => {
@@ -128,6 +158,8 @@ const handleSubmit = async () => {
             name: name.value,
             mitre_tactic: selectedTactic.value.mitre_id,
             mitre_technique: selectedTechnique.value.mitre_id,
+            // Empty only when the assessment has no group yet: backend uses its default group
+            activity_group_id: selectedGroupId.value || null,
         });
         toast.success('Activity created successfully');
         emit('created');
@@ -252,6 +284,25 @@ const isFormValid = computed(() => {
               </Command>
             </PopoverContent>
           </Popover>
+        </div>
+
+        <!-- Activity Group -->
+        <div v-if="availableGroups.length > 0" class="grid gap-2">
+          <Label>Activity Group</Label>
+          <Select v-model="selectedGroupId" :disabled="submitting">
+            <SelectTrigger class="w-full">
+              <SelectValue placeholder="Select group..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem
+                v-for="group in availableGroups"
+                :key="group.id"
+                :value="group.id"
+              >
+                {{ group.name }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

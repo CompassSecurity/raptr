@@ -69,11 +69,11 @@ export type ActivityAssetUpdate = {
 };
 
 /**
- * ActivityBase
+ * ActivityCreate
  *
- * Assessment activity base model
+ * Assessment activity create model
  */
-export type ActivityBase = {
+export type ActivityCreate = {
     /**
      * Name
      */
@@ -86,6 +86,10 @@ export type ActivityBase = {
      * Mitre Technique
      */
     mitre_technique: string;
+    /**
+     * Activity Group Id
+     */
+    activity_group_id?: string | null;
 };
 
 /**
@@ -4233,7 +4237,7 @@ export type GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponses = {
 export type GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponse = GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponses[keyof GetAllActivitiesApiV1AssessmentsAssessmentIdActivityGetResponses];
 
 export type CreateActivityApiV1AssessmentsAssessmentIdActivityPostData = {
-    body: ActivityBase;
+    body: ActivityCreate;
     path: {
         /**
          * Assessment Id

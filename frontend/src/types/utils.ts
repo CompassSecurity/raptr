@@ -9,7 +9,7 @@ export type {
     AclBase,
     AclRead,
     AclRole,
-    ActivityBase,
+    ActivityCreate,
     ActivityEvaluationDynamicQuestionsRead,
     ActivityEvaluationDynamicQuestionsUpdate,
     ActivityEvaluationRead,

@@ -541,6 +541,7 @@ const handleGroupToggleVisibility = async (group: ActivityGroupRead) => {
     <CreateActivityModal
       :open="createActivityModal.isOpen.value"
       :assessment-id="assessmentId"
+      :groups="assessmentStore.groups"
       @update:open="(val) => val ? createActivityModal.open() : createActivityModal.close()"
       @created="handleActivityCreated"
     />

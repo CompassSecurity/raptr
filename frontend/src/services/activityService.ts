@@ -1,5 +1,5 @@
 import type {
-    ActivityBase,
+    ActivityCreate,
     ActivityGroupBase,
     ActivityGroupRead,
     ActivityGroupUpdate,
@@ -14,8 +14,8 @@ import type {
 import { api } from './api';
 
 export type ActivityCreateInput = Pick<
-    ActivityBase,
-    'name' | 'mitre_tactic' | 'mitre_technique'
+    ActivityCreate,
+    'name' | 'mitre_tactic' | 'mitre_technique' | 'activity_group_id'
 >;
 
 export const activityService = {

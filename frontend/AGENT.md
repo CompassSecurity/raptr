@@ -69,7 +69,7 @@ import type { UserRead } from '@/types/types.gen';
 
 **Available types in `utils.ts`:**
 - Entity types: `AssessmentRead`, `ActivityRead`, `UserRead`, `AclRead`, `TagRead`, `AssetRead`
-- Base types: `AssessmentBase`, `ActivityBase`, `UserBase`, `ActivityGroupBase`
+- Base types: `AssessmentBase`, `ActivityCreate`, `UserBase`, `ActivityGroupBase`
 - Update types: `ActivityUpdate`, `ActivityGroupUpdate`, `UserPasswordReset`
 - Enums: `ActivityPriority`, `ActivityState`, `ActivitySeverity`, `UserRole`, `AclRole`
 - Utilities: `PaginatedResponse<T>`, `PaginationParams`, `PaginationState`, `MessageResponse`
