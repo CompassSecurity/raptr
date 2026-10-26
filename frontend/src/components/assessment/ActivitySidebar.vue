@@ -19,6 +19,7 @@ import {
 } from '@lucide/vue';
 import { computed, ref, toRefs } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -56,6 +57,9 @@ const preferencesStore = usePreferencesStore();
 const route = useRoute();
 const { collapsed } = toRefs(props);
 const searchQuery = ref(preferencesStore.activityTableFilters.name || '');
+
+// Tag pills shown per activity before collapsing the rest into "+N"
+const MAX_SIDEBAR_TAGS = 2;
 
 const expandedGroups = ref<Set<string>>(new Set(['ungrouped']));
 
@@ -340,6 +344,24 @@ const toggleViewMode = () => {
                                         {{ activity.name }}
                                     </span>
                                 </div>
+                                <div
+                                    v-if="!collapsed && activity.tags?.length"
+                                    class="flex items-center gap-1 shrink-0"
+                                    :title="activity.tags.map((t) => t.name).join(', ')"
+                                >
+                                    <Badge
+                                        v-for="tag in activity.tags.slice(0, MAX_SIDEBAR_TAGS)"
+                                        :key="tag.id"
+                                        variant="outline"
+                                        class="h-4 max-w-20 px-1.5 text-[10px] leading-none"
+                                        :style="{ borderColor: tag.color, color: tag.color }"
+                                    >
+                                        <span class="truncate">{{ tag.name }}</span>
+                                    </Badge>
+                                    <span v-if="activity.tags.length > MAX_SIDEBAR_TAGS" class="text-[10px] text-muted-foreground">
+                                        +{{ activity.tags.length - MAX_SIDEBAR_TAGS }}
+                                    </span>
+                                </div>
                             </RouterLink>
                         </template>
                     </template>
@@ -370,6 +392,24 @@ const toggleViewMode = () => {
                         <div v-if="!collapsed" class="flex flex-col min-w-0 flex-1 gap-0.5 mt-0.5 mb-0.5">
                             <span class="truncate font-medium leading-none">
                                 {{ activity.name }}
+                            </span>
+                        </div>
+                        <div
+                            v-if="!collapsed && activity.tags?.length"
+                            class="flex items-center gap-1 shrink-0"
+                            :title="activity.tags.map((t) => t.name).join(', ')"
+                        >
+                            <Badge
+                                v-for="tag in activity.tags.slice(0, MAX_SIDEBAR_TAGS)"
+                                :key="tag.id"
+                                variant="outline"
+                                class="h-4 max-w-20 px-1.5 text-[10px] leading-none"
+                                :style="{ borderColor: tag.color, color: tag.color }"
+                            >
+                                <span class="truncate">{{ tag.name }}</span>
+                            </Badge>
+                            <span v-if="activity.tags.length > MAX_SIDEBAR_TAGS" class="text-[10px] text-muted-foreground">
+                                +{{ activity.tags.length - MAX_SIDEBAR_TAGS }}
                             </span>
                         </div>
                     </RouterLink>
