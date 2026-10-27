@@ -18,9 +18,9 @@ import {
     SearchCode,
     Shield,
     ShieldCheck,
+    Trash,
     User,
     Users,
-    X,
 } from '@lucide/vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import ManageAssetsModal from '@/components/assessment/ManageAssetsModal.vue';
@@ -91,6 +91,7 @@ const iconMap: Record<string, any> = {
     Database,
     Shield,
     ShieldCheck,
+    Trash,
     Users,
     Network,
     SearchCode,
@@ -359,9 +360,10 @@ onMounted(() => {
                                     variant="ghost"
                                     size="icon"
                                     class="absolute top-1 right-1 h-5 w-5 rounded-full text-muted-foreground hover:text-destructive z-10"
+                                    title="Remove from activity"
                                     @click.stop="removeAsset(asset.id, section.key)"
                                 >
-                                    <X class="h-3 w-3" />
+                                    <Trash class="h-3 w-3" />
                                 </Button>
                                 
                                 <!-- Icon -->
@@ -395,9 +397,10 @@ onMounted(() => {
                                     variant="ghost"
                                     size="icon"
                                     :class="['h-5 w-5 rounded-full text-muted-foreground hover:text-destructive shrink-0', asset.deleted ? 'ml-auto' : '']"
+                                    title="Remove from activity"
                                     @click.stop="removeAsset(asset.id, section.key)"
                                 >
-                                    <X class="h-3 w-3" />
+                                    <Trash class="h-3 w-3" />
                                 </Button>
                             </div>
                         </PopoverTrigger>
