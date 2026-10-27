@@ -158,32 +158,33 @@ const SECTION_TABS = [
         value: 'details',
         label: 'Activity Details',
         dot: 'bg-red-500',
-        accent: 'data-[state=active]:border-t-red-500 dark:data-[state=active]:border-t-red-500',
+        accent: 'hover:border-t-red-500/50 data-[state=active]:border-t-red-500 dark:data-[state=active]:border-t-red-500',
     },
     {
         value: 'detection',
         label: 'Activity Detection',
         dot: 'bg-blue-500',
-        accent: 'data-[state=active]:border-t-blue-500 dark:data-[state=active]:border-t-blue-500',
+        accent: 'hover:border-t-blue-500/50 data-[state=active]:border-t-blue-500 dark:data-[state=active]:border-t-blue-500',
     },
     {
         value: 'evaluation',
         label: 'Evaluation',
         dot: 'bg-purple-500',
-        accent: 'data-[state=active]:border-t-purple-500 dark:data-[state=active]:border-t-purple-500',
+        accent: 'hover:border-t-purple-500/50 data-[state=active]:border-t-purple-500 dark:data-[state=active]:border-t-purple-500',
     },
     {
         value: 'attachments',
         label: 'Attachments',
         dot: 'bg-muted-foreground/50',
-        accent: 'data-[state=active]:border-t-muted-foreground dark:data-[state=active]:border-t-muted-foreground',
+        accent: 'hover:border-t-muted-foreground/50 data-[state=active]:border-t-muted-foreground dark:data-[state=active]:border-t-muted-foreground',
     },
 ] as const;
 
 const SECTION_TAB_CLASS = [
     '-mb-px h-12 min-w-[200px] flex-none justify-start gap-2.5 px-5 text-base',
-    'rounded-t-lg rounded-b-none border border-t-2 border-transparent',
-    'text-muted-foreground dark:text-muted-foreground hover:bg-muted/50 hover:text-foreground',
+    // Inactive tabs look like background browser tabs: light fill, border open at the bottom
+    'rounded-t-lg rounded-b-none border border-t-2 border-border/60 border-b-transparent',
+    'cursor-pointer bg-muted/40 text-muted-foreground dark:text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
     'data-[state=active]:relative data-[state=active]:z-10 data-[state=active]:border-border data-[state=active]:border-b-card data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-none',
     'dark:data-[state=active]:border-border dark:data-[state=active]:border-b-card dark:data-[state=active]:bg-card',
 ].join(' ');
