@@ -331,11 +331,12 @@ onMounted(() => {
                 
                 <!-- Assets Grid -->
                 <div :class="compact || showOnlySources ? 'flex flex-wrap gap-2' : 'grid grid-cols-2 gap-2'">
+                    <!-- Tiles use isolate so the edit/remove buttons' z-10 stays inside the tile (below the sticky header and tabs) -->
                     <Popover v-for="asset in section.items" :key="asset.id">
                         <PopoverTrigger as-child>
                             <div 
                                 :class="[
-                                    'group relative flex items-center transition-colors cursor-pointer',
+                                    'group relative isolate flex items-center transition-colors cursor-pointer',
                                     compact
                                         ? 'gap-2 px-2 py-1.5 rounded-md border bg-card hover:bg-accent/20'
                                         : 'flex-col justify-center p-3 rounded-lg border-2 bg-card hover:bg-accent/20 min-h-[120px]',

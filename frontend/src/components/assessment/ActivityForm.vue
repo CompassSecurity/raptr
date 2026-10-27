@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { BookOpen, Copy, History } from '@lucide/vue';
+import { useElementSize } from '@vueuse/core';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import ActivityAssetsManager from '@/components/assessment/ActivityAssetsManager.vue';
@@ -129,6 +130,27 @@ watch(
         activeSectionTab.value = 'details';
     },
 );
+
+// The tab bar sticks right below the sticky header, whose height varies
+const stickyHeader = ref<HTMLElement | null>(null);
+const sectionTabs = ref<{ $el: HTMLElement } | null>(null);
+const { height: stickyHeaderHeight } = useElementSize(stickyHeader, undefined, {
+    box: 'border-box',
+});
+
+// Clicking a tab while the bar is stuck jumps to the start of that section
+function onSectionTabClicked() {
+    const tabsEl = sectionTabs.value?.$el;
+    const headerEl = stickyHeader.value;
+    if (!tabsEl || !headerEl) return;
+    if (
+        tabsEl.getBoundingClientRect().top <
+        headerEl.getBoundingClientRect().bottom
+    ) {
+        // scroll-margin-top on the tabs keeps them below the header
+        tabsEl.scrollIntoView({ block: 'start' });
+    }
+}
 
 // Browser-style section tabs: the active tab joins the page below and shows its section colour on top
 const SECTION_TABS = [
@@ -579,7 +601,7 @@ defineExpose({ hasUnsavedChanges });
 <template>
     <div class="w-full px-4 mx-auto space-y-8 pb-24">
         <!-- Sticky Header -->
-        <div class="sticky top-0 z-20 bg-background pb-4 border-b">
+        <div ref="stickyHeader" class="sticky top-0 z-20 bg-background pb-4 border-b">
             <div class="flex justify-between items-start pt-2">
                 <div>
                     <h2 class="text-3xl font-bold tracking-tight">{{ formData.name || 'Activity Details' }}</h2>
@@ -663,8 +685,19 @@ defineExpose({ hasUnsavedChanges });
         />
 
         <!-- Sections as tabs; hidden tabs stay mounted so the dirty tracking and editor state are kept -->
-        <Tabs v-model="activeSectionTab" :unmount-on-hide="false" class="gap-0">
-        <TabsList class="h-auto w-full items-end justify-start gap-1 rounded-none bg-transparent p-0">
+        <Tabs
+            ref="sectionTabs"
+            v-model="activeSectionTab"
+            :unmount-on-hide="false"
+            class="gap-0"
+            :style="{ scrollMarginTop: `${stickyHeaderHeight}px` }"
+            @update:model-value="onSectionTabClicked"
+        >
+        <!-- Sticky below the header for quick switching while scrolled down -->
+        <TabsList
+            class="sticky z-10 h-auto w-full items-end justify-start gap-1 rounded-none bg-background p-0"
+            :style="{ top: `${stickyHeaderHeight}px` }"
+        >
             <TabsTrigger
                 v-for="tab in SECTION_TABS"
                 :key="tab.value"
