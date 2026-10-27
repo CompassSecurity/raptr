@@ -252,6 +252,7 @@ async function handleSave() {
                 </div>
 
                 <ScrollArea v-else class="h-full w-full border rounded-lg">
+                    <!-- fallback-on-body: the drag preview is position:fixed; inside the transformed (centred) dialog it would be offset -->
                     <draggable
                         v-model="groups"
                         item-key="id"
@@ -259,6 +260,7 @@ async function handleSave() {
                         ghost-class="opacity-30"
                         animation="200"
                         :force-fallback="true"
+                        :fallback-on-body="true"
                         :scroll="true"
                         class="divide-y"
                     >
@@ -295,6 +297,7 @@ async function handleSave() {
                                         ghost-class="opacity-30"
                                         animation="200"
                                         :force-fallback="true"
+                                        :fallback-on-body="true"
                                         :scroll="true"
                                         :group="{ name: 'activities' }"
                                         class="min-h-[36px]"
