@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import {
     type ColumnDef,
-    getCoreRowModel,
+    columnFilteringFeature,
+    columnVisibilityFeature,
     type RowSelectionState,
-    useVueTable,
+    rowSelectionFeature,
+    tableFeatures,
+    useTable,
 } from '@tanstack/vue-table';
 import { Check, ChevronDown, Loader2 } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
@@ -70,13 +73,20 @@ const columnFilters = ref<Record<string, string | string[]>>({});
 // Filter options
 const priorityOptions = ['Critical', 'High', 'Medium', 'Low'];
 
+// Table features: filtering runs server-side and selection lives in rowSelection;
+// the features only provide the table APIs used here (getCanFilter, getVisibleCells, row selection state)
+const features = tableFeatures({
+    columnFilteringFeature,
+    columnVisibilityFeature,
+    rowSelectionFeature,
+});
+
 // Column definitions
-const columns: ColumnDef<ActivityTemplateRead>[] = [
+const columns: ColumnDef<typeof features, ActivityTemplateRead>[] = [
     {
         id: 'select',
         header: 'select-header',
         cell: 'select-cell',
-        enableSorting: false,
         enableColumnFilter: false,
     },
     {
@@ -112,22 +122,14 @@ const columns: ColumnDef<ActivityTemplateRead>[] = [
     },
 ];
 
-const table = useVueTable({
-    get data() {
-        return templates.value;
-    },
+const table = useTable<typeof features, ActivityTemplateRead>({
+    features,
+    data: templates,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    manualPagination: true,
-    manualSorting: true,
     manualFiltering: true,
     enableRowSelection: true,
     getRowId: (row) => row.id,
-    state: {
-        get rowSelection() {
-            return rowSelection.value;
-        },
-    },
+    state: computed(() => ({ rowSelection: rowSelection.value })),
     onRowSelectionChange: (updaterOrValue) => {
         rowSelection.value =
             typeof updaterOrValue === 'function'

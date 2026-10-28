@@ -21,6 +21,7 @@ import DateTimeDisplay from '@/components/DateTimeDisplay.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import DataTable from '@/components/ui/data-table/DataTable.vue';
+import type { DataTableFeatures } from '@/components/ui/data-table/features';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -111,7 +112,7 @@ const roleFilterOptions = [
 ];
 
 // Columns Definition - filterable columns match backend UserFilter schema
-const columns: ColumnDef<UserRead>[] = [
+const columns: ColumnDef<DataTableFeatures, UserRead>[] = [
     {
         accessorKey: 'email',
         header: 'Email',

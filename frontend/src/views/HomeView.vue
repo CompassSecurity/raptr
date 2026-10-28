@@ -20,6 +20,7 @@ import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import DataTable from '@/components/ui/data-table/DataTable.vue';
+import type { DataTableFeatures } from '@/components/ui/data-table/features';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -120,7 +121,7 @@ const typeFilterOptions = [
 ];
 
 // Columns Definition - filterable columns match backend AssessmentFilter schema
-const columns: ColumnDef<AssessmentRead>[] = [
+const columns: ColumnDef<DataTableFeatures, AssessmentRead>[] = [
     {
         accessorKey: 'name',
         header: 'Name',

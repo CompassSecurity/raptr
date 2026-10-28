@@ -18,9 +18,9 @@ import {
     SearchCode,
     Shield,
     ShieldCheck,
+    Trash,
     User,
     Users,
-    X,
 } from '@lucide/vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import ManageAssetsModal from '@/components/assessment/ManageAssetsModal.vue';
@@ -91,6 +91,7 @@ const iconMap: Record<string, any> = {
     Database,
     Shield,
     ShieldCheck,
+    Trash,
     Users,
     Network,
     SearchCode,
@@ -330,11 +331,12 @@ onMounted(() => {
                 
                 <!-- Assets Grid -->
                 <div :class="compact || showOnlySources ? 'flex flex-wrap gap-2' : 'grid grid-cols-2 gap-2'">
+                    <!-- Tiles use isolate so the edit/remove buttons' z-10 stays inside the tile (below the sticky header and tabs) -->
                     <Popover v-for="asset in section.items" :key="asset.id">
                         <PopoverTrigger as-child>
                             <div 
                                 :class="[
-                                    'group relative flex items-center transition-colors cursor-pointer',
+                                    'group relative isolate flex items-center transition-colors cursor-pointer',
                                     compact
                                         ? 'gap-2 px-2 py-1.5 rounded-md border bg-card hover:bg-accent/20'
                                         : 'flex-col justify-center p-3 rounded-lg border-2 bg-card hover:bg-accent/20 min-h-[120px]',
@@ -359,9 +361,10 @@ onMounted(() => {
                                     variant="ghost"
                                     size="icon"
                                     class="absolute top-1 right-1 h-5 w-5 rounded-full text-muted-foreground hover:text-destructive z-10"
+                                    title="Remove from activity"
                                     @click.stop="removeAsset(asset.id, section.key)"
                                 >
-                                    <X class="h-3 w-3" />
+                                    <Trash class="h-3 w-3" />
                                 </Button>
                                 
                                 <!-- Icon -->
@@ -395,9 +398,10 @@ onMounted(() => {
                                     variant="ghost"
                                     size="icon"
                                     :class="['h-5 w-5 rounded-full text-muted-foreground hover:text-destructive shrink-0', asset.deleted ? 'ml-auto' : '']"
+                                    title="Remove from activity"
                                     @click.stop="removeAsset(asset.id, section.key)"
                                 >
-                                    <X class="h-3 w-3" />
+                                    <Trash class="h-3 w-3" />
                                 </Button>
                             </div>
                         </PopoverTrigger>

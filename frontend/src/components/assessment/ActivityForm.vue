@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { BookOpen, Copy, History } from '@lucide/vue';
+import { useElementSize } from '@vueuse/core';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import ActivityAssetsManager from '@/components/assessment/ActivityAssetsManager.vue';
@@ -130,38 +131,60 @@ watch(
     },
 );
 
+// The tab bar sticks right below the sticky header, whose height varies
+const stickyHeader = ref<HTMLElement | null>(null);
+const sectionTabs = ref<{ $el: HTMLElement } | null>(null);
+const { height: stickyHeaderHeight } = useElementSize(stickyHeader, undefined, {
+    box: 'border-box',
+});
+
+// Clicking a tab while the bar is stuck jumps to the start of that section
+function onSectionTabClicked() {
+    const tabsEl = sectionTabs.value?.$el;
+    const headerEl = stickyHeader.value;
+    if (!tabsEl || !headerEl) return;
+    if (
+        tabsEl.getBoundingClientRect().top <
+        headerEl.getBoundingClientRect().bottom
+    ) {
+        // scroll-margin-top on the tabs keeps them below the header
+        tabsEl.scrollIntoView({ block: 'start' });
+    }
+}
+
 // Browser-style section tabs: the active tab joins the page below and shows its section colour on top
 const SECTION_TABS = [
     {
         value: 'details',
         label: 'Activity Details',
         dot: 'bg-red-500',
-        accent: 'data-[state=active]:border-t-red-500 dark:data-[state=active]:border-t-red-500',
+        accent: 'hover:border-t-red-500/50 data-[state=active]:border-t-red-500 dark:data-[state=active]:border-t-red-500',
     },
     {
         value: 'detection',
         label: 'Activity Detection',
         dot: 'bg-blue-500',
-        accent: 'data-[state=active]:border-t-blue-500 dark:data-[state=active]:border-t-blue-500',
+        accent: 'hover:border-t-blue-500/50 data-[state=active]:border-t-blue-500 dark:data-[state=active]:border-t-blue-500',
     },
     {
         value: 'evaluation',
         label: 'Evaluation',
         dot: 'bg-purple-500',
-        accent: 'data-[state=active]:border-t-purple-500 dark:data-[state=active]:border-t-purple-500',
+        accent: 'hover:border-t-purple-500/50 data-[state=active]:border-t-purple-500 dark:data-[state=active]:border-t-purple-500',
     },
     {
         value: 'attachments',
         label: 'Attachments',
         dot: 'bg-muted-foreground/50',
-        accent: 'data-[state=active]:border-t-muted-foreground dark:data-[state=active]:border-t-muted-foreground',
+        accent: 'hover:border-t-muted-foreground/50 data-[state=active]:border-t-muted-foreground dark:data-[state=active]:border-t-muted-foreground',
     },
 ] as const;
 
 const SECTION_TAB_CLASS = [
     '-mb-px h-12 min-w-[200px] flex-none justify-start gap-2.5 px-5 text-base',
-    'rounded-t-lg rounded-b-none border border-t-2 border-transparent',
-    'text-muted-foreground dark:text-muted-foreground hover:bg-muted/50 hover:text-foreground',
+    // Inactive tabs look like background browser tabs: light fill, border open at the bottom
+    'rounded-t-lg rounded-b-none border border-t-2 border-border/60 border-b-transparent',
+    'cursor-pointer bg-muted/40 text-muted-foreground dark:text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
     'data-[state=active]:relative data-[state=active]:z-10 data-[state=active]:border-border data-[state=active]:border-b-card data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-none',
     'dark:data-[state=active]:border-border dark:data-[state=active]:border-b-card dark:data-[state=active]:bg-card',
 ].join(' ');
@@ -579,7 +602,7 @@ defineExpose({ hasUnsavedChanges });
 <template>
     <div class="w-full px-4 mx-auto space-y-8 pb-24">
         <!-- Sticky Header -->
-        <div class="sticky top-0 z-20 bg-background pb-4 border-b">
+        <div ref="stickyHeader" class="sticky top-0 z-20 bg-background pb-4 border-b">
             <div class="flex justify-between items-start pt-2">
                 <div>
                     <h2 class="text-3xl font-bold tracking-tight">{{ formData.name || 'Activity Details' }}</h2>
@@ -663,8 +686,19 @@ defineExpose({ hasUnsavedChanges });
         />
 
         <!-- Sections as tabs; hidden tabs stay mounted so the dirty tracking and editor state are kept -->
-        <Tabs v-model="activeSectionTab" :unmount-on-hide="false" class="gap-0">
-        <TabsList class="h-auto w-full items-end justify-start gap-1 rounded-none bg-transparent p-0">
+        <Tabs
+            ref="sectionTabs"
+            v-model="activeSectionTab"
+            :unmount-on-hide="false"
+            class="gap-0"
+            :style="{ scrollMarginTop: `${stickyHeaderHeight}px` }"
+            @update:model-value="onSectionTabClicked"
+        >
+        <!-- Sticky below the header for quick switching while scrolled down -->
+        <TabsList
+            class="sticky z-10 h-auto w-full items-end justify-start gap-1 rounded-none bg-background p-0"
+            :style="{ top: `${stickyHeaderHeight}px` }"
+        >
             <TabsTrigger
                 v-for="tab in SECTION_TABS"
                 :key="tab.value"
