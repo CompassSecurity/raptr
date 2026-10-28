@@ -5,6 +5,7 @@ description = "The backend API for the RAPTR application"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "alembic>=1.20.1",
     "certifi>=2025.11.12",
     "docxtpl>=0.20.2",
     "fastapi[standard]>=0.124.4",
