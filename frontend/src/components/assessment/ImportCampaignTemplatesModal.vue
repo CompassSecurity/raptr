@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import {
     type ColumnDef,
-    getCoreRowModel,
+    columnFilteringFeature,
+    columnVisibilityFeature,
     type RowSelectionState,
-    useVueTable,
+    rowSelectionFeature,
+    tableFeatures,
+    useTable,
 } from '@tanstack/vue-table';
 import { Loader2 } from '@lucide/vue';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import { Button } from '@/components/ui/button';
 import {
@@ -61,8 +64,16 @@ const sortOrder = ref<'asc' | 'desc' | null>(null);
 // Server-side column filters
 const columnFilters = ref<Record<string, string>>({});
 
+// Table features: filtering runs server-side and selection lives in rowSelection;
+// the features only provide the table APIs used here (getCanFilter, getVisibleCells, row selection state)
+const features = tableFeatures({
+    columnFilteringFeature,
+    columnVisibilityFeature,
+    rowSelectionFeature,
+});
+
 // Column definitions
-const columns: ColumnDef<CampaignTemplateRead>[] = [
+const columns: ColumnDef<typeof features, CampaignTemplateRead>[] = [
     {
         accessorKey: 'name',
         header: 'Name',
@@ -86,23 +97,15 @@ const columns: ColumnDef<CampaignTemplateRead>[] = [
 // Use rowSelection for TanStack table compatibility but restrict to single select
 const rowSelection = ref<RowSelectionState>({});
 
-const table = useVueTable({
-    get data() {
-        return campaignTemplates.value;
-    },
+const table = useTable({
+    features,
+    data: campaignTemplates,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    manualPagination: true,
-    manualSorting: true,
     manualFiltering: true,
     enableRowSelection: true,
     enableMultiRowSelection: false,
     getRowId: (row) => row.id,
-    state: {
-        get rowSelection() {
-            return rowSelection.value;
-        },
-    },
+    state: computed(() => ({ rowSelection: rowSelection.value })),
     onRowSelectionChange: (updaterOrValue) => {
         rowSelection.value =
             typeof updaterOrValue === 'function'

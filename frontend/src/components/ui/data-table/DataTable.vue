@@ -1,15 +1,14 @@
-<script setup lang="ts" generic="TData, TValue">
-import { ref, watch, computed } from 'vue';
+<script setup lang="ts" generic="TData extends RowData, TValue">
+import { ref, watch, computed, toRef } from 'vue';
 import {
   FlexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  getFilteredRowModel,
-  useVueTable,
+  useTable,
   type ColumnDef,
-  type SortingState,
   type ColumnFiltersState,
+  type RowData,
+  type SortingState,
 } from '@tanstack/vue-table'
+import { dataTableFeatures, type DataTableFeatures } from './features'
 import {
   Table,
   TableBody,
@@ -44,7 +43,7 @@ interface PaginationMeta {
 }
 
 const props = defineProps<{
-  columns: ColumnDef<TData, TValue>[]
+  columns: ColumnDef<DataTableFeatures, TData, TValue>[]
   data: TData[]
   pagination?: PaginationMeta
   pageSize?: number
@@ -63,23 +62,17 @@ const emit = defineEmits<{
 const sorting = ref<SortingState>([])
 const columnFilters = ref<ColumnFiltersState>([])
 
-// Only use client-side sorting when manualSorting is false
-const sortedRowModel = computed(() => props.manualSorting ? undefined : getSortedRowModel())
-// Only use client-side filtering when manualFiltering is false
-const filteredRowModel = computed(() => props.manualFiltering ? undefined : getFilteredRowModel())
-
-const table = useVueTable({
-  get data() { return props.data },
-  get columns() { return props.columns },
-  getCoreRowModel: getCoreRowModel(),
-  getSortedRowModel: sortedRowModel.value,
-  getFilteredRowModel: filteredRowModel.value,
-  manualSorting: props.manualSorting,
-  manualFiltering: props.manualFiltering,
-  state: {
-    get sorting() { return sorting.value },
-    get columnFilters() { return columnFilters.value },
-  },
+// In manual mode the table skips its client-side sorted/filtered row models
+const table = useTable({
+  features: dataTableFeatures,
+  data: toRef(props, 'data'),
+  columns: toRef(props, 'columns'),
+  manualSorting: toRef(props, 'manualSorting'),
+  manualFiltering: toRef(props, 'manualFiltering'),
+  state: computed(() => ({
+    sorting: sorting.value,
+    columnFilters: columnFilters.value,
+  })),
   onSortingChange: updaterOrValue => {
      sorting.value = typeof updaterOrValue === 'function' ? updaterOrValue(sorting.value) : updaterOrValue
   },
@@ -135,10 +128,7 @@ const handleColumnFilter = (columnId: string, value: string) => {
                   :class="header.column.getCanSort() ? 'cursor-pointer select-none flex items-center gap-2' : ''"
                   @click="header.column.getToggleSortingHandler()?.($event)"
                 >
-                  <FlexRender
-                    :render="header.column.columnDef.header"
-                    :props="header.getContext()"
-                  />
+                  <FlexRender :header="header" />
                   <component
                     v-if="header.column.getCanSort()"
                     :is="header.column.getIsSorted() === 'asc' ? ArrowUp : header.column.getIsSorted() === 'desc' ? ArrowDown : ArrowUpDown"
@@ -214,12 +204,11 @@ const handleColumnFilter = (columnId: string, value: string) => {
             <TableRow
               v-for="row in table.getRowModel().rows"
               :key="row.id"
-              :data-state="row.getIsSelected() ? 'selected' : undefined"
               @click="emit('row-click', row.original)"
               class="cursor-pointer hover:bg-muted/50"
             >
               <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
-                <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+                <FlexRender :cell="cell" />
               </TableCell>
             </TableRow>
           </template>
