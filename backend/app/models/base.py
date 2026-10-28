@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Uuid
+from sqlalchemy import Boolean, DateTime, ForeignKey, MetaData, Uuid
 from sqlalchemy.orm import DeclarativeBase, Mapped, declared_attr, mapped_column
 from sqlalchemy.sql import func
 
@@ -30,6 +30,18 @@ class SoftDeleteMixin:
 class Base(DeclarativeBase):
     id: Any
     __name__: str
+
+    # Predictable constraint names (instead of database-generated or missing ones),
+    # so migrations can reference constraints the same way on PostgreSQL and SQLite
+    metadata = MetaData(
+        naming_convention={
+            "ix": "ix_%(column_0_label)s",
+            "uq": "uq_%(table_name)s_%(column_0_name)s",
+            "ck": "ck_%(table_name)s_%(constraint_name)s",
+            "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+            "pk": "pk_%(table_name)s",
+        }
+    )
 
     # Generate __tablename__ automatically
     @declared_attr
