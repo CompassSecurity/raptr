@@ -279,5 +279,5 @@ On the very first start, RAPTR performs the following initialization:
 
 1. **SECRET_KEY** — If not set in `.env`, a secure 64-character hex key is generated and appended to `.env`. This key signs JWT tokens
 2. **ADMIN_PASSWORD** — If not set in `.env`, a secure 32-character password is generated and appended to `.env`
-3. **Database tables** — All tables are created if they don't exist (no migration of tables)
+3. **Database** — All tables are created by applying the database migrations; on later starts only pending migrations are applied (see [Database Schema Management](data_persistence.md#database-schema-management))
 4. **Admin user** — Created with the email from `ADMIN_EMAIL` and the generated password

@@ -56,8 +56,13 @@ backend/app/
 │   ├── logging.py                   # Application logger
 │   ├── mfa.py                       # MFA/TOTP validation and setup
 │   ├── password.py                  # Password hashing utilities
-│   ├── startup.py                   # DB init, admin user creation
+│   ├── startup.py                   # DB migrations on startup, admin user creation
 │   └── token_validation.py          # JWT decode (internal + external tokens)
+├── db/
+│   ├── session.py                   # Database engine and session dependency
+│   └── migrations/                  # Alembic migrations (see Database & Testing)
+│       ├── env.py                   #   Connects Alembic to the database and models
+│       └── versions/                #   Migration scripts, one per schema change
 ├── enums/
 │   └── enums.py                     # All application enums
 ├── frontend/
@@ -97,6 +102,7 @@ All dependencies are managed via [uv](https://docs.astral.sh/uv/) and defined in
 |---------|---------|
 | `fastapi[standard]` | Web framework — includes Uvicorn, Starlette, and standard extras (CORS, form parsing, etc.) |
 | `sqlalchemy` | ORM — database models, queries, and relationships using SQLAlchemy 2.0+ `Mapped` types |
+| `alembic` | Database migrations — versioned schema changes, applied automatically on startup |
 | `pydantic-settings` | Configuration management — loads settings from environment variables with type validation |
 | `psycopg` / `psycopg-binary` | PostgreSQL adapter — async-capable driver for production database connections |
 | `pyjwt[crypto]` | JWT handling — token creation, validation, and cryptographic signing (RS256/HS256) |

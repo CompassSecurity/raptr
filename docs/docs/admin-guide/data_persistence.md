@@ -109,14 +109,19 @@ docker start raptr
 
 ## Database Schema Management
 
-RAPTR uses SQLAlchemy's `create_all()` on every startup. This means:
+RAPTR manages its database schema with migrations (Alembic) and applies them automatically on every startup:
 
-- **New tables** are created automatically when upgrading to a version that adds new models
-- **Existing tables** are not modified — `create_all()` only adds what's missing
-- **No migration tool** (like Alembic) is used
+- **New database**: all tables are created
+- **Upgrade to a newer RAPTR version**: only the schema changes that are missing are applied, existing data is kept
+- **No change**: nothing happens
 
-??? bug "Schema changes on upgrades"
-    Currently there is no migration tool. If a RAPTR upgrade modifies existing columns (renames, type changes, constraint changes), the release notes will include manual migration instructions - Either the database is recreated or a migration tool will be provided in the future.
+The database records its schema version in the table `alembic_version`. No manual steps are needed when upgrading.
+
+!!! warning "Back up before upgrading"
+    Schema changes can't be undone automatically once data has been changed. Create a database backup (see [Backing Up the Database](#backing-up-the-database)) before starting a newer RAPTR version.
+
+??? info "Databases created before migration support"
+    Databases created by RAPTR versions without migration support (they have tables but no `alembic_version`) can't be upgraded. RAPTR refuses to start with the message *"The database was created by a RAPTR version without migration support…"*. Back up the data you need, then start RAPTR with an empty database; it will be set up again.
 
 ## What to Back Up
 

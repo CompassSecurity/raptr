@@ -102,6 +102,7 @@ bun run lint:fix
 - Follow existing patterns in the codebase
 - Use type hints for all function signatures
 - Follow the **Model → Schema → Service → Router** pattern for new endpoints
+- Every model change needs a database migration, and every new model file must be imported in `app/db/migrations/env.py` — see [Schema Migrations](backend/database.md#schema-migrations-alembic)
 - Keep business logic in services, not in routers
 - Ruff enforces style automatically — run `uv run ruff format .` before committing
 

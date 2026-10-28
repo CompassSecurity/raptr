@@ -6,17 +6,54 @@
 - **Development or small environments**: SQLite is supported (`DB_ENGINE=sqlite`)
 - **ORM**: SQLAlchemy 2.0 with modern `Mapped` type annotations
 
-### Schema Generation (No Migrations)
+### Schema Migrations (Alembic)
 
-The project currently **does not use Alembic** or any migration tool. 
+The database schema is managed with [Alembic](https://alembic.sqlalchemy.org/) migrations. A migration is a versioned Python script that describes one schema change (`upgrade()`) and how to undo it (`downgrade()`). The migrations form a chain (`0001 → 0002 → …`), and every database stores the version it is at in the table `alembic_version`.
 
-The database schema is automatically generated on application startup. In `app/core/startup.py`, the backend inspects all modules that inherit from `Base` and ensures the database tables exist:
+On every start, `run_database_migrations()` in `app/core/startup.py` applies all pending migrations: an empty database gets all tables, an existing one only the steps it is missing. A database that has tables but no `alembic_version` was created by a version before migration support; the app refuses to start with a clear message, as such a database can't be upgraded and must be recreated.
 
-```python
-Base.metadata.create_all(bind=engine)
-```
+| File | Purpose |
+|---|---|
+| `backend/alembic.ini` | Configuration for the `alembic` command line (developers only, not used at runtime) |
+| `app/db/migrations/env.py` | Connects Alembic to the app's database and models |
+| `app/db/migrations/versions/` | The migration scripts, one file per change (committed) |
+| `app/db/migrations/script.py.mako` | Template for new migration files |
 
-Because of this, destructive changes (like dropping a column or renaming a table) require manual database intervention if applied to an existing production database.
+Alembic always uses the app's own database settings (`DB_ENGINE`, `POSTGRES_*`, `SQLITE_DB_PATH` from `.env` or the environment). Run all commands from `backend/`.
+
+#### Adding a New Model File
+
+Alembic only sees the tables of models it has loaded. Every model file in `app/models/` must therefore be imported in the list in `app/db/migrations/env.py`. A missing import makes Alembic believe the table was removed and propose dropping it.
+
+#### Changing the Schema
+
+1. Change the model(s).
+2. Bring a database to the current version and let Alembic draft the migration from the difference between the database and the models. A throwaway SQLite database keeps your development data out of it:
+
+    ```bash
+    export DB_ENGINE=sqlite SQLITE_DB_PATH=/tmp/raptr-migrations.db
+    uv run alembic upgrade head
+    uv run alembic revision --autogenerate -m "add activity risk score"
+    ```
+
+    The new file appears in `app/db/migrations/versions/` (named `YYYY_MM_DD_HHMM-<revision>_<message>.py`) and is formatted with Ruff automatically.
+
+3. **Review and complete the generated migration** (see below). Autogenerate is a draft, not a finished migration.
+4. Test it: `uv run alembic upgrade head`, `uv run alembic downgrade -1`, `uv run alembic upgrade head` — on SQLite **and** on a separate PostgreSQL test database — and run `uv run pytest tests/core/test_migrations.py`.
+5. Commit the migration together with the model change.
+
+`uv run alembic check` reports whether the models and the migrations differ (`No new upgrade operations detected.` when they match).
+
+#### Reviewing a Generated Migration
+
+??? warning "Things autogenerate gets wrong or can't know"
+    - **Renames** are detected as *drop + add*, which loses the data. Replace them with `op.alter_column(..., new_column_name=...)` or `op.rename_table(...)`.
+    - **Data** is never migrated. If existing rows need values (e.g. a new `NOT NULL` column), add a `server_default` or fill the column in `upgrade()` before making it `NOT NULL`.
+    - **PostgreSQL enum types** are separate database objects: `downgrade()` must drop the types created in `upgrade()` (see the end of the initial migration), and adding a value to an existing enum needs a manual `ALTER TYPE`.
+    - **JSONB columns** are rendered with `astext_type=Text()`; change it to `sa.Text()` (otherwise the file fails the Ruff check).
+    - **SQLite** can't alter most table properties in place. `env.py` enables Alembic's batch mode for SQLite, so generated changes use `op.batch_alter_table(...)`, which recreates the table; keep that form when editing.
+
+Constraint names are deterministic thanks to the naming convention on `Base` (`app/models/base.py`), e.g. `fk_activity_assessment_id_assessment` — migrations can refer to them by these names on both PostgreSQL and SQLite.
 
 ### Session Management
 
@@ -272,7 +309,9 @@ The following join tables implement many-to-many relationships:
 
 ## Testing
 
-The backend test suite runs against an isolated, in-memory SQLite database (`sqlite://`), completely separate from your development or production data.
+The backend test suite runs against an isolated, in-memory SQLite database (`sqlite://`), completely separate from your development or production data. Its tables are created directly from the models (`create_all`), not by the migrations.
+
+The migrations themselves are covered by `tests/core/test_migrations.py`, which runs them on temporary SQLite files: all migrations together must produce exactly the schema of the models (fails if a model was changed without a migration), upgrade/downgrade must work repeatedly, and a database created before migration support must be refused.
 
 ```bash
 uv run pytest              # Run all tests
