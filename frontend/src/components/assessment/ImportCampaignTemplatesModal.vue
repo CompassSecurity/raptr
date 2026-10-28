@@ -97,7 +97,7 @@ const columns: ColumnDef<typeof features, CampaignTemplateRead>[] = [
 // Use rowSelection for TanStack table compatibility but restrict to single select
 const rowSelection = ref<RowSelectionState>({});
 
-const table = useTable({
+const table = useTable<typeof features, CampaignTemplateRead>({
     features,
     data: campaignTemplates,
     columns,

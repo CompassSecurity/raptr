@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="TData extends RowData, TValue">
+<script setup lang="ts" generic="TData extends RowData">
 import { ref, watch, computed, toRef } from 'vue';
 import {
   FlexRender,
@@ -43,7 +43,7 @@ interface PaginationMeta {
 }
 
 const props = defineProps<{
-  columns: ColumnDef<DataTableFeatures, TData, TValue>[]
+  columns: ColumnDef<DataTableFeatures, TData>[]
   data: TData[]
   pagination?: PaginationMeta
   pageSize?: number
@@ -63,7 +63,7 @@ const sorting = ref<SortingState>([])
 const columnFilters = ref<ColumnFiltersState>([])
 
 // In manual mode the table skips its client-side sorted/filtered row models
-const table = useTable({
+const table = useTable<DataTableFeatures, TData>({
   features: dataTableFeatures,
   data: toRef(props, 'data'),
   columns: toRef(props, 'columns'),

@@ -122,7 +122,7 @@ const columns: ColumnDef<typeof features, ActivityTemplateRead>[] = [
     },
 ];
 
-const table = useTable({
+const table = useTable<typeof features, ActivityTemplateRead>({
     features,
     data: templates,
     columns,

@@ -93,7 +93,7 @@ const columns: ColumnDef<typeof features, ActivityGroupTemplateRead>[] = [
     },
 ];
 
-const table = useTable({
+const table = useTable<typeof features, ActivityGroupTemplateRead>({
     features,
     data: groupTemplates,
     columns,
