@@ -10,9 +10,9 @@ from app.core.exceptions import validation_exception_handler
 from app.core.logging import app_logger
 from app.core.startup import (
     create_admin_user,
-    create_db_and_tables,
     ensure_admin_password,
     ensure_secret_key,
+    run_database_migrations,
 )
 from app.frontend.frontend import init_frontend
 
@@ -25,7 +25,7 @@ async def lifespan(app: FastAPI):
     app_logger.info("Application starting up...")
     ensure_secret_key()
     ensure_admin_password()
-    create_db_and_tables()
+    run_database_migrations()
     create_admin_user()
     yield
     # --- Shutdown Event ---

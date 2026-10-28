@@ -1,6 +1,9 @@
 import secrets
 from pathlib import Path
 
+from alembic import command
+from alembic.config import Config
+from sqlalchemy import inspect
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
@@ -8,7 +11,6 @@ from app.core.logging import app_logger
 from app.core.password import generate_secure_password
 from app.db.session import engine
 from app.enums.enums import UserRole
-from app.models.base import Base
 from app.schemas.user import UserCreate
 from app.services.user.user import check_user_exists_service, create_user_service
 
@@ -73,34 +75,33 @@ def ensure_admin_password() -> None:
         app_logger.debug("ADMIN_PASSWORD loaded from .env file")
 
 
-def create_db_and_tables() -> None:
+def run_database_migrations() -> None:
     """
-    Called once at application startup to create all database tables
-    defined by SQLAlchemy models.
+    Called once at application startup to bring the database schema up to date
+    by applying all pending migrations (on an empty database this creates all tables).
     """
-    app_logger.info("Creating database and tables (if they don't exist)...")
-    # Import models here so Base knows about them before creating tables
-    from app.models.acl import Acl  # noqa: F401
-    from app.models.activity import Activity  # noqa: F401
-    from app.models.activity_group import ActivityGroup  # noqa: F401
-    from app.models.activity_group_template import ActivityGroupTemplate  # noqa: F401
-    from app.models.activity_template import ActivityTemplate  # noqa: F401
-    from app.models.assessment import Assessment  # noqa: F401
-    from app.models.asset import Asset  # noqa: F401
-    from app.models.campaign_template import (  # noqa: F401
-        CampaignTemplate,
-        CampaignTemplateItem,
-    )
-    from app.models.evaluation_template import EvaluationTemplate  # noqa: F401
-    from app.models.file import File  # noqa: F401
-    from app.models.knowledge_base import KnowledgeBase  # noqa: F401
-    from app.models.mitre import Tactic, Technique  # noqa: F401
-    from app.models.report_template import ReportTemplate  # noqa: F401
-    from app.models.tag import Tag  # noqa: F401
-    from app.models.user import User  # noqa: F401
+    # A database with tables but without alembic_version was created by a version
+    # before migration support; it can't be migrated and must be recreated
+    with engine.connect() as connection:
+        table_names = set(inspect(connection).get_table_names())
+    if table_names and "alembic_version" not in table_names:
+        message = (
+            "The database was created by a RAPTR version without migration support "
+            "and can't be upgraded. Back it up if needed, then start RAPTR with an "
+            "empty database; it will be set up again."
+        )
+        app_logger.critical(message)
+        raise RuntimeError(message)
 
-    Base.metadata.create_all(bind=engine)
-    app_logger.info("Database and tables setup complete.")
+    # Configured in code (no alembic.ini needed at runtime)
+    alembic_config = Config()
+    alembic_config.set_main_option(
+        "script_location", str(Path(__file__).parent.parent / "db" / "migrations")
+    )
+
+    app_logger.info("Applying database migrations...")
+    command.upgrade(alembic_config, "head")
+    app_logger.info("Database migrations complete.")
 
 
 def create_admin_user() -> None:
