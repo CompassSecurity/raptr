@@ -3,7 +3,7 @@ from pathlib import Path
 
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import inspect
+from sqlalchemy import Engine, inspect
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
@@ -75,14 +75,26 @@ def ensure_admin_password() -> None:
         app_logger.debug("ADMIN_PASSWORD loaded from .env file")
 
 
-def run_database_migrations() -> None:
+def get_alembic_config() -> Config:
+    """
+    Alembic configuration built in code, so the app doesn't need alembic.ini at runtime.
+    """
+    alembic_config = Config()
+    alembic_config.set_main_option(
+        "script_location", str(Path(__file__).parent.parent / "db" / "migrations")
+    )
+    return alembic_config
+
+
+def run_database_migrations(db_engine: Engine = engine) -> None:
     """
     Called once at application startup to bring the database schema up to date
     by applying all pending migrations (on an empty database this creates all tables).
+    `db_engine` defaults to the app's database; tests pass a temporary one.
     """
     # A database with tables but without alembic_version was created by a version
     # before migration support; it can't be migrated and must be recreated
-    with engine.connect() as connection:
+    with db_engine.connect() as connection:
         table_names = set(inspect(connection).get_table_names())
     if table_names and "alembic_version" not in table_names:
         message = (
@@ -93,14 +105,12 @@ def run_database_migrations() -> None:
         app_logger.critical(message)
         raise RuntimeError(message)
 
-    # Configured in code (no alembic.ini needed at runtime)
-    alembic_config = Config()
-    alembic_config.set_main_option(
-        "script_location", str(Path(__file__).parent.parent / "db" / "migrations")
-    )
-
+    alembic_config = get_alembic_config()
     app_logger.info("Applying database migrations...")
-    command.upgrade(alembic_config, "head")
+    with db_engine.begin() as connection:
+        # env.py runs the migrations on this connection
+        alembic_config.attributes["connection"] = connection
+        command.upgrade(alembic_config, "head")
     app_logger.info("Database migrations complete.")
 
 
