@@ -31,7 +31,8 @@ def import_atomic_red_team_activity_templates_service(
             detail="ATOMIC_RED_TEAM_URL not set",
         )
 
-    app_logger.debug(f"Importing Atomic Red Team templates from {atomic_red_team_url}")
+    app_logger.info("User %s started the Atomic Red Team import", user.email)
+    app_logger.debug("Importing Atomic Red Team templates from %s", atomic_red_team_url)
 
     # Remove existing Atomic Red Team templates
     try:
@@ -40,7 +41,7 @@ def import_atomic_red_team_activity_templates_service(
         )
         session.commit()
     except Exception as e:
-        app_logger.error(f"Failed to clear existing ART activities: {e}")
+        app_logger.exception("Failed to clear existing ART activities: %s", e)
         session.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -54,7 +55,7 @@ def import_atomic_red_team_activity_templates_service(
         response = httpx.get(atomic_red_team_url, follow_redirects=True, timeout=60.0)
         response.raise_for_status()
     except httpx.HTTPError as e:
-        app_logger.error(f"Failed to download Atomic Red Team archive: {e}")
+        app_logger.error("Failed to download Atomic Red Team archive: %s", e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to download Atomic Red Team archive",
@@ -95,7 +96,7 @@ def import_atomic_red_team_activity_templates_service(
                         yml = yaml.safe_load(f)
                         if not yml or "atomic_tests" not in yml:
                             app_logger.warning(
-                                f"Skipping {filename}: No atomic_tests found in YAML"
+                                "Skipping %s: No atomic_tests found in YAML", filename
                             )
                             failed_count += 1
                             continue
@@ -110,7 +111,9 @@ def import_atomic_red_team_activity_templates_service(
                                 or "command" not in art_testcase["executor"]
                             ):
                                 app_logger.debug(
-                                    f"Skipping test '{art_testcase.get('name', 'unknown')}' in {filename}: No executor command found"
+                                    "Skipping test '%s' in %s: No executor command found",
+                                    art_testcase.get("name", "unknown"),
+                                    filename,
                                 )
                                 failed_count += 1
                                 continue
@@ -160,29 +163,35 @@ def import_atomic_red_team_activity_templates_service(
                                 count += 1
 
                             except Exception as e:
-                                app_logger.error(
-                                    f"Failed to create activity template for {art_testcase.get('name', 'unknown')}: {e}"
+                                app_logger.warning(
+                                    "Failed to create activity template for %s: %s",
+                                    art_testcase.get("name", "unknown"),
+                                    e,
                                 )
                                 failed_count += 1
                                 continue
 
                     except yaml.YAMLError as e:
-                        app_logger.error(f"Failed to parse YAML file {filename}: {e}")
+                        app_logger.warning(
+                            "Failed to parse YAML file %s: %s", filename, e
+                        )
                         failed_count += 1
                         continue
 
         session.commit()
         msg = f"Atomic Red Team templates imported. Successful: {count}, Failed: {failed_count}"
-        app_logger.info(msg)
+        app_logger.info(
+            "User %s finished the Atomic Red Team import: %s", user.email, msg
+        )
 
     except zipfile.BadZipFile as e:
-        app_logger.error(f"Failed to unzip Atomic Red Team archive: {e}")
+        app_logger.error("Failed to unzip Atomic Red Team archive: %s", e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to unzip Atomic Red Team archive",
         )
     except Exception as e:
-        app_logger.error(f"An unexpected error occurred during ART import: {e}")
+        app_logger.exception("An unexpected error occurred during ART import: %s", e)
         session.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

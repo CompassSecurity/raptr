@@ -302,6 +302,8 @@ def get_all_widgets_service(
 - **The `User` Object:** Every service method should accept the `user: User` object passed down from the router. This provides crucial context:
   - `user.id` — for audit fields (`created_by`, `updated_by`).
   - `user.assessment_acl_role` — the user's role in the current assessment (e.g., `AclRole.RED` or `AclRole.BLUE`). Use this to enforce row-level visibility or restrict which fields can be edited logic directly in the service.
+  - `user.email` — the acting user in log lines.
+- **Logging:** Every write service logs one `INFO` line after `session.commit()` (who changed what). See [Logging](logging.md) for the levels and the message pattern.
 - **Centralized Validation (`get_by_id`):** We use a strict pattern where the `get_X_by_id_service` method acts as the gatekeeper for all other operations (update, delete, etc.). This function handles checking if the record exists, if it belongs to the correct parent (like `assessment_id`), and if the current user has the right ACL visibility. By calling this method first in your `update` or `delete` services, you ensure the 404 Not Found or visibility errors are defined and raised in exactly one place.
 ```python
 def update_activity_service(activity_id, activity_update, assessment_id, user, session):

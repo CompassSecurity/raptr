@@ -8,6 +8,7 @@ from pathvalidate import sanitize_filename
 from sqlalchemy import insert, select
 from sqlalchemy.orm import Session
 
+from app.core.logging import app_logger
 from app.enums.enums import ActivityAssetRole
 from app.models.activity import (
     Activity,
@@ -405,6 +406,9 @@ def import_assessment_service(
     try:
         zf = zipfile.ZipFile(io.BytesIO(zip_bytes), "r")
     except zipfile.BadZipFile:
+        app_logger.warning(
+            "User %s tried to import an assessment: invalid zip file", user.email
+        )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid zip file"
         )
@@ -412,6 +416,10 @@ def import_assessment_service(
     try:
         manifest_bytes = zf.read("manifest.json")
     except KeyError:
+        app_logger.warning(
+            "User %s tried to import an assessment: manifest.json missing",
+            user.email,
+        )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Zip file does not contain manifest.json",
@@ -420,6 +428,11 @@ def import_assessment_service(
     data = AssessmentExportData.model_validate_json(manifest_bytes)
 
     if data.format_version != 1:
+        app_logger.warning(
+            "User %s tried to import an assessment: unsupported format version %s",
+            user.email,
+            data.format_version,
+        )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Unsupported format version: {data.format_version}",
@@ -533,6 +546,15 @@ def import_assessment_service(
     session.commit()
     zf.close()
     release_memory()
+
+    app_logger.info(
+        "User %s imported assessment '%s' (%s) with %d activities and %d warnings",
+        user.email,
+        assessment.name,
+        assessment.id,
+        len(activity_id_map),
+        len(warnings),
+    )
 
     return ImportResponse(
         assessment_id=assessment.id,

@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core.logging import app_logger
 from app.models.activity import Activity
 from app.models.activity_group_template import ActivityGroupTemplate
 from app.models.activity_template import ActivityTemplate
@@ -67,6 +68,15 @@ def import_from_campaign_template_service(
             activity_count += 1
 
     msg = f"Campaign '{campaign_template.name}' imported: {group_count} groups and {activity_count} ungrouped activities."
+    app_logger.info(
+        "User %s imported campaign template '%s' (%s) into assessment %s: %d groups and %d ungrouped activities",
+        user.email,
+        campaign_template.name,
+        campaign_template.id,
+        assessment_id,
+        group_count,
+        activity_count,
+    )
     return msg
 
 
@@ -122,6 +132,12 @@ def import_from_activity_group_templates_service(
             )
 
     session.commit()
+    app_logger.info(
+        "User %s imported %d activity group templates into assessment %s",
+        user.email,
+        len(new_activity_groups),
+        assessment_id,
+    )
 
     return len(new_activity_groups)
 
@@ -203,5 +219,13 @@ def import_from_activity_templates_service(
         calculate_evaluations(activity)
 
     session.commit()
+    app_logger.info(
+        "User %s imported %d activity templates into activity group '%s' (%s) in assessment %s",
+        user.email,
+        len(new_activities),
+        target_group.name,
+        target_group.id,
+        assessment_id,
+    )
 
     return len(new_activities)

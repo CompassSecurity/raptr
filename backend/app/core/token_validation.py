@@ -6,7 +6,7 @@ import certifi
 import jwt
 from fastapi import Depends, HTTPException, Request, status
 from jwt import PyJWKClient
-from jwt.exceptions import InvalidTokenError
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 from sqlalchemy.orm import Session
 
 from app.core.authentication import oauth2_scheme
@@ -52,7 +52,7 @@ def validate_external_token_service(
 
         # Manual validation for azp claim, should be the client_id
         if config.client_id and payload.get("azp") != config.client_id:
-            app_logger.error(
+            app_logger.warning(
                 "Token validation failed: Invalid Client ID. Expected %s, got %s",
                 config.client_id,
                 payload.get("azp"),
@@ -66,7 +66,7 @@ def validate_external_token_service(
         # Ensure that the IDP only issues tokens for users for which we expect it to issue tokens
         email_domain = username.split("@")[-1]
         if email_domain not in config.trusted_email_domains:
-            app_logger.error(
+            app_logger.warning(
                 "Token validation failed: Invalid email domain for this IDP. Expected %s, got %s",
                 config.trusted_email_domains,
                 email_domain,
@@ -75,8 +75,11 @@ def validate_external_token_service(
 
         return payload, username
 
+    except ExpiredSignatureError as e:
+        app_logger.info("External token expired: %s", str(e))
+        raise InvalidTokenError(str(e)) from e
     except Exception as e:
-        app_logger.error("External token validation failed: %s", str(e))
+        app_logger.warning("External token validation failed: %s", str(e))
         raise InvalidTokenError(str(e)) from e
 
 
@@ -99,8 +102,11 @@ def validate_internal_token_service(token: str) -> tuple[dict, str]:
 
         return payload, username
 
+    except ExpiredSignatureError as e:
+        app_logger.info("Internal token expired: %s", str(e))
+        raise InvalidTokenError(str(e)) from e
     except Exception as e:
-        app_logger.error("Internal token validation failed: %s", str(e))
+        app_logger.warning("Internal token validation failed: %s", str(e))
         raise InvalidTokenError(str(e)) from e
 
 
@@ -113,11 +119,13 @@ def validate_user_exists_service(
     user = get_user_by_email_service(email=username, session=session)
 
     if user is None:
-        app_logger.error("Access token validation failed. User %s not found.", username)
+        app_logger.warning(
+            "Access token validation failed. User %s not found.", username
+        )
         raise InvalidTokenError("User not found")
 
     if user.disabled:
-        app_logger.error(
+        app_logger.warning(
             "Access token validation failed. User %s is disabled.", user.email
         )
         raise InvalidTokenError("User is disabled")
@@ -129,7 +137,7 @@ def validate_user_exists_service(
             last_logout_at = last_logout_at.replace(tzinfo=timezone.utc)
 
         if last_logout_at >= iat_datetime:
-            app_logger.error(
+            app_logger.info(
                 "Access token validation failed. User %s is logged out.", user.email
             )
             raise InvalidTokenError("User is logged out")
@@ -173,7 +181,7 @@ def access_token_validation_service(
         elif issuer == settings.APPLICATION_NAME:
             payload, username = validate_internal_token_service(token)
         else:
-            app_logger.error(
+            app_logger.warning(
                 "Token validation failed: Invalid issuer. Unknown issuer: %s",
                 issuer,
             )
@@ -191,5 +199,5 @@ def access_token_validation_service(
     except InvalidTokenError:
         raise credentials_exception
     except Exception as e:
-        app_logger.error("Unexpected error during token validation: %s", str(e))
+        app_logger.exception("Unexpected error during token validation: %s", str(e))
         raise credentials_exception

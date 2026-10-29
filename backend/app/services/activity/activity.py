@@ -6,6 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
 
+from app.core.logging import app_logger
 from app.enums.enums import AclRole, ActivityAssetRole
 from app.models.activity import Activity, activity_asset_association
 from app.models.activity_evaluation import ActivityEvaluation
@@ -180,6 +181,13 @@ def create_activity_service(
     save_activity_shadow_copy(activity_db, session)
 
     session.commit()
+    app_logger.info(
+        "User %s created activity '%s' (%s) in assessment %s",
+        user.email,
+        activity_db.name,
+        activity_db.id,
+        assessment_id,
+    )
     return activity_db
 
 
@@ -414,6 +422,13 @@ def update_activity_service(
     save_activity_shadow_copy(activity_db, session)
 
     session.commit()
+    app_logger.info(
+        "User %s updated activity '%s' (%s) in assessment %s",
+        user.email,
+        activity_db.name,
+        activity_db.id,
+        assessment_id,
+    )
     return activity_db
 
 
@@ -434,6 +449,14 @@ def toggle_delete_activity_service(
         activity_db.deleted_by = user.id
         activity_db.deleted_at = func.now()
     session.commit()
+    app_logger.info(
+        "User %s %s activity '%s' (%s) in assessment %s",
+        user.email,
+        "deleted" if activity_db.deleted else "restored",
+        activity_db.name,
+        activity_db.id,
+        assessment_id,
+    )
 
 
 def toggle_visible_activity_service(
@@ -456,6 +479,14 @@ def toggle_visible_activity_service(
     activity_db.updated_by = user.id
     activity_db.updated_at = func.now()
     session.commit()
+    app_logger.info(
+        "User %s %s activity '%s' (%s) in assessment %s",
+        user.email,
+        "showed" if new_visible else "hid",
+        activity_db.name,
+        activity_db.id,
+        assessment_id,
+    )
 
 
 def clone_activity_service(
@@ -515,6 +546,14 @@ def clone_activity_service(
     calculate_evaluations(new_activity)
 
     session.commit()
+    app_logger.info(
+        "User %s cloned activity '%s' (%s) as %s in assessment %s",
+        user.email,
+        activity_db.name,
+        activity_db.id,
+        new_activity.id,
+        assessment_id,
+    )
     return new_activity
 
 
@@ -602,4 +641,12 @@ def assign_dynamic_evaluation_questions_service(
     activity_db.updated_at = func.now()
 
     session.commit()
+    app_logger.info(
+        "User %s set %d evaluation questions on activity '%s' (%s) in assessment %s",
+        user.email,
+        len(requested_template_ids),
+        activity_db.name,
+        activity_db.id,
+        assessment_id,
+    )
     return activity_db

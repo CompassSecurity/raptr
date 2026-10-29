@@ -15,8 +15,10 @@ The in-app [configuration page](../user-guide/administration.md#view-system-conf
 | `FASTAPI_DOCUMENTATION` | `true` | Enable the OpenAPI documentation at `/docs` and `/redoc`. Set to `false` in production to hide the API docs |
 | `WELCOME_MESSAGE` | *(none)* | Message displayed on the login page |
 
-??? bug "Inconsistent Logging"
-    The implemented logging requires a rework. Not all relevant logs are created or stored in the DB (audit trail).
+??? info "What is logged"
+    RAPTR logs to stdout (`docker logs raptr`). At `INFO`, every change is logged with the acting user (e.g. `User alice@example.com deleted activity 'Kerberoasting' …`), as well as logins, logouts and imports. `WARNING` shows security-relevant events such as failed logins, denied access (403) and rejected uploads or imports. `ERROR` means something broke and needs a look. Use `DEBUG` only for troubleshooting.
+
+    The log is not stored in the database. To keep it, collect the container's stdout with your log management.
 
 ### Admin Account
 

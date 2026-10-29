@@ -81,7 +81,7 @@ def verify_otp_service(user: User, otp: str) -> bool:
     Verify an OTP code for a user.
     """
     if not user.mfa_secret:
-        app_logger.error("User %s does not have MFA secret configured", user.email)
+        app_logger.warning("User %s does not have MFA secret configured", user.email)
         return False
 
     totp = pyotp.TOTP(user.mfa_secret)

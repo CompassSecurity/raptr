@@ -7,6 +7,7 @@ from pathvalidate import sanitize_filename
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
+from app.core.logging import app_logger
 from app.models.activity import Activity
 from app.models.activity_evaluation import ActivityEvaluation
 from app.models.activity_group import ActivityGroup
@@ -262,4 +263,11 @@ def export_assessment_service(
     buf.close()
     del buf
     release_memory()
+    app_logger.info(
+        "User %s exported assessment '%s' (%s), %d bytes",
+        user.email,
+        assessment.name,
+        assessment.id,
+        len(result),
+    )
     return result

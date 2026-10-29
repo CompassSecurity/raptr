@@ -66,6 +66,13 @@ def generate_report_service(
             )
             del context, output
             release_memory()
+            app_logger.info(
+                "User %s generated report '%s' (%s) for assessment %s",
+                user.email,
+                template.filename,
+                template.id,
+                assessment_id,
+            )
             return result
         elif template.format == ReportTemplateFormat.DOCX:
             # Collect image data for DOCX embedding (markdown → InlineImage)
@@ -74,6 +81,13 @@ def generate_report_service(
 
             del context, image_data
             release_memory()
+            app_logger.info(
+                "User %s generated report '%s' (%s) for assessment %s",
+                user.email,
+                template.filename,
+                template.id,
+                assessment_id,
+            )
 
             return GeneratedReport(
                 content=output,
@@ -91,8 +105,11 @@ def generate_report_service(
         # and the non-sensitive sandbox message) but keep the client response
         # generic so no payload/traceback is leaked.
         app_logger.error(
-            f"Rejected report template id={template.id} "
-            f"filename={template.filename!r}: blocked unsafe expression: {e}"
+            "User %s used report template '%s' (%s), rejected: blocked unsafe expression: %s",
+            user.email,
+            template.filename,
+            template.id,
+            e,
         )
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
@@ -101,8 +118,11 @@ def generate_report_service(
     except TemplateError as e:
         # Malformed template (syntax / undefined / runtime error).
         app_logger.error(
-            f"Failed to render report template id={template.id} "
-            f"filename={template.filename!r}: {e}"
+            "User %s used report template '%s' (%s), rendering failed: %s",
+            user.email,
+            template.filename,
+            template.id,
+            e,
         )
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,

@@ -37,20 +37,20 @@ Additional import function for a Git repository which contains community driven 
 </div>
 </div>
 
-<div class="timeline-item" markdown>
-<div class="timeline-date">Soon&trade;</div>
+<!-- DONE ITEMS -->
+<div class="timeline-item completed" markdown>
+<div class="timeline-date">2026-10-29</div>
 <div class="timeline-marker"></div>
 <div class="timeline-content" markdown>
 <div class="timeline-card" markdown>
 <div class="timeline-card-header" markdown>
 ### :memo: Rework Logging
 </div>
-Redesign the logging system to produce meaningful audit logs.
+Redesigned the logging system: every change is logged with the acting user, see [Logging](developer-guide/backend/logging.md).
 </div>
 </div>
 </div>
 
-<!-- DONE ITEMS -->
 <div class="timeline-item completed" markdown>
 <div class="timeline-date">2026-05-01</div>
 <div class="timeline-marker"></div>

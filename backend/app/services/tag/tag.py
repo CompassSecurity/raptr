@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.core.logging import app_logger
 from app.enums.enums import AclRole
 from app.models.tag import Tag
 from app.models.user import User
@@ -65,6 +66,13 @@ def create_tag_service(
     )
     session.add(new_tag)
     session.commit()
+    app_logger.info(
+        "User %s created tag '%s' (%s) in assessment %s",
+        user.email,
+        new_tag.name,
+        new_tag.id,
+        assessment_id,
+    )
     return new_tag
 
 
@@ -83,6 +91,13 @@ def update_tag_service(
     tag_db.color = tag.color
     tag_db.updated_by = user.id
     session.commit()
+    app_logger.info(
+        "User %s updated tag '%s' (%s) in assessment %s",
+        user.email,
+        tag_db.name,
+        tag_db.id,
+        assessment_id,
+    )
     return tag_db
 
 
@@ -107,6 +122,14 @@ def toggle_tag_delete_service(
         tag_db.deleted_by = user.id
 
     session.commit()
+    app_logger.info(
+        "User %s %s tag '%s' (%s) in assessment %s",
+        user.email,
+        "deleted" if tag_db.deleted else "restored",
+        tag_db.name,
+        tag_db.id,
+        assessment_id,
+    )
 
 
 def get_tags_by_ids_service(
@@ -162,4 +185,12 @@ def update_activity_tags_service(
         activity.tags = []
 
     session.commit()
+    app_logger.info(
+        "User %s set %d tags on activity '%s' (%s) in assessment %s",
+        user.email,
+        len(tag_ids),
+        activity.name,
+        activity.id,
+        assessment_id,
+    )
     return activity

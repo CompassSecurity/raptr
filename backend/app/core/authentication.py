@@ -52,7 +52,7 @@ def authenticate_user_service(
     user = session.execute(statement).scalar_one_or_none()
 
     if not user:
-        app_logger.error(
+        app_logger.warning(
             "Login attempt with user %s failed. Incorrect username.", username
         )
         raise HTTPException(
@@ -61,7 +61,7 @@ def authenticate_user_service(
         )
 
     if not verify_password(password, user.hashed_password):
-        app_logger.error(
+        app_logger.warning(
             "Login attempt with user %s failed. Incorrect password.", username
         )
         raise HTTPException(
@@ -70,14 +70,14 @@ def authenticate_user_service(
         )
 
     if user.disabled:
-        app_logger.error(
+        app_logger.warning(
             "Login attempt with user %s failed. User is disabled.", username
         )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="User is disabled"
         )
 
-    app_logger.debug("Login attempt with user %s successful.", username)
+    app_logger.info("Login attempt with user %s successful.", username)
     return user
 
 

@@ -4,7 +4,6 @@ import {
     Download,
     GitBranch,
     Settings,
-    Shield,
     TestTube,
     Users,
 } from '@lucide/vue';
@@ -97,27 +96,6 @@ const handleSeedCustom = async () => {
               Open User Management Panel
             </Button>
           </RouterLink>
-        </CardContent>
-      </Card>
-
-      <!-- Logs (Placeholder) -->
-      <Card class="hover:shadow-md transition-shadow opacity-60">
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
-            <Shield class="h-5 w-5" />
-            Logs
-          </CardTitle>
-          <CardDescription>
-            Audit logs
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p class="text-sm text-muted-foreground mb-4">
-            Review and monitor audit logs.
-          </p>
-          <Button variant="outline" class="w-full" disabled>
-            Coming Soon
-          </Button>
         </CardContent>
       </Card>
 

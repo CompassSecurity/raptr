@@ -113,7 +113,13 @@ def create_user_service(
 
     session.add(db_user)
     session.commit()
-    app_logger.info("User %s created", db_user.email)
+    app_logger.info(
+        "User %s created by %s (role=%s, disabled=%s)",
+        db_user.email,
+        user.email if user else "system",
+        new_user.role.value,
+        new_user.disabled,
+    )
     return db_user
 
 
@@ -128,13 +134,16 @@ def delete_user_service(
     app_logger.debug("Deleting user: %s", user_id)
     db_user = get_user_by_id_service(user_id, user, session)
     if db_user.email == settings.ADMIN_EMAIL:
-        app_logger.debug("User %s is admin and cannot be deleted", user_id)
+        app_logger.warning(
+            "User %s tried to delete the admin user %s", user.email, db_user.email
+        )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Cannot delete admin user"
         )
+    deleted_email = db_user.email
     session.delete(db_user)
     session.commit()
-    app_logger.info("User %s deleted", user_id)
+    app_logger.info("User %s deleted by %s", deleted_email, user.email)
 
 
 def update_user_service(
@@ -151,7 +160,9 @@ def update_user_service(
     db_user = get_user_by_id_service(user_id, user, session)
 
     if db_user.email == settings.ADMIN_EMAIL:
-        app_logger.debug("User %s is admin and cannot be updated", user_id)
+        app_logger.warning(
+            "User %s tried to update the admin user %s", user.email, db_user.email
+        )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Cannot update admin user"
         )
@@ -161,12 +172,20 @@ def update_user_service(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="User already exists"
         )
+    old_email = db_user.email
     db_user.email = user_update.email
     db_user.role = user_update.role
     db_user.disabled = user_update.disabled
     db_user.updated_by = user.id
     session.commit()
-    app_logger.info("User %s updated", db_user.email)
+    app_logger.info(
+        "User %s updated by %s (email=%s, role=%s, disabled=%s)",
+        old_email,
+        user.email,
+        user_update.email,
+        user_update.role.value,
+        user_update.disabled,
+    )
     return db_user
 
 
@@ -182,6 +201,10 @@ def update_user_password_service(
     db_user = get_user_by_email_service(user.email, session)
 
     if not verify_password(user_password_update.old_password, db_user.hashed_password):
+        app_logger.warning(
+            "User %s failed to change the password: incorrect current password",
+            user.email,
+        )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect password"
         )
@@ -209,7 +232,7 @@ def reset_user_password_service(
     db_user.hashed_password = new_hashed_password
     db_user.updated_by = user.id
     session.commit()
-    app_logger.info("User %s password reset", db_user.email)
+    app_logger.info("User %s password reset by %s", db_user.email, user.email)
 
 
 def reset_user_mfa_service(
@@ -227,7 +250,7 @@ def reset_user_mfa_service(
     db_user.mfa_verified = False
     db_user.updated_by = user.id
     session.commit()
-    app_logger.info("User %s MFA reset", db_user.email)
+    app_logger.info("User %s MFA reset by %s", db_user.email, user.email)
 
 
 def reset_user_mfa_self_service(
@@ -241,6 +264,9 @@ def reset_user_mfa_self_service(
     app_logger.debug("Resetting user MFA: %s", user.email)
     db_user = get_user_by_email_service(user.email, session)
     if not verify_password(password.password, db_user.hashed_password):
+        app_logger.warning(
+            "User %s failed to reset the own MFA: incorrect password", user.email
+        )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect password"
         )
@@ -249,4 +275,4 @@ def reset_user_mfa_self_service(
     db_user.mfa_verified = False
     db_user.updated_by = user.id
     session.commit()
-    app_logger.info("User %s MFA reset", db_user.email)
+    app_logger.info("User %s reset the own MFA", db_user.email)
