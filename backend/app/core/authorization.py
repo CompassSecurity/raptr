@@ -18,7 +18,7 @@ def admin_role_validation_service(user: User = Depends(mfa_validation_service)) 
     Validate if user has admin role
     """
     if user.role != UserRole.ADMIN.value:
-        app_logger.error(
+        app_logger.warning(
             "User %s tried to perform an admin action but is not an admin", user.email
         )
         raise HTTPException(
@@ -80,7 +80,7 @@ def require_assessment_role(required_role: AclRole | None = None):
 
         # Check if ACL entry exists (should never occur since we checked access above)
         if not acl_db:
-            app_logger.error(
+            app_logger.warning(
                 "User %s does not have access to assessment %s",
                 user.email,
                 assessment_id,
@@ -114,7 +114,7 @@ def require_assessment_role(required_role: AclRole | None = None):
         if get_role_hierarchy_value(user_role) < get_role_hierarchy_value(
             effective_required_role
         ):
-            app_logger.error(
+            app_logger.warning(
                 "User %s has role %s but requires %s for assessment %s",
                 user.email,
                 user_role.value,
