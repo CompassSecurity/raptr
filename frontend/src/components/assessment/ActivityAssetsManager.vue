@@ -129,6 +129,35 @@ function accentFor(key: string): string {
     return props.accentColor ?? DEFAULT_SECTION_ACCENT[key] ?? 'green';
 }
 
+// Browser-style dialog tabs (same look as the activity form section tabs): coloured dot + top border per accent
+const ACCENT_TAB_CLASS: Record<string, { dot: string; accent: string }> = {
+    green: {
+        dot: 'bg-green-500',
+        accent: 'hover:border-t-green-500/50 data-[state=active]:border-t-green-500 dark:data-[state=active]:border-t-green-500',
+    },
+    orange: {
+        dot: 'bg-orange-500',
+        accent: 'hover:border-t-orange-500/50 data-[state=active]:border-t-orange-500 dark:data-[state=active]:border-t-orange-500',
+    },
+    purple: {
+        dot: 'bg-purple-500',
+        accent: 'hover:border-t-purple-500/50 data-[state=active]:border-t-purple-500 dark:data-[state=active]:border-t-purple-500',
+    },
+    blue: {
+        dot: 'bg-blue-700',
+        accent: 'hover:border-t-blue-700/50 data-[state=active]:border-t-blue-700 dark:data-[state=active]:border-t-blue-700',
+    },
+};
+const DIALOG_TAB_CLASS = [
+    '-mb-px h-11 min-w-[160px] flex-none justify-start gap-2.5 px-5 text-base capitalize',
+    // Inactive tabs look like background browser tabs: light fill, border open at the bottom
+    'rounded-t-lg rounded-b-none border border-t-2 border-border/60 border-b-transparent',
+    'cursor-pointer bg-muted/40 text-muted-foreground dark:text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
+    // The active tab covers the panel's top border so it joins the panel below
+    'data-[state=active]:relative data-[state=active]:z-10 data-[state=active]:border-border data-[state=active]:border-b-card data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-none',
+    'dark:data-[state=active]:border-border dark:data-[state=active]:border-b-card dark:data-[state=active]:bg-card',
+].join(' ');
+
 // Add / empty-state tiles use the same footprint as an asset tile
 const placeholderTileClass = computed(() => [
     'flex items-center justify-center gap-1.5 text-center text-muted-foreground',
@@ -454,18 +483,32 @@ onMounted(() => {
                     <DialogTitle>Manage Assets</DialogTitle>
                 </DialogHeader>
                 
+                <!-- Tabs + panel (same look as the activity form sections) -->
+                <div class="flex min-h-0 flex-1 flex-col">
                 <!-- Tab Switcher -->
                 <Tabs v-if="!showOnlySources" :model-value="activeTab" @update:model-value="activeTab = $event as typeof activeTab" class="w-full">
-                    <TabsList class="w-full">
-                        <TabsTrigger v-for="tab in ['sources', 'targets', 'tools'] as const" :key="tab" :value="tab" class="flex-1 capitalize">
+                    <TabsList class="h-auto w-full items-end justify-start gap-1 rounded-none bg-transparent p-0">
+                        <TabsTrigger
+                            v-for="tab in ['sources', 'targets', 'tools'] as const"
+                            :key="tab"
+                            :value="tab"
+                            :class="[DIALOG_TAB_CLASS, ACCENT_TAB_CLASS[accentFor(tab)]?.accent]"
+                        >
+                            <span :class="['h-2.5 w-2.5 rounded-full', ACCENT_TAB_CLASS[accentFor(tab)]?.dot]" />
                             {{ tab }}
+                            <span
+                                v-if="getListForTab(tab).length > 0"
+                                class="text-xs bg-muted px-2 py-0.5 rounded-full normal-case"
+                            >{{ getListForTab(tab).length }}</span>
                         </TabsTrigger>
                     </TabsList>
                 </Tabs>
-                <div v-else class="text-sm font-medium text-muted-foreground">Select {{ sourcesLabel || 'sources' }}</div>
+                <div v-else class="mb-2 text-sm font-medium text-muted-foreground">Select {{ sourcesLabel || 'sources' }}</div>
 
+                <!-- Tab page: card container; the active tab sits on its top border. overflow-hidden keeps the list's scrollbar inside the rounded corners -->
+                <div :class="['flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border bg-card text-card-foreground p-4 shadow-sm',!showOnlySources ? 'rounded-tl-none' : '']">
                 <!-- Search -->
-                <div class="relative mt-2 flex-shrink-0">
+                <div class="relative flex-shrink-0">
                     <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         v-model="searchQuery"
@@ -475,7 +518,7 @@ onMounted(() => {
                 </div>
 
                 <!-- List -->
-                <div class="flex-1 overflow-y-auto min-h-0 -mx-6 px-6 mt-4">
+                <div class="flex-1 overflow-y-auto min-h-0 -mx-4 px-4 mt-4">
                     <div class="space-y-1 pb-2">
                         <div v-if="filteredAssets.length === 0" class="text-center py-8 text-muted-foreground text-sm">
                             No assets found.
@@ -504,6 +547,8 @@ onMounted(() => {
                             </div>
                         </div>
                     </div>
+                </div>
+                </div>
                 </div>
 
                 <DialogFooter class="pt-2 border-t mt-auto">
