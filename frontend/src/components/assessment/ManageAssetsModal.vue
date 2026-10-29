@@ -677,7 +677,7 @@ watch(
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent class="w-[300px] p-0">
-                  <Command>
+                  <Command highlight-on-hover>
                     <CommandInput placeholder="Search icon..." />
                     <CommandEmpty>No icon found.</CommandEmpty>
                     <CommandList>

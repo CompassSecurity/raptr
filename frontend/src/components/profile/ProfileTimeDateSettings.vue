@@ -109,7 +109,7 @@ const timeFormats = [
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent class="p-0" style="width: var(--reka-popper-anchor-width)">
-                        <Command>
+                        <Command highlight-on-hover>
                             <CommandInput placeholder="Search timezone..." />
                             <CommandList>
                                 <CommandEmpty>No timezone found.</CommandEmpty>
