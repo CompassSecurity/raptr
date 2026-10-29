@@ -41,6 +41,7 @@ nav = [
       { "Adding Endpoints" = "developer-guide/backend/endpoints.md" },
       { "Filtering & Sorting" = "developer-guide/backend/filtering.md" },
       { "Authentication & Authorization" = "developer-guide/backend/auth.md" },
+      { "Logging" = "developer-guide/backend/logging.md" },
       { "Database & Testing" = "developer-guide/backend/database.md" },
     ]},
     { "Frontend" = "developer-guide/frontend.md" },
