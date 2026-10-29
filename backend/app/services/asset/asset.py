@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
+from app.core.logging import app_logger
 from app.enums.enums import AclRole, ActivityAssetRole
 from app.models.activity import activity_asset_association
 from app.models.asset import Asset
@@ -69,6 +70,13 @@ def create_asset_service(
     )
     session.add(new_asset)
     session.commit()
+    app_logger.info(
+        "User %s created asset '%s' (%s) in assessment %s",
+        user.email,
+        new_asset.name,
+        new_asset.id,
+        assessment_id,
+    )
     return new_asset
 
 
@@ -88,6 +96,13 @@ def update_asset_service(
     asset_db.properties = asset.properties
     asset_db.updated_by = user.id
     session.commit()
+    app_logger.info(
+        "User %s updated asset '%s' (%s) in assessment %s",
+        user.email,
+        asset_db.name,
+        asset_db.id,
+        assessment_id,
+    )
     return asset_db
 
 
@@ -110,6 +125,14 @@ def toggle_asset_delete_service(
         asset.deleted_at = func.now()
         asset.deleted_by = user.id
     session.commit()
+    app_logger.info(
+        "User %s %s asset '%s' (%s) in assessment %s",
+        user.email,
+        "deleted" if asset.deleted else "restored",
+        asset.name,
+        asset.id,
+        assessment_id,
+    )
 
 
 def get_assets_by_ids_service(
@@ -155,7 +178,7 @@ def assign_assets_to_activity(
     Validates that all assets belong to the same assessment as the activity.
     """
     # Validate activity exists and belongs to assessment
-    get_activity_by_id_service(activity_id, assessment_id, user, session)
+    activity = get_activity_by_id_service(activity_id, assessment_id, user, session)
 
     # Get and validate assets if provided
     if asset_ids:
@@ -185,3 +208,12 @@ def assign_assets_to_activity(
         session.execute(delete_stmt)
 
     session.commit()
+    app_logger.info(
+        "User %s set %d %s assets on activity '%s' (%s) in assessment %s",
+        user.email,
+        len(asset_ids),
+        role.value,
+        activity.name,
+        activity.id,
+        assessment_id,
+    )

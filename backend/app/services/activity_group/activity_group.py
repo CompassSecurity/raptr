@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.core.logging import app_logger
 from app.enums.enums import AclRole
 from app.models.activity import Activity
 from app.models.activity_group import ActivityGroup
@@ -130,6 +131,13 @@ def create_activity_group_service(
     )
     session.add(activitygroup)
     session.commit()
+    app_logger.info(
+        "User %s created activity group '%s' (%s) in assessment %s",
+        user.email,
+        activitygroup.name,
+        activitygroup.id,
+        assessment_id,
+    )
     return activitygroup
 
 
@@ -151,6 +159,13 @@ def update_activity_group_service(
     activity_group_db.updated_by = user.id
     session.add(activity_group_db)
     session.commit()
+    app_logger.info(
+        "User %s updated activity group '%s' (%s) in assessment %s",
+        user.email,
+        activity_group_db.name,
+        activity_group_db.id,
+        assessment_id,
+    )
     return activity_group_db
 
 
@@ -197,6 +212,15 @@ def toggle_activity_group_delete_service(
 
     session.add(activitygroup)
     session.commit()
+    app_logger.info(
+        "User %s %s activity group '%s' (%s) with %d activities in assessment %s",
+        user.email,
+        "deleted" if activitygroup.deleted else "restored",
+        activitygroup.name,
+        activitygroup.id,
+        len(activitygroup.activities),
+        assessment_id,
+    )
 
 
 def toggle_activity_group_visible_service(
@@ -221,6 +245,14 @@ def toggle_activity_group_visible_service(
 
     session.add(activitygroup)
     session.commit()
+    app_logger.info(
+        "User %s %s activity group '%s' (%s) in assessment %s",
+        user.email,
+        "showed" if activitygroup.visible else "hid",
+        activitygroup.name,
+        activitygroup.id,
+        assessment_id,
+    )
 
 
 def reorder_activity_groups_service(
@@ -267,6 +299,11 @@ def reorder_activity_groups_service(
         session.add(group)
 
     session.commit()
+    app_logger.info(
+        "User %s reordered the activity groups in assessment %s",
+        user.email,
+        assessment_id,
+    )
 
 
 def reorder_activities_service(
@@ -281,7 +318,9 @@ def reorder_activities_service(
     All non-deleted activities in the group must be included to prevent position conflicts.
     """
     # Validate group exists and belongs to assessment
-    get_activity_group_by_id_service(activity_group_id, assessment_id, user, session)
+    group = get_activity_group_by_id_service(
+        activity_group_id, assessment_id, user, session
+    )
 
     # Get ALL non-deleted activities in the group
     all_activities_statement = select(Activity).where(
@@ -319,6 +358,13 @@ def reorder_activities_service(
         session.add(activity)
 
     session.commit()
+    app_logger.info(
+        "User %s reordered the activities in activity group '%s' (%s) in assessment %s",
+        user.email,
+        group.name,
+        group.id,
+        assessment_id,
+    )
 
 
 def assign_activity_to_activity_group_service(
@@ -333,7 +379,9 @@ def assign_activity_to_activity_group_service(
     Validates the group exists and belongs to the same assessment as the activity.
     """
     # Validate group exists and belongs to assessment
-    get_activity_group_by_id_service(activity_group_id, assessment_id, user, session)
+    group = get_activity_group_by_id_service(
+        activity_group_id, assessment_id, user, session
+    )
 
     # Get activity and validate it exists
     activity = get_activity_by_id_service(activity_id, assessment_id, user, session)
@@ -354,6 +402,15 @@ def assign_activity_to_activity_group_service(
 
     session.add(activity)
     session.commit()
+    app_logger.info(
+        "User %s moved activity '%s' (%s) to activity group '%s' (%s) in assessment %s",
+        user.email,
+        activity.name,
+        activity.id,
+        group.name,
+        group.id,
+        assessment_id,
+    )
     return activity
 
 
@@ -416,4 +473,11 @@ def remove_activity_from_activity_group_service(
             session.add(act)
 
     session.commit()
+    app_logger.info(
+        "User %s moved activity '%s' (%s) to the default activity group in assessment %s",
+        user.email,
+        activity.name,
+        activity.id,
+        assessment_id,
+    )
     return activity

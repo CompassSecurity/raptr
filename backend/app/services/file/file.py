@@ -5,6 +5,7 @@ from pathvalidate import sanitize_filename
 from sqlalchemy import and_, select
 from sqlalchemy.orm import Session, undefer
 
+from app.core.logging import app_logger
 from app.enums.enums import AclRole, FileCategory, FileType
 from app.models.activity import Activity
 from app.models.file import File
@@ -139,10 +140,21 @@ def upload_file_service(
     """
     Upload a file to an activity.
     """
-    get_activity_by_id_service(activity_id, assessment_id, user, session)
+    activity = get_activity_by_id_service(activity_id, assessment_id, user, session)
 
     # Validate content
-    detected_file_type = validate_file_content(file)
+    try:
+        detected_file_type = validate_file_content(file)
+    except HTTPException:
+        app_logger.warning(
+            "User %s uploaded a file with an invalid type to activity '%s' (%s) in assessment %s: %r",
+            user.email,
+            activity.name,
+            activity.id,
+            assessment_id,
+            file.filename,
+        )
+        raise
     file_content = file.file.read()
 
     final_filename = _normalize_filename(
@@ -167,6 +179,16 @@ def upload_file_service(
 
     session.add(new_file)
     session.commit()
+    app_logger.info(
+        "User %s uploaded file '%s' (%s, %d bytes) to activity '%s' (%s) in assessment %s",
+        user.email,
+        new_file.filename,
+        new_file.id,
+        new_file.size,
+        activity.name,
+        activity.id,
+        assessment_id,
+    )
 
     download_url = f"/api/v1/assessments/{assessment_id}/activity/{activity_id}/files/{new_file.id}/download"
 
@@ -190,9 +212,25 @@ def delete_file_service(
     )
 
     if user.assessment_acl_role == AclRole.BLUE and file.category != FileCategory.BLUE:
+        app_logger.warning(
+            "User %s (blue team) tried to delete the red team file '%s' (%s) in assessment %s",
+            user.email,
+            file.filename,
+            file.id,
+            assessment_id,
+        )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not allowed to delete this file.",
         )
+    filename = file.filename
     session.delete(file)
     session.commit()
+    app_logger.info(
+        "User %s deleted file '%s' (%s) from activity %s in assessment %s",
+        user.email,
+        filename,
+        file_id,
+        activity_id,
+        assessment_id,
+    )
