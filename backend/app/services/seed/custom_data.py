@@ -48,7 +48,7 @@ def import_custom_activity_templates_service(
         session.execute(delete(ActivityGroupTemplate))
         session.commit()
     except Exception as e:
-        app_logger.error(f"Failed to clear existing activities: {e}")
+        app_logger.exception("Failed to clear existing activities: %s", e)
         session.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -118,12 +118,12 @@ def import_custom_activity_templates_service(
                         count += 1
 
                     except ValidationError as e:
-                        app_logger.error(f"Validation failed for {filename}: {e}")
+                        app_logger.warning("Validation failed for %s: %s", filename, e)
                         failed_count += 1
                         continue
 
                 except yaml.YAMLError as e:
-                    app_logger.error(f"Failed to parse YAML file {filename}: {e}")
+                    app_logger.warning("Failed to parse YAML file %s: %s", filename, e)
                     failed_count += 1
                     continue
 
@@ -131,7 +131,9 @@ def import_custom_activity_templates_service(
         return count, failed_count
 
     except Exception as e:
-        app_logger.error(f"An unexpected error occurred during activity import: {e}")
+        app_logger.exception(
+            "An unexpected error occurred during activity import: %s", e
+        )
         session.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -169,7 +171,7 @@ def import_custom_group_templates_service(
 
                 name = content.get("name")
                 if not name:
-                    app_logger.warning(f"Skipping {filename}: Missing 'name'")
+                    app_logger.warning("Skipping %s: Missing 'name'", filename)
                     failed_count += 1
                     continue
 
@@ -201,24 +203,28 @@ def import_custom_group_templates_service(
                         )
                     else:
                         app_logger.warning(
-                            f"Activity '{activity_name}' not found for group '{name}'"
+                            "Activity '%s' not found for group '%s'",
+                            activity_name,
+                            name,
                         )
 
                 count += 1
 
             except yaml.YAMLError as e:
-                app_logger.error(f"Failed to parse YAML file {filename}: {e}")
+                app_logger.warning("Failed to parse YAML file %s: %s", filename, e)
                 failed_count += 1
                 continue
             except Exception as e:
-                app_logger.error(f"Failed to import group template {filename}: {e}")
+                app_logger.warning(
+                    "Failed to import group template %s: %s", filename, e
+                )
                 failed_count += 1
                 continue
 
     try:
         session.commit()
     except Exception as e:
-        app_logger.error(f"Failed to commit group templates: {e}")
+        app_logger.exception("Failed to commit group templates: %s", e)
         session.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -257,7 +263,7 @@ def import_custom_campaign_templates_service(
 
                 name = content.get("name")
                 if not name:
-                    app_logger.warning(f"Skipping {filename}: Missing 'name'")
+                    app_logger.warning("Skipping %s: Missing 'name'", filename)
                     failed_count += 1
                     continue
 
@@ -280,7 +286,7 @@ def import_custom_campaign_templates_service(
 
                     if not item_type or not ref:
                         app_logger.warning(
-                            f"Skipping invalid item in campaign '{name}': {item}"
+                            "Skipping invalid item in campaign '%s': %s", name, item
                         )
                         continue
 
@@ -300,7 +306,7 @@ def import_custom_campaign_templates_service(
                             campaign_item.activity_group_template_id = group.id
                         else:
                             app_logger.warning(
-                                f"Group '{ref}' not found for campaign '{name}'"
+                                "Group '%s' not found for campaign '%s'", ref, name
                             )
                             continue
 
@@ -313,12 +319,12 @@ def import_custom_campaign_templates_service(
                             campaign_item.activity_template_id = activity.id
                         else:
                             app_logger.warning(
-                                f"Activity '{ref}' not found for campaign '{name}'"
+                                "Activity '%s' not found for campaign '%s'", ref, name
                             )
                             continue
                     else:
                         app_logger.warning(
-                            f"Unknown item type '{item_type}' in campaign '{name}'"
+                            "Unknown item type '%s' in campaign '%s'", item_type, name
                         )
                         continue
 
@@ -327,18 +333,20 @@ def import_custom_campaign_templates_service(
                 count += 1
 
             except yaml.YAMLError as e:
-                app_logger.error(f"Failed to parse YAML file {filename}: {e}")
+                app_logger.warning("Failed to parse YAML file %s: %s", filename, e)
                 failed_count += 1
                 continue
             except Exception as e:
-                app_logger.error(f"Failed to import campaign template {filename}: {e}")
+                app_logger.warning(
+                    "Failed to import campaign template %s: %s", filename, e
+                )
                 failed_count += 1
                 continue
 
     try:
         session.commit()
     except Exception as e:
-        app_logger.error(f"Failed to commit campaign templates: {e}")
+        app_logger.exception("Failed to commit campaign templates: %s", e)
         session.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -366,7 +374,7 @@ def import_knowledge_base_service(
         session.execute(delete(KnowledgeBase))
         session.flush()  # Flush to ensure deletion happens before insertion
     except Exception as e:
-        app_logger.error(f"Failed to clear existing knowledge base: {e}")
+        app_logger.exception("Failed to clear existing knowledge base: %s", e)
         # Continue anyway, upsert will handle updates
 
     # 2. Iterate through files
@@ -390,7 +398,7 @@ def import_knowledge_base_service(
                 # Basic validation
                 name = content.get("name")
                 if not name:
-                    app_logger.warning(f"Skipping {filename}: Missing 'name'")
+                    app_logger.warning("Skipping %s: Missing 'name'", filename)
                     failed_count += 1
                     continue
 
@@ -427,11 +435,11 @@ def import_knowledge_base_service(
                 count += 1
 
             except yaml.YAMLError as e:
-                app_logger.error(f"Failed to parse YAML file {filename}: {e}")
+                app_logger.warning("Failed to parse YAML file %s: %s", filename, e)
                 failed_count += 1
                 continue
             except Exception as e:
-                app_logger.error(f"Failed to import KB {filename}: {e}")
+                app_logger.warning("Failed to import KB %s: %s", filename, e)
                 failed_count += 1
                 continue
 
@@ -477,7 +485,7 @@ def import_evaluation_templates_service(
 
                 if not name or not evaluation_criteria:
                     app_logger.warning(
-                        f"Skipping {filename}: Missing 'name' or 'evaluationCriteria'"
+                        "Skipping %s: Missing 'name' or 'evaluationCriteria'", filename
                     )
                     failed_count += 1
                     continue
@@ -502,12 +510,12 @@ def import_evaluation_templates_service(
                 count += 1
 
             except yaml.YAMLError as e:
-                app_logger.error(f"Failed to parse YAML file {filename}: {e}")
+                app_logger.warning("Failed to parse YAML file %s: %s", filename, e)
                 failed_count += 1
                 continue
             except Exception as e:
-                app_logger.error(
-                    f"Failed to import Evaluation Template {filename}: {e}"
+                app_logger.warning(
+                    "Failed to import Evaluation Template %s: %s", filename, e
                 )
                 failed_count += 1
                 continue
@@ -516,7 +524,7 @@ def import_evaluation_templates_service(
     try:
         session.commit()
     except Exception as e:
-        app_logger.error(f"Failed to commit evaluation templates: {e}")
+        app_logger.exception("Failed to commit evaluation templates: %s", e)
         session.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -572,7 +580,7 @@ def import_report_templates_service(
                 content = f.read()
 
             if not content:
-                app_logger.warning(f"Skipping empty report template: {basename}")
+                app_logger.warning("Skipping empty report template: %s", basename)
                 failed_count += 1
                 continue
 
@@ -585,14 +593,14 @@ def import_report_templates_service(
             count += 1
 
         except Exception as e:
-            app_logger.error(f"Failed to import report template {basename}: {e}")
+            app_logger.warning("Failed to import report template %s: %s", basename, e)
             failed_count += 1
             continue
 
     try:
         session.commit()
     except Exception as e:
-        app_logger.error(f"Failed to commit report templates: {e}")
+        app_logger.exception("Failed to commit report templates: %s", e)
         session.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -615,6 +623,8 @@ def import_custom_data_service(
             detail="Custom data URL is not configured.",
         )
 
+    app_logger.info("User %s started the custom data import", user.email)
+
     url = settings.CUSTOM_DATA_URL
     headers = {}
     if settings.CUSTOM_DATA_TOKEN:
@@ -631,7 +641,7 @@ def import_custom_data_service(
         response = httpx.get(url, headers=headers, follow_redirects=True)
         response.raise_for_status()
     except httpx.HTTPError as e:
-        app_logger.error(f"Failed to download custom data: {e}")
+        app_logger.error("Failed to download custom data: %s", e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to download custom data",
@@ -688,7 +698,7 @@ def import_custom_data_service(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid zip file format"
         )
     except Exception as e:
-        app_logger.error(f"Import failed: {e}")
+        app_logger.exception("Import failed: %s", e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Import process failed: {str(e)}",
@@ -696,4 +706,5 @@ def import_custom_data_service(
 
     del response
     release_memory()
+    app_logger.info("User %s finished the custom data import", user.email)
     return msg

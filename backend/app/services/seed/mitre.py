@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.core.logging import app_logger
 from app.models.mitre import Tactic, Technique
+from app.models.user import User
 from app.services.utils.memory import release_memory
 
 
@@ -28,7 +29,7 @@ async def download_mitre_data() -> dict:
             app_logger.info("MITRE ATT&CK data downloaded successfully")
             return response.json()
         except httpx.HTTPError as e:
-            app_logger.error(f"Failed to download MITRE data: {e}")
+            app_logger.error("Failed to download MITRE data: %s", e)
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Failed to download MITRE data",
@@ -38,10 +39,15 @@ async def download_mitre_data() -> dict:
 def parse_and_ingest_mitre_data_service(
     session: Session,
     data: dict,
+    user: User | None = None,
 ) -> None:
     """
     Parses MITRE ATT&CK JSON and ingests Tactics and Techniques into the database.
+    `user` is only used for logging who triggered the import.
     """
+    actor = user.email if user else "system"
+    app_logger.info("User %s started the MITRE ATT&CK import", actor)
+    technique_count = 0
     # 1. Parse Tactics
     tactics_map = {}  # mitre_id -> Tactic object (for relationship linking)
 
@@ -124,6 +130,7 @@ def parse_and_ingest_mitre_data_service(
 
             result = session.execute(stmt)
             technique = result.scalar_one()
+            technique_count += 1
 
             # Link Tactics
             kill_chain_phases = obj.get("kill_chain_phases", [])
@@ -140,3 +147,9 @@ def parse_and_ingest_mitre_data_service(
 
     session.commit()
     release_memory()
+    app_logger.info(
+        "User %s finished the MITRE ATT&CK import: %d tactics, %d techniques",
+        actor,
+        len(tactics_map),
+        technique_count,
+    )

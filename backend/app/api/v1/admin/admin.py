@@ -137,7 +137,7 @@ async def import_mitre_techniques_and_tactics(
     """
     Create MITRE ATT&CK data.
     """
-    parse_and_ingest_mitre_data_service(session, await download_mitre_data())
+    parse_and_ingest_mitre_data_service(session, await download_mitre_data(), user)
     return MessageResponse(message="MITRE ATT&CK data created successfully")
 
 
