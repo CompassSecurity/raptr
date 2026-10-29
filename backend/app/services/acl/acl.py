@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core.logging import app_logger
 from app.enums.enums import UserRole
 from app.models.acl import Acl
 from app.models.user import User
@@ -79,7 +80,7 @@ def create_acl_service(
     """
     Create a new acl.
     """
-    get_assessment_by_id_service(acl.assessment_id, user, session)
+    assessment = get_assessment_by_id_service(acl.assessment_id, user, session)
 
     acl_user_new = get_user_by_id_service(acl.user_id, user, session)
     if acl_user_new.role == UserRole.ADMIN:
@@ -105,6 +106,14 @@ def create_acl_service(
 
     session.add(db_acl_new)
     session.commit()
+    app_logger.info(
+        "User %s granted %s role %s on assessment '%s' (%s)",
+        user.email,
+        acl_user_new.email,
+        acl.assessment_role.value,
+        assessment.name,
+        assessment.id,
+    )
     return db_acl_new
 
 
@@ -117,8 +126,17 @@ def delete_acl_service(
     Delete an acl by ID.
     """
     db_acl = get_acl_by_id_service(acl_id, user, session)
+    acl_user = get_user_by_id_service(db_acl.user_id, user, session)
+    assessment = get_assessment_by_id_service(db_acl.assessment_id, user, session)
     session.delete(db_acl)
     session.commit()
+    app_logger.info(
+        "User %s revoked the access of %s to assessment '%s' (%s)",
+        user.email,
+        acl_user.email,
+        assessment.name,
+        assessment.id,
+    )
 
 
 def update_acl_service(
@@ -130,7 +148,7 @@ def update_acl_service(
     """
     Update an acl by ID.
     """
-    get_assessment_by_id_service(acl.assessment_id, user, session)
+    assessment = get_assessment_by_id_service(acl.assessment_id, user, session)
 
     acl_user = get_user_by_id_service(acl.user_id, user, session)
     if acl_user.role == UserRole.ADMIN:
@@ -149,9 +167,19 @@ def update_acl_service(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Acl already exists"
         )
 
+    old_role = db_acl.assessment_role
     db_acl.user_id = acl.user_id
     db_acl.assessment_id = acl.assessment_id
     db_acl.assessment_role = acl.assessment_role
     db_acl.updated_by = user.id
     session.commit()
+    app_logger.info(
+        "User %s changed the role of %s on assessment '%s' (%s) from %s to %s",
+        user.email,
+        acl_user.email,
+        assessment.name,
+        assessment.id,
+        old_role.value,
+        acl.assessment_role.value,
+    )
     return db_acl

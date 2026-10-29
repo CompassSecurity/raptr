@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core.logging import app_logger
 from app.enums.enums import UserRole
 from app.models.acl import Acl
 from app.models.assessment import Assessment
@@ -72,6 +73,12 @@ def create_assessment_service(
     session.flush()
     get_or_create_default_group(db_assessment.id, session, created_by=user.id)
     session.commit()
+    app_logger.info(
+        "User %s created assessment '%s' (%s)",
+        user.email,
+        db_assessment.name,
+        db_assessment.id,
+    )
     return db_assessment
 
 
@@ -84,8 +91,15 @@ def delete_assessment_service(
     Delete an assessment by ID.
     """
     db_assessment = get_assessment_by_id_service(assessment_id, user, session)
+    assessment_name = db_assessment.name
     session.delete(db_assessment)
     session.commit()
+    app_logger.info(
+        "User %s deleted assessment '%s' (%s)",
+        user.email,
+        assessment_name,
+        assessment_id,
+    )
 
 
 def update_assessment_service(
@@ -103,6 +117,12 @@ def update_assessment_service(
     db_assessment.assessment_type = assessment.assessment_type
     db_assessment.updated_by = user.id
     session.commit()
+    app_logger.info(
+        "User %s updated assessment '%s' (%s)",
+        user.email,
+        db_assessment.name,
+        db_assessment.id,
+    )
     return db_assessment
 
 
@@ -127,4 +147,11 @@ def update_assessment_evaluation_template_service(
     db_assessment.default_evaluation_templates = templates
     db_assessment.updated_by = user.id
     session.commit()
+    app_logger.info(
+        "User %s set %d default evaluation templates on assessment '%s' (%s)",
+        user.email,
+        len(templates),
+        db_assessment.name,
+        db_assessment.id,
+    )
     return db_assessment
