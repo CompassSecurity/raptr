@@ -215,7 +215,7 @@ const isFormValid = computed(() => {
               </Button>
             </PopoverTrigger>
             <PopoverContent class="w-[465px] p-0">
-              <Command>
+              <Command highlight-on-hover>
                 <CommandInput class="h-9" placeholder="Search tactic..." />
                 <CommandEmpty>No tactic found.</CommandEmpty>
                 <CommandList>
@@ -260,7 +260,7 @@ const isFormValid = computed(() => {
               </Button>
             </PopoverTrigger>
             <PopoverContent class="w-[465px] p-0">
-              <Command>
+              <Command highlight-on-hover>
                 <CommandInput class="h-9" placeholder="Search technique..." />
                 <CommandEmpty>No technique found.</CommandEmpty>
                 <CommandList>
