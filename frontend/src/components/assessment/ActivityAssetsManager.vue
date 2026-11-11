@@ -400,8 +400,8 @@ onMounted(() => {
                                 <component :is="getIconComponent(asset.icon)" :class="compact ? 'h-4 w-4 text-muted-foreground shrink-0' : 'h-6 w-6 text-muted-foreground mb-2'" />
                                 
                                 <!-- Name -->
-                                <span :class="[
-                                    compact ? 'text-xs font-medium truncate max-w-[100px]' : 'text-sm font-medium text-center line-clamp-2 leading-tight',
+                                <span :title="asset.name" :class="[
+                                    compact ? 'text-xs font-medium truncate max-w-[100px]' : 'text-sm font-medium text-center line-clamp-2 leading-tight w-full min-w-0 break-words',
                                     asset.deleted ? 'line-through text-muted-foreground' : ''
                                 ]">{{ asset.name }}</span>
                                 
