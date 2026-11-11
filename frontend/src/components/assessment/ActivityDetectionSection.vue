@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import ActivityAssetsManager from '@/components/assessment/ActivityAssetsManager.vue';
 import { Badge } from '@/components/ui/badge';
-import DateTimePicker from '@/components/ui/DateTimePicker.vue';
+import DateTimeField from '@/components/ui/DateTimeField.vue';
 import { Label } from '@/components/ui/label';
 import MarkdownEditor from '@/components/ui/MarkdownEditor.vue';
 import {
@@ -31,6 +31,13 @@ const emit = defineEmits<(e: 'assets-changed') => void>();
 const formData = defineModel<Partial<ActivityRead>>('formData', {
     required: true,
 });
+
+// One width for every field in this section, so the time pickers (which carry
+// their own Now button) and the severity selects line up on both edges
+const FIELD_WIDTH = 'w-full max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl';
+// Hands width control to the wrapper above: without clearing every breakpoint
+// the picker keeps its own caps and drifts out of line if FIELD_WIDTH changes
+const FIELD_FILL = 'max-w-none lg:max-w-none xl:max-w-none 2xl:max-w-none';
 
 const severityOptions = zActivitySeverity.options;
 const preferencesStore = usePreferencesStore();
@@ -142,13 +149,14 @@ const stakeholderNotificationCreated = computed({
             </div>
 
             <div v-if="logged" class="space-y-4 pt-2 border-t">
-                <div class="space-y-2 w-full sm:w-1/2 pr-2">
+                <div :class="['space-y-2', FIELD_WIDTH]">
                     <Label class="text-sm font-medium">Log Time</Label>
                     <template v-if="readonly">
                         <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.log_time) }}</div>
                     </template>
                     <template v-else>
-                        <DateTimePicker
+                        <DateTimeField
+                            :class="FIELD_FILL"
                             :model-value="formData.log_time ?? undefined"
                             @update:model-value="formData.log_time = $event ?? null"
                         />
@@ -197,13 +205,14 @@ const stakeholderNotificationCreated = computed({
             </div>
 
             <div v-if="prevented" class="space-y-4 pt-2 border-t">
-                <div class="space-y-2 w-full sm:w-1/2 pr-2">
+                <div :class="['space-y-2', FIELD_WIDTH]">
                     <Label class="text-sm font-medium">Prevention Time</Label>
                     <template v-if="readonly">
                         <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.prevent_time) }}</div>
                     </template>
                     <template v-else>
-                        <DateTimePicker
+                        <DateTimeField
+                            :class="FIELD_FILL"
                             :model-value="formData.prevent_time ?? undefined"
                             @update:model-value="formData.prevent_time = $event ?? null"
                         />
@@ -253,19 +262,20 @@ const stakeholderNotificationCreated = computed({
 
             <div v-if="alerted" class="space-y-4 pt-2 border-t">
                 <div class="space-y-4">
-                    <div class="space-y-2 w-full sm:w-1/2 pr-2">
+                    <div :class="['space-y-2', FIELD_WIDTH]">
                         <Label class="text-sm font-medium">Alert Time</Label>
                         <template v-if="readonly">
                             <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.alert_time) }}</div>
                         </template>
                         <template v-else>
-                            <DateTimePicker
+                            <DateTimeField
+                                :class="FIELD_FILL"
                                 :model-value="formData.alert_time ?? undefined"
                                 @update:model-value="formData.alert_time = $event ?? null"
                             />
                         </template>
                     </div>
-                    <div class="space-y-2 w-full sm:w-1/2 pr-2">
+                    <div :class="['space-y-2', FIELD_WIDTH]">
                         <Label class="text-sm font-medium">Alert Severity</Label>
                         <template v-if="readonly">
                             <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ formData.alert_severity || '—' }}</div>
@@ -328,19 +338,20 @@ const stakeholderNotificationCreated = computed({
 
             <div v-if="stakeholderNotificationCreated" class="space-y-4 pt-2 border-t">
                 <div class="space-y-4">
-                    <div class="space-y-2 w-full sm:w-1/2 pr-2">
+                    <div :class="['space-y-2', FIELD_WIDTH]">
                         <Label class="text-sm font-medium">Notification Time</Label>
                         <template v-if="readonly">
                             <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.stakeholder_notification_time) }}</div>
                         </template>
                         <template v-else>
-                            <DateTimePicker
+                            <DateTimeField
+                                :class="FIELD_FILL"
                                 :model-value="formData.stakeholder_notification_time ?? undefined"
                                 @update:model-value="formData.stakeholder_notification_time = $event ?? null"
                             />
                         </template>
                     </div>
-                    <div class="space-y-2 w-full sm:w-1/2 pr-2">
+                    <div :class="['space-y-2', FIELD_WIDTH]">
                         <Label class="text-sm font-medium">Notification Severity</Label>
                         <template v-if="readonly">
                             <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ formData.stakeholder_notification_severity || '—' }}</div>

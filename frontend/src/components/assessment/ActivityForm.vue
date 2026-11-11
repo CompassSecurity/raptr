@@ -13,7 +13,7 @@ import ConflictResolutionDialog from '@/components/assessment/ConflictResolution
 import KnowledgeBaseModal from '@/components/assessment/KnowledgeBaseModal.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import DateTimePicker from '@/components/ui/DateTimePicker.vue';
+import DateTimeField from '@/components/ui/DateTimeField.vue';
 import { Label } from '@/components/ui/label';
 import MarkdownEditor from '@/components/ui/MarkdownEditor.vue';
 import {
@@ -740,7 +740,7 @@ defineExpose({ hasUnsavedChanges });
                             <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.activity_start_time) }}</div>
                         </template>
                         <template v-else>
-                            <DateTimePicker
+                            <DateTimeField
                                 :model-value="formData.activity_start_time ?? undefined"
                                 @update:model-value="formData.activity_start_time = $event ?? null"
                             />
@@ -752,7 +752,7 @@ defineExpose({ hasUnsavedChanges });
                             <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.activity_end_time) }}</div>
                         </template>
                         <template v-else>
-                            <DateTimePicker
+                            <DateTimeField
                                 :model-value="formData.activity_end_time ?? undefined"
                                 @update:model-value="formData.activity_end_time = $event ?? null"
                             />
