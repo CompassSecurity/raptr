@@ -18,7 +18,7 @@ import {
     toTimeZone,
 } from '@internationalized/date';
 import type { HTMLAttributes } from 'vue';
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, nextTick, ref, shallowRef, watch } from 'vue';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Input } from '@/components/ui/input';
@@ -100,8 +100,12 @@ function emitValue(next: ZonedDateTime | undefined) {
 
 const isOpen = ref(false);
 
-// Which month the calendar opens on
-const placeholder = ref<DateValue>(value.value ?? currentMinute());
+// Which month the calendar opens on. Typed as the concrete ZonedDateTime rather
+// than the DateValue union: reka only ever writes back a .copy()/.add() of what
+// we seed, so it stays zoned, and the union widens the type past what the prop
+// accepts. shallowRef because these are immutable class instances - deep
+// reactivity would proxy a class with private fields for no gain.
+const placeholder = shallowRef<ZonedDateTime>(value.value ?? currentMinute());
 
 watch(value, (val) => {
     if (val) placeholder.value = val;
