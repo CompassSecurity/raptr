@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BookOpen, Copy, History } from '@lucide/vue';
-import { useElementSize } from '@vueuse/core';
+import { useElementBounding, useElementSize } from '@vueuse/core';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import ActivityAssetsManager from '@/components/assessment/ActivityAssetsManager.vue';
@@ -137,6 +137,16 @@ const sectionTabs = ref<{ $el: HTMLElement } | null>(null);
 const { height: stickyHeaderHeight } = useElementSize(stickyHeader, undefined, {
     box: 'border-box',
 });
+
+// Once the tab bar is stuck it sits flush under the header, and the header's
+// divider would cut across the tabs' rounded tops. The border stays in place so
+// the header keeps its height - only its colour goes - otherwise removing it
+// would shrink the header, shift the tab bar up and flip this back and forth.
+const sectionTabsEl = computed(() => sectionTabs.value?.$el ?? null);
+const { top: sectionTabsTop } = useElementBounding(sectionTabsEl);
+const sectionTabsStuck = computed(
+    () => sectionTabsTop.value <= stickyHeaderHeight.value,
+);
 
 // Clicking a tab while the bar is stuck jumps to the start of that section
 function onSectionTabClicked() {
@@ -602,7 +612,13 @@ defineExpose({ hasUnsavedChanges });
 <template>
     <div class="w-full px-4 mx-auto space-y-8 pb-24">
         <!-- Sticky Header -->
-        <div ref="stickyHeader" class="sticky top-0 z-20 bg-background pb-4 border-b">
+        <div
+            ref="stickyHeader"
+            :class="[
+                'sticky top-0 z-20 bg-background pb-4 border-b',
+                sectionTabsStuck && 'border-b-transparent',
+            ]"
+        >
             <div class="flex justify-between items-start pt-2">
                 <div>
                     <h2 class="text-3xl font-bold tracking-tight">{{ formData.name || 'Activity Details' }}</h2>
