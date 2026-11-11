@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BookOpen, Copy, History } from '@lucide/vue';
-import { useElementSize } from '@vueuse/core';
+import { useElementBounding, useElementSize } from '@vueuse/core';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import ActivityAssetsManager from '@/components/assessment/ActivityAssetsManager.vue';
@@ -13,7 +13,7 @@ import ConflictResolutionDialog from '@/components/assessment/ConflictResolution
 import KnowledgeBaseModal from '@/components/assessment/KnowledgeBaseModal.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import DateTimePicker from '@/components/ui/DateTimePicker.vue';
+import DateTimeField from '@/components/ui/DateTimeField.vue';
 import { Label } from '@/components/ui/label';
 import MarkdownEditor from '@/components/ui/MarkdownEditor.vue';
 import {
@@ -137,6 +137,16 @@ const sectionTabs = ref<{ $el: HTMLElement } | null>(null);
 const { height: stickyHeaderHeight } = useElementSize(stickyHeader, undefined, {
     box: 'border-box',
 });
+
+// Once the tab bar is stuck it sits flush under the header, and the header's
+// divider would cut across the tabs' rounded tops. The border stays in place so
+// the header keeps its height - only its colour goes - otherwise removing it
+// would shrink the header, shift the tab bar up and flip this back and forth.
+const sectionTabsEl = computed(() => sectionTabs.value?.$el ?? null);
+const { top: sectionTabsTop } = useElementBounding(sectionTabsEl);
+const sectionTabsStuck = computed(
+    () => sectionTabsTop.value <= stickyHeaderHeight.value,
+);
 
 // Clicking a tab while the bar is stuck jumps to the start of that section
 function onSectionTabClicked() {
@@ -602,7 +612,13 @@ defineExpose({ hasUnsavedChanges });
 <template>
     <div class="w-full px-4 mx-auto space-y-8 pb-24">
         <!-- Sticky Header -->
-        <div ref="stickyHeader" class="sticky top-0 z-20 bg-background pb-4 border-b">
+        <div
+            ref="stickyHeader"
+            :class="[
+                'sticky top-0 z-20 bg-background pb-4 border-b',
+                sectionTabsStuck && 'border-b-transparent',
+            ]"
+        >
             <div class="flex justify-between items-start pt-2">
                 <div>
                     <h2 class="text-3xl font-bold tracking-tight">{{ formData.name || 'Activity Details' }}</h2>
@@ -740,7 +756,7 @@ defineExpose({ hasUnsavedChanges });
                             <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.activity_start_time) }}</div>
                         </template>
                         <template v-else>
-                            <DateTimePicker
+                            <DateTimeField
                                 :model-value="formData.activity_start_time ?? undefined"
                                 @update:model-value="formData.activity_start_time = $event ?? null"
                             />
@@ -752,7 +768,7 @@ defineExpose({ hasUnsavedChanges });
                             <div class="text-sm px-3 py-2 rounded-md border bg-muted/30 min-h-[36px] flex items-center">{{ readonlyDate(formData.activity_end_time) }}</div>
                         </template>
                         <template v-else>
-                            <DateTimePicker
+                            <DateTimeField
                                 :model-value="formData.activity_end_time ?? undefined"
                                 @update:model-value="formData.activity_end_time = $event ?? null"
                             />
