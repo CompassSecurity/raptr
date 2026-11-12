@@ -22,7 +22,7 @@ COPY frontend .
 RUN NODE_ENV=production bun run build
 
 # Stage 2: Setup the backend and serve
-FROM python:3.14-slim AS backend-runner
+FROM python:3.15-slim AS backend-runner
 
 WORKDIR /app
 
